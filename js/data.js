@@ -168,7 +168,16 @@ const DATA = {
      bad:"Tell: the process reaches extensions.duckdb.org on first use of a feature."},
     {title:"MotherDuck in a closed lab",view:"Trust",src:"S8",
      good:"Do not ATTACH md: unless that cloud account is separately approved.",
-     bad:"Tell: dual execution runs part of the query in MotherDuck's cloud."}
+     bad:"Tell: dual execution runs part of the query in MotherDuck's cloud."},
+    {title:"Host process crash",view:"Operations",src:"S6",
+     good:"Treat a fatal engine fault as a host abort. There is no daemon to isolate it.",
+     bad:"Tell: Python, R, or the JVM dies with the query."},
+    {title:"CSV type guess",view:"Engine",src:"S1",
+     good:"Declare types or use TRY_CAST. Do not trust the first rows of a CSV.",
+     bad:"Tell: timestamps truncated, numbers stored as strings, later rows fail to cast."},
+    {title:"Skewed join key",view:"Engine",src:"S5",
+     good:"Morsels let idle threads keep pulling work. A fixed hash split does not.",
+     bad:"Tell: one core at 100% and the rest idle near the end of the query."}
   ],
   cheat:[
     {t:"Use DuckDB",d:"The working set fits one machine and the question is a scan, join, or aggregate."},
@@ -274,8 +283,9 @@ const DATA = {
     {category:"Engine",term:"Subquery unnesting",rung:300,definition:"A correlated subquery becomes a join or an aggregate so it is not re-run per row.",source:"nblm-gap"}
   ],
   views:{
-    conceptual:{rule:"What and why. In-process analytics, not a server.",lib:"",img:[],
-      tables:[{caption:"Quadrant",headers:["","OLTP","OLAP"],rows:[["In process","SQLite","DuckDB"],["Client-server","Postgres","Snowflake / ClickHouse"]]}]},
+    conceptual:{rule:"What and why. In-process analytics, not a server.",lib:"nblm-study-guide",img:[],
+      tables:[{caption:"Quadrant",headers:["","OLTP","OLAP"],rows:[["In process","SQLite","DuckDB"],["Client-server","Postgres","Snowflake / ClickHouse"]]},
+      {caption:"Selection (from the study guide)",headers:["","DuckDB","Postgres","SQLite","Polars","Spark"],rows:[["Shape","In-process OLAP","Server OLTP","In-process OLTP","Dataframe","Cluster"],["Layout","Columnar","Row","Row / B-tree","Columnar in RAM","Distributed files"],["Writers","One process","Many","One file lock","Process-local","Cluster"],["Avoid","Many writers","Embedded mobile","Wide aggregates","Joins bigger than RAM","A file that fits one box"]]}]},
     logical:{rule:"How a query moves. Columns, chunks, morsels.",lib:"",img:[],
       tables:[{caption:"Pipeline",headers:["Step","What it reads"],rows:[["Scan","Named columns only"],["Join","Hash table on the small side"],["Aggregate","The same pipeline"],["Threads","Morsels, not private copies of the query"]]}]},
     physical:{rule:"One process, one file, local disk.",lib:"",img:[],
@@ -680,6 +690,22 @@ DATA.nblmDecks = {
   }
 };
 
+DATA.looks = {
+  "1:0": "<pre>Client-server:\n[ App ] -- socket / copy --&gt; [ Server ]\n\nIn-process:\n[ App | DuckDB ]  shared memory, no copy</pre><p class='flagnote'>The briefing's 10x/100x line is its wording, not an SLA.</p>",
+  "1:1": "<table class='tbl'><thead><tr><th></th><th>OLTP</th><th>OLAP</th></tr></thead><tbody><tr><td>In process</td><td>SQLite</td><td>DuckDB</td></tr><tr><td>Client-server</td><td>Postgres</td><td>Warehouse</td></tr></tbody></table>",
+  "2:0": "<pre>Row:  ID ColA ColB | ID ColA ColB\nCol:  ID ID ID | ColA ColA ColA</pre><p>SUM(amount) on a wide table reads the amount column and skips the rest. A point lookup of one order is SQLite's job.</p>",
+  "3:0": "<pre>Volcano:   Scan --1 row--&gt; Filter --1 row--&gt; Agg\nVectorized: Scan --2048--&gt; Filter --2048--&gt; Agg</pre><p>STANDARD_VECTOR_SIZE is 2048. Changing it means rebuilding DuckDB.</p>",
+  "3:1": "<table class='tbl'><thead><tr><th>Layout</th><th>What it stores</th></tr></thead><tbody><tr><td>Flat</td><td>Index i at offset i</td></tr><tr><td>Constant</td><td>One value for the chunk</td></tr><tr><td>Dictionary</td><td>Distinct values plus indexes</td></tr><tr><td>Sequence</td><td>Start and step</td></tr></tbody></table>",
+  "4:0": "<p>The Justin Bieber problem: one join key owns most of the rows. A fixed hash split pins that stream to one thread. Everyone else sits idle. Morsels are pulled from a queue, so idle threads keep working.</p>",
+  "5:0": "<pre>SELECT dt, COUNT(*)\nFROM 'events.parquet'\nWHERE dt = DATE '2026-10-01'\nGROUP BY ALL;</pre><p>No CREATE TABLE. The binder swaps the path for a Parquet scan. CSV type detection samples early rows and can guess wrong.</p>",
+  "6:0": "<p>Build the hash table on the small side. Probe with the large side. A sort or a global hash aggregate is a pipeline breaker: it must see all input before it emits. If that table will not fit, the plan has to spill. A plan that cannot spill can kill the process.</p>",
+  "7:0": "<table class='tbl'><thead><tr><th>Tell</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Database locked</td><td>Second OS process writing</td><td>One writer. Others READ_ONLY</td></tr><tr><td>Transaction conflict</td><td>Two threads, same row</td><td>Retry. Appends do not conflict</td></tr><tr><td>Stall on a share</td><td>File on NFS / NAS</td><td>Keep the writer on a local disk</td></tr></tbody></table><p class='flagnote'>Quack and DuckLake are named in the reports as later multi-writer ideas. They are not the concurrency contract for a local file.</p>",
+  "8:0": "<p>Core: SQL engine, C++11, no extra libraries. Extensions: httpfs (OpenSSL inside it), spatial, ICU, Iceberg. INSTALL fetches. LOAD activates. Auto-install does both and talks to extensions.duckdb.org.</p>",
+  "9:0": "<p>Local DuckDB never leaves the process. DuckDB plus object storage you control stays in your network. MotherDuck is a cloud warehouse. ATTACH 'md:' is the line that leaves a closed lab. Dual execution can run part of the query in their cloud (CIDR 2024).</p>",
+  "10:0": "<p>Elicit did not return a paper that evaluates DuckDB in a classified lab. Smaug (2023) and BiTDB (2024) study SQLite or embedded databases in a TEE. A local binary with no network is not an authorization.</p>",
+  "11:0": "<ol><li>Standardize local scans and aggregates on DuckDB.</li><li>Do not start Spark for a file that fits one machine.</li><li>Do not load a CSV just to look at it.</li><li>Time your files. Do not quote 10x or 157 ms as a contract.</li></ol>"
+};
+
 DATA.watch = [
   {who:"Hannes Mühleisen",title:"Developer Voices, 2024",url:"https://www.youtube.com/watch?v=pZV9FvdKmLc",why:"Vectors, morsels, and when one machine wins. Ledger S5.",min:"80 min"},
   {who:"Hannes Mühleisen",title:"TigerBeetle overview, 2023",url:"https://www.youtube.com/watch?v=qWtc7k6tnVk",why:"Client-server versus in-process. Ledger S6.",min:"25 min"},
@@ -708,7 +734,16 @@ DATA.fromReports = [
   {slug:"nblm-working-brief",title:"Working briefing",point:"The comparison table is the placement card: DuckDB, Postgres, SQLite, Polars, Spark. Use it when the quiz asks which tool you would refuse."},
   {slug:"nblm-decision-packet",title:"Decision packet",point:"Standardize local scans and aggregates. Do not start a cluster for a file that fits the machine. Do not load a CSV just to look at it."},
   {slug:"nblm-playbook",title:"Practice playbook",point:"The falsifier still holds: a SQL tour that never explains columns, vectors, or the tool you would not pick."},
-  {slug:"nblm-briefing",title:"Briefing",point:"Quack and DuckLake show up here as multi-writer ideas. The contract you can grade yourself on is still the concurrency doc: one writer process, other processes read-only."}
+  {slug:"nblm-briefing",title:"Briefing",point:"Quack and DuckLake show up here as multi-writer ideas. The contract you can grade yourself on is still the concurrency doc: one writer process, other processes read-only."},
+  {slug:"nblm-study-guide",title:"Study guide",point:"DuckDB refuses JIT. Vectorized batches keep the binary small. LLVM would drag a compiler toolchain into the process."},
+  {slug:"nblm-mental-models",title:"Mental models",point:"Host fate-sharing: a fatal engine error ends Python, R, or the JVM with it. A server would isolate that crash in a worker."},
+  {slug:"nblm-failure-modes",title:"Failure catalog",point:"CSV replacement scans sample early rows to guess types. Unrepresentative first rows give the wrong schema. Declare types or use TRY_CAST."},
+  {slug:"nblm-failure-modes",title:"Failure catalog",point:"One core at 100% and the rest idle near the end of a join is the Justin Bieber stall. Morsels are the answer, not a bigger machine."},
+  {slug:"nblm-key-claims",title:"Claims table",point:"Strong claims: in-process OLAP, vectors of 2048, morsels, replacement scans, one writer with OCC inside that process. Thin: Quack as a production multi-writer."},
+  {slug:"competitors",title:"Competitors note",point:"Elicit found no paper that evaluates DuckDB in a classified lab. Smaug and BiTDB are SQLite or embedded TEE work."},
+  {slug:"competitors",title:"Competitors note",point:"Three deployments: local process, object storage you control, MotherDuck. ATTACH md: is the line that leaves a closed lab."},
+  {slug:"elicit",title:"Elicit light",point:"The 2026 Information Systems review is a when-one-node-is-enough pointer. It is not a DuckDB product review."},
+  {slug:"nblm-decision-packet",title:"Decision packet",point:"The packet's 157 ms and 42,000 GitHub stars are briefing color. Do not treat them as a contract or as a reason to skip measuring your files."}
 ];
 
 DATA.drills = {

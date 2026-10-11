@@ -104,7 +104,7 @@ function renderCurriculum(){
           return `<div class="modrow ${dn?"done":""}">
             <div class="modrow-top"><input type="checkbox" ${dn?"checked":""} data-mk="${w.n}:${i}"><div class="mt">${ec(m.t)}<div class="rl">${esc(m.rl)}</div></div></div>
             ${m.action?`<div class="action-box"><b>Action step:</b> ${ec(m.action)}</div>`:""}
-            ${m.lookLike?`<details class="look-box"><summary>What does this look like in practice?</summary><div style="margin-top:.4rem">${cite(m.lookLike)}</div></details>`:""}
+            ${(DATA.looks&&DATA.looks[w.n+":"+i])||m.lookLike?`<details class="look-box"><summary>What does this look like in practice?</summary><div style="margin-top:.4rem">${(DATA.looks&&DATA.looks[w.n+":"+i])||cite(m.lookLike)}</div></details>`:""}
             ${m.whyMatters?`<details class="why-matters"><summary>Why this matters to an architect</summary><p style="margin-top:.4rem">${ec(m.whyMatters)}</p></details>`:""}
           </div>`;}).join("")}
         <div class="deliv"><b>Exit criteria:</b> ${esc(w.deliv)} · ${lib(w.lib,"Full block / view note")}</div>
