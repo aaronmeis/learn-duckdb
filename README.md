@@ -9,14 +9,8 @@ Study console for the DuckDB one-day pack: in-process OLAP, vectorized execution
 ## What's here
 
 - Today: a daily challenge from the 12-slide cut, failure modes, and placement drills.
-- Learn: three study blocks, the deck, shorts, and the library of vault notes.
-- Practice: glossary flashcards, a 10-question quiz, and study prompts.
+- Learn: study blocks, the deck, shorts, and the library of vault notes.
+- Practice: glossary flashcards, the quiz, and study prompts.
 - Reference: cheatsheet, glossary, and the 13-row source ledger.
 
-Local MP4s are gitignored. Empty YouTube ids in `scripts/stage_assets.py` mean the player uses those local files.
-
-Rebuild the library after a vault edit:
-
-```powershell
-python scripts/build_library.py
-```
+The narrated deep-dive cut and the six shorts ship as MP4s under `media/`. No Python, no operator scripts, and no credentials live in this repo.

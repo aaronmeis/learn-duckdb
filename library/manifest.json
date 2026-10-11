@@ -259,41 +259,6 @@
     "nblm": false
   },
   {
-    "slug": "pipeline-suite",
-    "title": "NotebookLM suite",
-    "section": "Pipeline",
-    "desc": "NotebookLM W8 suite stub for DuckDB.",
-    "nblm": false
-  },
-  {
-    "slug": "pipeline-inventory",
-    "title": "NotebookLM download inventory",
-    "section": "Pipeline",
-    "desc": "Local download status for odm-duckdb NotebookLM suite.",
-    "nblm": false
-  },
-  {
-    "slug": "pipeline-run-record",
-    "title": "NotebookLM run record",
-    "section": "Pipeline",
-    "desc": "Machine-readable record of the NotebookLM W8 run for this pack.",
-    "nblm": false
-  },
-  {
-    "slug": "pipeline-operator",
-    "title": "Operator commands",
-    "section": "Pipeline",
-    "desc": "Copy-paste Python / nlm / PowerShell commands for this ODM pack.",
-    "nblm": false
-  },
-  {
-    "slug": "pipeline-runner",
-    "title": "NotebookLM W8 runner script",
-    "section": "Pipeline",
-    "desc": "The script that ran the NotebookLM W8 suite for this pack.",
-    "nblm": false
-  },
-  {
     "slug": "nblm-key-claims",
     "title": "Major claims",
     "section": "NotebookLM reports",

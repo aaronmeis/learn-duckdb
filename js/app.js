@@ -254,29 +254,28 @@ const ytSrc=id=>`https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=
 
 /* ---- Deck and deep-dive cut ---- */
 function renderDeck(){
-  const el=$("#v-deck"), C=DATA.cut||{labels:[],slides:[],cards:[]};
+  const el=$("#v-deck"), C=DATA.cut||{};
+  const labels=C.labels||[], slides=C.slides||[], cards=C.cards||[];
+  const n=labels.length||slides.length||12;
   const video=DEEP.youtube
     ?`<iframe class="wide-player" src="${ytSrc(DEEP.youtube)}" title="DuckDB deep dive cut" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy" style="border:0"></iframe>`
-    :`<video class="wide-player" controls preload="metadata" src="${esc(DEEP.file)}"></video>`;
+    :`<video class="wide-player" controls preload="metadata" poster="assets/slides/slide-01.jpg" src="${esc(DEEP.file||"media/deep-dive-cut.mp4")}"></video>`;
   let h=`<h2 class="vh">Deck and deep-dive cut</h2>
-  <p class="lead">The NotebookLM detailed deck (15 slides) and the narrated 8.5-minute cut built from it. Each slide shows its narration line and the question card the cut asks before it. Slides outlined in amber carry claims the source ledger does not support; the caption says what is wrong.</p>
+  <p class="lead">Twelve NotebookLM slides and the narrated cut. Each slide has its narration line and the question the cut asks before it. Amber outlines mark claims the source ledger does not support.</p>
   ${video}
-  ${DEEP.youtube?`<p class="obj" style="margin-top:.4rem"><a href="https://www.youtube.com/watch?v=${DEEP.youtube}" target="_blank" rel="noopener">Open the deep-dive cut on YouTube ↗</a></p>`:""}
+  ${DEEP.youtube?`<p class="obj" style="margin-top:.4rem"><a href="https://www.youtube.com/watch?v=${DEEP.youtube}" target="_blank" rel="noopener">Open the deep-dive cut on YouTube ↗</a></p>`:`<p class="obj" style="margin-top:.4rem">The cut plays from this site. ${lib("media-cut-script","Cut script")}</p>`}
   <div class="note" style="margin-top:1rem"><b>Opening line.</b> ${esc(C.open||"")}<br><b>Recap.</b> ${esc(C.recap||"")}</div>
-  <h3 style="margin:1.4rem 0 .5rem;font-size:1.05rem">Audio overview <span class="pill">8 min 44 s</span></h3>
-  <p class="obj">NotebookLM audio overview from the DuckDB notebook, when that file is staged.</p>
-  <audio controls preload="none" src="media/audio-overview.m4a" style="width:100%;max-width:640px"></audio>
   <p class="obj" style="margin-top:1rem"><b>Downloads:</b> <a href="assets/downloads/duckdb-architecture-blueprint.pdf" download>Architecture blueprint (PDF)</a> · <a href="assets/downloads/duckdb-presentation.pptx" download>NotebookLM deck (PowerPoint)</a> · ${lib("media-cut-script","Cut script: narration and question cards")} · ${lib("media-shorts-plan","Shorts plan")} · ${lib("deep-dive","Technical deep dive")}</p>
   <h3 style="margin:1.6rem 0 .6rem;font-size:1.05rem">Slides</h3>
   <div class="deckrows">`;
-  for(let i=1;i<=15;i++){
-    const f=DATA.deckFlags[i], n=String(i).padStart(2,"0"), card=C.cards[i-2];
+  for(let i=1;i<=n;i++){
+    const f=(DATA.deckFlags||{})[i], pad=String(i).padStart(2,"0"), card=cards[i-2];
     h+=`<div class="deckrow ${f?"flag":""}">
-      <img src="assets/slides/slide-${n}.jpg" alt="Slide ${i}: ${esc(C.labels[i-1]||"")}" loading="lazy" class="diagram" style="margin:0">
+      <img src="assets/slides/slide-${pad}.jpg" alt="Slide ${i}: ${esc(labels[i-1]||"")}" loading="lazy" class="diagram" style="margin:0">
       <div class="deckbody">
-        <div class="kick">Slide ${i} · ${esc(C.labels[i-1]||"")}</div>
+        <div class="kick">Slide ${i} · ${esc(labels[i-1]||"")}</div>
         ${card?`<details class="look-box" style="margin:.2rem 0 .6rem"><summary>Question card: ${esc(card.question)}</summary><p style="margin-top:.4rem"><b>${esc(card.detail)}</b> ${esc(card.why)}<br><span style="color:var(--text-secondary)">Example: ${esc(card.example)}</span></p></details>`:""}
-        <p class="narr">${esc(C.slides[i-1]||"")}</p>
+        <p class="narr">${esc(slides[i-1]||"")}</p>
         ${f?`<p class="flagnote">${ec(f)}</p>`:""}
       </div></div>`;
   }
@@ -415,8 +414,8 @@ function renderLibrary(){
   const L=window.LIBRARY||[];
   const secs=[...new Set(L.map(p=>p.section))];
   let h=`<h2 class="vh">Library <span style="font-size:1rem;color:var(--text-dim)">${L.length} pages</span></h2>
-  <p class="lead">Every postable note from the Obsidian deep-dive pack and the NotebookLM exports, rendered as a web page with diagrams, Mermaid charts, and live source links. The vault stays the source of truth; rebuild with <code>python scripts/build_library.py</code>.</p>`;
-  if(!L.length) h+=`<div class="note danger">Library manifest not found. Run <code>python scripts/build_library.py</code>.</div>`;
+  <p class="lead">Every postable note from the Obsidian deep-dive pack and the NotebookLM exports, rendered as a web page with diagrams, Mermaid charts, and live source links. The vault stays the source of truth.</p>`;
+  if(!L.length) h+=`<div class="note danger">Library manifest not found.</div>`;
   secs.forEach(s=>{
     h+=`<h3 style="margin:1.2rem 0 .6rem;font-size:1rem;color:var(--accent-color)">${esc(s)}</h3>`;
     if(s==="NotebookLM source bundle") h+=`<div class="note" style="margin-bottom:.8rem"><b>As uploaded.</b> The exact files sent to NotebookLM on 2026-09-26 to build the notebook. The vault notes above are newer and win where they differ.</div>`;

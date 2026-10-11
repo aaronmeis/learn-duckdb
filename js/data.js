@@ -345,8 +345,23 @@ const DATA = {
 };
 
 DATA.cut = {
+  labels: ["Title","The bottleneck","Missing quadrant","Columnar storage","Vectors of 2048","Morsels","Zero-copy scans","One writer","Extensions","Where it fits","Day-one traps","Decision packet"],
+  slides: [
+    "Slide 1 titles the cut. DuckDB, the in-process analytical blueprint. Engine mechanics, architectural limits, and how to decide for single-node OLAP.",
+    "Slide 2 says the old bottleneck was not the join. It was the client-server hop: serialization, network latency, and a client protocol. DuckDB sits inside the application, so the query uses shared memory instead of a socket.",
+    "Slide 3 places DuckDB in the missing quadrant. SQLite is in-process and transactional. Postgres and MySQL are client-server OLTP. Snowflake and ClickHouse are client-server OLAP. DuckDB is in-process OLAP: local analytics on large data.",
+    "Slide 4 is the storage layout. A row store must read the whole row to sum Amount. DuckDB stores each column together, so that sum reads the Amount column and leaves the rest on disk.",
+    "Slide 5 is vectorized execution. DuckDB does not pull one row at a time through filter, projection, and aggregate. It moves a DataChunk of 2048 tuples, kept in cache. Row-at-a-time work falls out to main memory, which the slide marks as about one hundred times slower.",
+    "Slide 6 is morsel-driven parallelism. A fixed hash partition stalls when one key is huge and the other threads sit idle. DuckDB puts morsels on a task queue. An idle thread takes the next morsel, so skew does not park the machine.",
+    "Slide 7 is the zero-copy router. You do not have to load a file into a DuckDB table first. Scanners read CSV, Parquet, a Pandas frame, or Arrow. Parquet can push the filter down. Arrow and data frames can be read from memory.",
+    "Slide 8 is the concurrency contract. One process may write, and that process may use many threads for a bulk update. A second process that tries to write is blocked. Other processes may read only when the file is opened read-only.",
+    "Slide 9 is the extension surface. The core ships with no external libraries. JSON, spatial, Iceberg, and httpfs, including S3, load beside the core. The slide notes that httpfs links OpenSSL so the core binary does not carry that weight.",
+    "Slide 10 is the fit matrix. SQLite for point reads and writes. Postgres when you need a server and mixed work. Spark when the data needs a cluster. DuckDB when the analytical working set fits one machine's RAM and disk.",
+    "Slide 11 is the day-one ledger. Database locked means two writers, or a transaction conflict. An out-of-memory crash on a join means the plan built an intermediate it could not spill. A network drive can corrupt the file or stall on weak locks. The fixes on the slide are: rerun the transaction, gather statistics and reorder the join, and keep the working file on a local drive.",
+    "Slide 12 is the decision. Standardize on DuckDB for local pipelines, data-science work, and analyst sandboxes. Stop starting a Spark cluster for data that fits one machine, and stop writing a loader just to query a CSV or a Parquet file."
+  ],
   cards: [
-    {question:"What cost does an in-process engine remove?",detail:"The socket and the copy of each result row.",why:"The query and the program share one address space.",example:"Python reads the result from memory.",cardSlide:2},
+    {question:"What cost does an in-process engine remove?",detail:"The socket and the copy of each result row.",why:"The query and the program share one address space.",example:"A host process reads the result from memory.",cardSlide:2},
     {question:"Which quadrant is DuckDB claiming?",detail:"In-process and analytical.",why:"SQLite already owns embedded transactions.",example:"A Parquet SUM on the laptop.",cardSlide:3},
     {question:"Why does a column store read less for a SUM?",detail:"One column sits together on disk.",why:"The query names a few columns.",example:"SUM of Amount skips Name.",cardSlide:4},
     {question:"What is a DataChunk?",detail:"2048 tuples. Operators run on the batch.",why:"The batch stays in cache.",example:"Filter, project, and aggregate share the chunk.",cardSlide:5},
@@ -358,8 +373,8 @@ DATA.cut = {
     {question:"What does Database locked usually mean?",detail:"Two writers, or a row conflict.",why:"The file allows one writer process.",example:"A notebook and a script both INSERT.",cardSlide:11},
     {question:"What should a team stop doing?",detail:"Spark for data that fits one box, and a loader just to see a CSV.",why:"The question can run against the file.",example:"Query Parquet directly.",cardSlide:12}
   ],
-  open: "This cut walks the NotebookLM slides.",
-  recap: "In-process OLAP, vectors, morsels, one writer, and the line you do not cross into MotherDuck."
+  open: "Welcome to the technical deep dive on DuckDB. This cut walks the NotebookLM slides: the in-process engine, how a query runs, and where DuckDB should refuse the job.",
+  recap: "We covered the missing quadrant, columnar storage, vectors of 2048, morsel-driven parallelism, zero-copy scans, one writer, extensions, and the traps that show up on day one."
 };
 
 DATA.nblmDecks = {

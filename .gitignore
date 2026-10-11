@@ -1,12 +1,16 @@
+# Credentials never belong in this public repo
 .env
 .env.*
 *.key
+*.pem
+*.p12
+*.pfx
+credentials.json
+client_secret*.json
+cookies.txt
+*.cookie
 node_modules/
 .DS_Store
 Thumbs.db
 __pycache__/
 .playwright-mcp/
-
-# Hosted on YouTube (see YOUTUBE map in scripts/stage_assets.py)
-media/deep-dive-cut.mp4
-media/shorts/*.mp4
