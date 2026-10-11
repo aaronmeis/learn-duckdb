@@ -322,7 +322,7 @@
   /* Practice Checklist */
   .cl-card{background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:1.2rem 1.4rem;margin-bottom:.8rem;transition:border-color var(--transition-speed)}
   .cl-card:hover{border-color:rgba(56,189,248,0.4)}
-  .cl-header{display:flex;gap:.8rem;align-items:flex-start;cursor:pointer}
+  .cl-header{display:flex;gap:.4rem .55rem;align-items:flex-start;cursor:pointer;flex-wrap:wrap}
   .cl-header input{margin-top:.25rem;width:18px;height:18px;accent-color:var(--accent-color);cursor:pointer;flex-shrink:0}
   .cl-header .cl-title{flex:1;font-size:.92rem;font-weight:600;color:var(--text-primary)}
   .cl-header.done .cl-title{opacity:.5;text-decoration:line-through}

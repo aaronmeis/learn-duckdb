@@ -426,13 +426,24 @@ function renderLibrary(){
 }
 
 /* ---- Debates (claim, warrant, designed counter-evidence) ---- */
+function debateStatusPill(id, status, kind){
+  const st=status||"unrun";
+  const run=/^run\b/i.test(st);
+  const bits=[id,st,kind].filter(Boolean);
+  return `<span class="pill${run?" r100":""}">${esc(bits.join(" · "))}</span>`;
+}
 function renderDebates(){
   const el=$("#v-debates"), rows=DATA.debates||[];
+  const ids=rows.flatMap(d=>[
+    {id:d.idA,st:d.statusA},{id:d.idB,st:d.statusB},{id:d.idBoth,st:d.statusBoth}
+  ].filter(x=>x.id));
+  const runN=ids.filter(x=>/^run\b/i.test(x.st||"")).length;
   let h=`<h2 class="vh">Debates</h2>
   <p class="lead">Live claims an architect has to walk into a room with. Each row names two sides, the warrant that makes the evidence count, a hidden assumption, and a test that would change the picture. Full note: ${lib("claims-debates","Claims and debates")}.</p>
-  <p class="lead" style="margin-top:-.4rem">So what? ${esc((DATA.debateProblem&&DATA.debateProblem.soWhat)||"A placement that cannot name its warrant will not survive a design review.")}</p>`;
+  <p class="lead" style="margin-top:-.4rem">So what? ${esc((DATA.debateProblem&&DATA.debateProblem.soWhat)||"A placement that cannot name its warrant will not survive a design review.")}</p>
+  <p class="lead" style="margin-top:-.4rem">${runN} of ${ids.length} designed tests run. Green pill is run. Next desk sitting: E5B and E6A. Lab tests wait for an install GO.</p>`;
   rows.forEach((d,i)=>{
-    h+=`<details class="cl-card" ${i===0?"open":""}><summary class="cl-header" style="cursor:pointer"><div class="cl-title">${esc(d.title)}</div><span class="pill">${esc(d.src||"")}</span></summary>
+    h+=`<details class="cl-card" ${i===0?"open":""}><summary class="cl-header" style="cursor:pointer"><div class="cl-title">${esc(d.title)}</div><span class="pill">${esc(d.src||"")}</span>${debateStatusPill(d.idA,d.statusA)}${debateStatusPill(d.idB,d.statusB)}${debateStatusPill(d.idBoth,d.statusBoth)}</summary>
       <div class="cl-detail open"><div class="good-bad-grid">
         <div class="gb-box good-box"><h5>Claim A</h5>${ec(d.claimA)}</div>
         <div class="gb-box bad-box"><h5>Claim B</h5>${ec(d.claimB)}</div>
@@ -440,7 +451,11 @@ function renderDebates(){
       <div class="rule" style="margin-top:.8rem"><b>Warrant.</b> ${ec(d.warrant)}</div>
       <div class="rule"><b>Hidden assumption.</b> ${ec(d.assume)}</div>
       <div class="rule"><b>Qualification.</b> ${ec(d.qualify)}</div>
-      <div class="rule"><b>Evidence that would change the picture.</b> Support A: ${ec(d.testA)} Support B: ${ec(d.testB)} Weaken both: ${ec(d.testBoth)}</div>
+      <div class="rule"><b>Evidence that would change the picture.</b>
+        <div style="margin-top:.45rem">${debateStatusPill(d.idA,d.statusA,d.kindA)} <b>Support A.</b> ${ec(d.testA)}</div>
+        <div style="margin-top:.35rem">${debateStatusPill(d.idB,d.statusB,d.kindB)} <b>Support B.</b> ${ec(d.testB)}</div>
+        <div style="margin-top:.35rem">${debateStatusPill(d.idBoth,d.statusBoth,d.kindBoth)} <b>Weaken both.</b> ${ec(d.testBoth)}</div>
+      </div>
       </div></details>`;
   });
   el.innerHTML=h;
