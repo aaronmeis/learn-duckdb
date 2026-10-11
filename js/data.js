@@ -726,6 +726,25 @@ DATA.books = [
   {kind:"Live series",title:"Transforming and Analyzing Data With DuckDB",who:"Christian Winkler",url:"https://learning.oreilly.com/live-events/-/0642572418007/"}
 ];
 
+DATA.packPages = [
+  {slug:"nblm-study-guide",t:"Study guide"},
+  {slug:"nblm-mental-models",t:"Mental models"},
+  {slug:"nblm-failure-modes",t:"Failure catalog"},
+  {slug:"nblm-working-brief",t:"Working briefing"},
+  {slug:"nblm-decision-packet",t:"Decision packet"},
+  {slug:"nblm-briefing",t:"Briefing"},
+  {slug:"nblm-playbook",t:"Practice playbook"},
+  {slug:"nblm-key-claims",t:"Claims table"},
+  {slug:"nblm-gap-quiz",t:"Engine quiz"},
+  {slug:"nblm-gap-cards",t:"80 flashcards"},
+  {slug:"nblm-gap-table",t:"Glossary table"},
+  {slug:"competitors",t:"Competitors and closed lab"},
+  {slug:"elicit",t:"Elicit light research"},
+  {slug:"source-ledger",t:"Source ledger"},
+  {slug:"quiz-bank",t:"Quiz bank"},
+  {slug:"watch-reading",t:"Talks and O'Reilly"}
+];
+
 DATA.fromReports = [
   {slug:"nblm-study-guide",title:"Study guide",point:"In-process means the query and the program share memory. Client-server pays for a socket and a copy. The report's 100x line is its wording, not an SLA."},
   {slug:"nblm-study-guide",title:"Study guide",point:"Three execution shapes: one row at a time, the whole result at once, or a chunk of 2048. DuckDB uses the chunk. Volcano is the Postgres and SQLite shape."},

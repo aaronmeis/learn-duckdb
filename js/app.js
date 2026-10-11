@@ -78,7 +78,10 @@ function renderDashboard(){
     <div class="card"><h3>Neighbors</h3><p style="color:var(--text-secondary);font-size:.86rem">SQLite, Postgres, Polars, Spark, and MotherDuck, and the job each one owns.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('ea')">Open the map →</button></div></div>
     <div class="card"><h3>On the phone</h3><p style="color:var(--text-secondary);font-size:.86rem">Report lines, eight creator talks, and the O'Reilly DuckDB shelf, above the source ledger.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('refs')">Open references →</button></div></div>
     <div class="card"><h3>Library</h3><p style="color:var(--text-secondary);font-size:.86rem">${libCount} vault notes and NotebookLM reports rendered as web pages, with live source links.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('library')">Open library →</button><button class="b" onclick="go('refs')">Source ledger →</button></div></div>
-  </div>`;
+  </div>
+  <h3 style="margin:1.6rem 0 .6rem;font-size:1rem">From the pack</h3>
+  <p class="lead">The NotebookLM exports and the reference notes, as pages you can open here.</p>
+  <div class="libgrid">${(DATA.packPages||[]).map(p=>`<a class="libcard" href="library/${p.slug}.html"><b>${esc(p.t)}</b><span>Open the full note</span></a>`).join("")}</div>`;
   el.innerHTML=h;
   const by={100:0,200:0,300:0}; mods.forEach(m=>{if(LS.get(moduleKey(m.w,m.i),false))by[m.rung]++;});
   const p=$("#dProg"); if(p){["100","200","300"].forEach((r,i)=>p.children[i].style.width=(by[r]/mods.length*100)+"%");}

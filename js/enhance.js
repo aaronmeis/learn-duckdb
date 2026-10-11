@@ -547,7 +547,10 @@ function renderToday(){
     <div class="card"><h3>Last 7 days</h3><div class="week-bars" role="img" aria-label="Activity over the last 7 days">${days.map(d=>h`<div class="wb ${d.met?"met":""}" title="${d.met?d.sc+"/3 on the challenge":"challenge not done"}"><i style="height:${Math.max(4,d.n/maxN*100)}%"></i><span>${d.d.toLocaleDateString(undefined,{weekday:"narrow"})}</span></div>`).join("")}</div>
       <p class="muted" style="font-size:.78rem;margin-top:.6rem">Green days completed the challenge. Best streak ${Math.max(bestStreak(),LS.get(K("bestStreak"),0))}. ${seen} of ${DATA.glossary.length} terms studied.</p></div>
   </div>
-  ${upNext.length?h`<h3 class="sx-h">More Shorts</h3><div class="sx-grid upnext">${upNext.map(s=>tileHTML(s)).join("")}</div>`:""}`;
+  ${upNext.length?h`<h3 class="sx-h">More Shorts</h3><div class="sx-grid upnext">${upNext.map(s=>tileHTML(s)).join("")}</div>`:""}
+  <h3 class="sx-h">From the pack</h3>
+  <p class="lead">NotebookLM exports and the reference notes, as pages on this site.</p>
+  <div class="libgrid">${(DATA.packPages||[]).map(p=>`<a class="libcard" href="library/${p.slug}.html"><b>${esc(p.t)}</b><span>Open the full note</span></a>`).join("")}</div>`;
   bindChallenge(el);
   $$(".sx-tile",el).forEach(b=>b.onclick=()=>{location.hash="#/shorts/"+encodeURIComponent(b.dataset.id);});
 }
