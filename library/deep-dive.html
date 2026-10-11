@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical deep dive | Learn DuckDB</title>
+<meta name="description" content="Technical deep dive on DuckDB. In-process OLAP, competitors, and closed-lab versus cloud. Drawn from the one-day pack and the NotebookLM suite.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Plan</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Plan</div>
+  <h1 class="doctitle">Technical deep dive</h1>
+  <p class="lead">Technical deep dive on DuckDB. In-process OLAP, competitors, and closed-lab versus cloud. Drawn from the one-day pack and the NotebookLM suite.</p>
+  
+  <article><h1>Mastery deep dive — DuckDB</h1>
+<p><strong>Naming first.</strong> This note is about <strong>DuckDB</strong>, the in-process analytical database at <a href="https://duckdb.org/">duckdb.org</a>. It is not DuckTV, not a television product, and not a client-server warehouse you connect to by default. The engine is an MIT-licensed C++ library. The intellectual property sits with the DuckDB Foundation. MotherDuck is a separate cloud product that can attach to a local engine. Docs: <a href="https://duckdb.org/docs/current/index">duckdb.org/docs</a>.</p>
+<p><strong>Pack.</strong> This report sits on the one-day mastery hub <a href="hub.html">00 - DuckDB Hub</a>. The study blocks, the source ledger, and the NotebookLM exports are the inputs. The day itself has not been sat.</p>
+<hr />
+<h2>Executive take</h2>
+<p>DuckDB is a <strong>column store that runs inside your process</strong>. You give it SQL. It reads the columns the query names, in batches, on all the cores of one machine. There is no server to install for the local case.</p>
+<p>Use it for local and embedded analytics: Parquet, CSV, JSON, Arrow, and data frames, plus a single <code>.duckdb</code> file when you want the result to persist. Do not use it as the multi-user system of record. One process writes. Many processes may read only when the file is opened read-only.</p>
+<p>The NotebookLM decision packet recommends standardizing <strong>local and embedded</strong> analytical work on DuckDB, and writing the single-writer rule down before anyone treats it as a shared database. That recommendation matches the official concurrency page. The packet's speed multiples and "sub-second on a billion rows" lines are briefing claims. Measure them on your files before you repeat them.</p>
+<hr />
+<h2>What the engine is</h2>
+<p>Five words, then the engine.</p>
+<table>
+<thead>
+<tr>
+<th>Word</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Table</td>
+<td>A named relation of typed columns.</td>
+</tr>
+<tr>
+<td>Query</td>
+<td>A SQL statement. The engine picks the physical steps.</td>
+</tr>
+<tr>
+<td>Join</td>
+<td>Match rows from two relations on a predicate.</td>
+</tr>
+<tr>
+<td>OLTP</td>
+<td>Many small row reads and writes. Postgres and SQLite are built for this.</td>
+</tr>
+<tr>
+<td>OLAP</td>
+<td>Few large scans and aggregates over a few columns. DuckDB is built for this.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Row storage</strong> writes a whole record together. A <code>SUM</code> on one column still reads the other columns. <strong>Column storage</strong> writes each column together. The same <code>SUM</code> reads that column. That is why a column store wins the analytical scan and loses the single-row lookup.</p>
+<p>DuckDB then executes in <strong>vectors</strong>. A <code>Vector</code> is one column slice. A <code>DataChunk</code> is a set of those vectors, one chunk of a row. Official internals: the default <code>STANDARD_VECTOR_SIZE</code> is <strong>2048</strong> tuples (<a href="https://duckdb.org/docs/current/internals/vector.html">Execution format</a>). Operators run on the chunk, not on one row at a time, so the working set stays in cache. Hannes Mühleisen's public account of the same idea: a main-memory reference is on the order of 100 nanoseconds, an L1 reference is a fraction of a nanosecond, and vectorized execution is how a SQL pipeline stays in the fast memory.</p>
+<p><strong>Morsel-driven parallelism</strong> splits a pipeline into chunks and hands those chunks to threads. The idea comes from the HyPer / TUM line (Leis, Boncz, Kemper, Neumann), not from the SIGMOD 2019 demo paper. DuckDB adopted it. Skew is the failure mode the talks name: one hot key can stall a static split. Dynamic morsels are the mitigation.</p>
+<p><strong>Out of core.</strong> Intermediate state can spill when the working set exceeds RAM. A bad join can still exhaust memory before the spill helps. <code>EXPLAIN</code> and <code>EXPLAIN ANALYZE</code> are how you see the scan, the join, and the aggregate before you trust a number.</p>
+<p><strong>Replacement scan.</strong> A file path or a data frame can stand in for a table name. The query reads Parquet or CSV without a load step. CSV and JSON type detection samples early rows and can guess wrong. Parquet carries min/max stats the scanner can use. Declare types when the sample is a lie.</p>
+<hr />
+<h2>Where it stands</h2>
+<table>
+<thead>
+<tr>
+<th>Engine</th>
+<th>Built for</th>
+<th>Pick it when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DuckDB</td>
+<td>In-process OLAP, one machine</td>
+<td>The working set fits one box and the question is a scan, join, or aggregate</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>Server OLTP, many writers</td>
+<td>The database is the live system of record</td>
+</tr>
+<tr>
+<td>SQLite</td>
+<td>In-process OLTP</td>
+<td>The app stores rows and looks up one row at a time</td>
+</tr>
+<tr>
+<td>Polars</td>
+<td>Dataframe API</td>
+<td>The pipeline is Python or Rust expressions, not a SQL catalog</td>
+</tr>
+<tr>
+<td>Spark</td>
+<td>A cluster</td>
+<td>The data will not fit one machine, or a dead node must not kill the job</td>
+</tr>
+<tr>
+<td>MotherDuck</td>
+<td>Shared cloud warehouse on DuckDB</td>
+<td>More than one person must share the database, and a cloud account is allowed</td>
+</tr>
+</tbody>
+</table>
+<p>SQLite and DuckDB share the embedded, single-file shape and almost nothing else. Postgres keeps the truth. DuckDB scans a copy or the files. Spark is the scale-out tool. Polars is the dataframe tool. A 2026 Information Systems review of single-node SQL engines is the literature pointer for "one node is enough." It is not a DuckDB product review. See <a href="competitors.html">2026-10-10 - Competitors and closed lab</a>.</p>
+<hr />
+<h2>How a query actually runs</h2>
+<p>Sketch this before you defend a plan. Events in Parquet, a small dimension table, one aggregate.</p>
+<ol>
+<li><strong>Scan</strong> the event file. Read only the columns the query names. Zone stats skip row groups when a filter is selective.</li>
+<li><strong>Build</strong> a hash table on the small dimension. Probe it from the event scan. If you build on the huge side, memory blows up.</li>
+<li><strong>Aggregate</strong> in a pipeline that can run while the scan is still producing chunks.</li>
+<li><strong>Threads</strong> take morsels of that pipeline. They do not each run a private copy of the whole query from scratch.</li>
+<li><strong><code>EXPLAIN</code></strong> should show the scan, the join, and the aggregate. If the tree materializes a giant intermediate, the SQL is cheap and the plan is not.</li>
+</ol>
+<p>The SIGMOD 2019 paper (Raasveldt and Mühleisen, <a href="https://doi.org/10.1145/3299869.3320212">doi:10.1145/3299869.3320212</a>) is the system paper: an analytical engine with SQLite's in-process shape. MonetDBLite (2018) is the predecessor by the same authors. Vectorized execution itself is older. Boncz's later writing treats it as a twenty-year technique. DuckDB uses it. DuckDB did not invent it.</p>
+<hr />
+<h2>Concurrency, extensions, and the host process</h2>
+<p>Official rule (<a href="https://duckdb.org/docs/stable/connect/concurrency.html">Concurrency</a>):</p>
+<ul>
+<li>One process may read and write.</li>
+<li>Inside that process, appends do not conflict. Two threads that edit the same row can. The second transaction fails. That is optimistic concurrency, not a lock queue you can lean on.</li>
+<li>Several processes may read the same file only in <code>access_mode = 'READ_ONLY'</code>, and none of them may write.</li>
+<li>DuckDB caches data, the catalog, and function pointers in RAM so the next query is fast. Another process writing the file invalidates that cache. Network drives with weak locks are a known way to corrupt that story.</li>
+</ul>
+<p>The NotebookLM edge catalog also names a <strong>host-process</strong> failure: an embedded engine lives in the application. A fatal fault can take the Python or JVM process with it. A client-server database crashes in the other process. That is the trade for having no socket.</p>
+<p><strong>Extensions</strong> keep OpenSSL, ICU, and remote IO out of the core binary. They run with the rights of the DuckDB process. Default installs can fetch a signed extension from <code>extensions.duckdb.org</code> the first time a query needs it. In a closed environment that fetch is the bug. Turn auto-install and auto-load off, leave community and unsigned extensions off, and ship the binaries you trust. Docs: <a href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions">Securing extensions</a>.</p>
+<p>The NotebookLM catalog mentions <strong>Quack</strong> (a remote protocol, described there as beta around DuckDB 1.5.2) and <strong>DuckLake</strong> (a table format with a Postgres catalog, described there as 1.0 in April 2026) as ways to get multi-writer behavior. Those names came from the generated briefing. They were not re-checked against a release note in this writing pass. Do not treat them as the concurrency contract. The contract is the concurrency page above.</p>
+<hr />
+<h2>Closed lab versus cloud</h2>
+<p>Local DuckDB does not need an account. Opening a <code>.duckdb</code> file, or using memory only, does not contact MotherDuck. That is why it is a reasonable <strong>proposal</strong> for an air-gapped process.</p>
+<p>It is not an authorization to process classified data. Elicit returned no paper that evaluates DuckDB in a classified lab. The nearby papers are SQLite in a trusted execution environment (Smaug, 2023; BiTDB, 2024). They describe a problem. They do not certify this engine. A lab still approves the binary, the extensions, and the machine.</p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>What runs</th>
+<th>What must stay off</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Closed lab</td>
+<td>The local library, files on disks that lab already trusts</td>
+<td><code>ATTACH 'md:'</code>, extension auto-install, community and unsigned extensions, queries that reach the public internet</td>
+</tr>
+<tr>
+<td>Your own cloud VM</td>
+<td>The same local library, on a machine you control</td>
+<td>MotherDuck, unless that account is separately approved</td>
+</tr>
+<tr>
+<td>MotherDuck</td>
+<td>Their cloud warehouse, plus optional hybrid execution</td>
+<td>Any claim that this is still the closed lab</td>
+</tr>
+</tbody>
+</table>
+<p>MotherDuck's architecture docs and the CIDR 2024 paper (Atwal et al., <a href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf">p46</a>) describe <strong>dual execution</strong>: a query can run locally, in their cloud, or split. <code>ATTACH 'md:'</code> is the step that leaves the machine. Hybrid execution is a feature in a cloud account. It is the wrong feature in a classified room.</p>
+<hr />
+<h2>Claims to keep on a short leash</h2>
+<table>
+<thead>
+<tr>
+<th>Claim in the NotebookLM packet</th>
+<th>How to hold it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>In-process execution removes the socket and the server</td>
+<td>Supported by the SIGMOD paper and the docs. Safe to say.</td>
+</tr>
+<tr>
+<td>Vector size 2048, columnar scan, morsels, spill</td>
+<td>Supported by the internals page and the talks. Safe to teach.</td>
+</tr>
+<tr>
+<td>One writer process</td>
+<td>Supported by the concurrency page. This is the refusal.</td>
+</tr>
+<tr>
+<td>"10× to 100×" versus client-server, or "1 billion rows in ~157 ms"</td>
+<td>Briefing lines. They are not an SLA. Time your files.</td>
+</tr>
+<tr>
+<td>Quack and DuckLake as the multi-writer path</td>
+<td>Named in the generated catalog. Confirm on a release note before you design on them.</td>
+</tr>
+<tr>
+<td>DuckDB is approved for classified data</td>
+<td>Not in any source in this pack.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>When not to use it</h2>
+<ul>
+<li>Many people must write at once.</li>
+<li>The workload is point lookups and small transactions. Use SQLite or Postgres.</li>
+<li>The working set, including join state, will not fit one machine. Use a cluster.</li>
+<li>You need the database to be a separate process so an engine fault cannot kill the application.</li>
+<li>The environment cannot allow an extension download or a MotherDuck attach, and you have not vendored the binary.</li>
+<li>A single fast laptop query is being treated as a warehouse design.</li>
+</ul>
+<hr />
+<h2>What to produce on the study day</h2>
+<p>The one-day outcome is still a written explanation plus one defended sketch: storage layout, execution model, the tool you would not pick, and one failure mode. This note is the reference for that sketch. The one-minute cuts in <a href="video-pair.html">Video pair</a> are the same five beats, without this concurrency and trust detail. The narrated YouTube cut is <code>C:\output\obsidian\duckdb\duckdb-youtube-deep-dive.mp4</code> (about 7 minutes 25 seconds, 1920×1080, voice sarah). It is a local file. It has not been uploaded.</p>
+<h2>Sources</h2>
+<ul>
+<li>Pack ledger: <a href="source-ledger.html">source-ledger</a></li>
+<li>Light papers and the Exa pass: <a href="elicit.html">elicit-light-research</a>, <a href="competitors.html">2026-10-10 - Competitors and closed lab</a></li>
+<li>NotebookLM, used as generated briefing not as primary evidence: <code>notebooklm/exports/</code> (technical working briefing, edge catalog, executive decision packet)</li>
+<li>Primary: <a href="https://duckdb.org/docs/current/index">docs</a>, <a href="https://duckdb.org/docs/current/internals/vector.html">vectors</a>, <a href="https://duckdb.org/docs/stable/connect/concurrency.html">concurrency</a>, <a href="https://doi.org/10.1145/3299869.3320212">SIGMOD 2019</a>, <a href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf">CIDR 2024 MotherDuck</a></li>
+</ul></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\Mastery Deep Dive — DuckDB.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><a href="mindmap.html">&larr; Previous</a><a href="competitors.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

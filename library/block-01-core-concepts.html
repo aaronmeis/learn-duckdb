@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block 1: Core concepts | Learn DuckDB</title>
+<meta name="description" content="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Day blocks</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Day blocks</div>
+  <h1 class="doctitle">Block 1: Core concepts</h1>
+  
+  
+  <article>
+<p><strong>Time:</strong> 60 minutes<br />
+<strong>Goal:</strong> Lock vocabulary and foundations<br />
+<strong>Pack:</strong> DuckDB (<code>duckdb</code>)</p>
+<h2>Focus from mind map</h2>
+<ul>
+<li><strong>Day outcome:</strong> By the end of the day, explain DuckDB from zero and sketch one local analytics query you could defend. The sketch names the storage layout, the execution model, and when DuckDB beats Postgres, SQLite, Polars, or Spark. Success is a short written explanation plus that sketch, with one named failure mode.</li>
+<li><strong>Depth:</strong> Working fluency across the engine, not a survey of every SQL function and not a single-subsystem deep dive. Enough to sketch a scan-join-aggregate and say why the engine runs it that way. A later day can go deep on one slice (vectorized execution, or the storage format).</li>
+<li><strong>Prior knowledge:</strong> Assume zero. Define a table, a query, a join, OLTP versus OLAP, and row storage versus column storage before any DuckDB-specific term. Do not assume the CLI, Parquet, or EXPLAIN.</li>
+<li><strong>Boundaries:</strong> Must include: what DuckDB is (in-process SQL database), row versus column storage, vectorized execution, morsel-driven parallelism, the single-file database, reading Parquet and CSV, EXPLAIN at a sketch level, extensions in outline, and when not to use DuckDB.</li>
+</ul>
+<h2>Sources</h2>
+<ul>
+<li><a href="https://duckdb.org/docs/current/index">DuckDB documentation (current)</a></li>
+<li><a href="https://duckdb.org/docs/current/internals/vector.html">Execution format (Vector and DataChunk)</a></li>
+<li><a href="https://duckdb.org/docs/stable/connect/concurrency.html">Concurrency</a></li>
+<li><a href="https://doi.org/10.1145/3299869.3320212">DuckDB: an Embeddable Analytical Database (SIGMOD 2019)</a></li>
+<li><a href="https://www.youtube.com/watch?v=pZV9FvdKmLc">DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)</a></li>
+<li><a href="https://www.youtube.com/watch?v=qWtc7k6tnVk">DuckDB overview (Hannes Mühleisen, TigerBeetle)</a></li>
+<li><a href="https://doi.org/10.1145/3183713.3183722">MonetDBLite: An Embedded Analytical Database (SIGMOD 2018)</a></li>
+</ul>
+<h2>Actions</h2>
+<ol>
+<li>Skim 1–2 core sources for definitions only.</li>
+<li>Write a one-page concept list (terms + one-line meaning).</li>
+<li>Mark three terms you cannot yet explain.</li>
+</ol>
+<h2>Retrieval check</h2>
+<div class="callout question" markdown="0"><div class="callout-title">Question</div><p>Without notes, name five core concepts in DuckDB and define one in a sentence.</p></div>
+
+<p>%% fold answer after attempt %%</p>
+<div class="callout success" markdown="0"><div class="callout-title">Answer cues</div><p>Use RESOURCES and your notes — do not peek first.</p></div>
+
+<h2>Exit criteria</h2>
+<ul>
+<li class="task"><input type="checkbox" disabled> Concept list written</li>
+<li class="task"><input type="checkbox" disabled> Three weak terms marked</li>
+</ul></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\blocks\01-core-concepts.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><span></span><a href="block-02-mental-models.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

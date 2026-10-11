@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Source ledger — DuckDB | Learn DuckDB</title>
+<meta name="description" content="Source ledger — minimum 3 high-trust URLs before W8.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Reference</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Reference</div>
+  <h1 class="doctitle">Source ledger — DuckDB</h1>
+  <p class="lead">Source ledger — minimum 3 high-trust URLs before W8.</p>
+  
+  <article>
+<p><strong>Gate:</strong> ≥3 high-trust URLs before W8 GO. Met 2026-10-10.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Title</th>
+<th>URL</th>
+<th>Type</th>
+<th>Trust</th>
+<th>Blocks</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>DuckDB documentation (current)</td>
+<td>https://duckdb.org/docs/current/index</td>
+<td>docs</td>
+<td>high</td>
+<td>1, 3, 5</td>
+<td>Start here. In-process SQL, files, Parquet, CSV.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Execution format (Vector and DataChunk)</td>
+<td>https://duckdb.org/docs/current/internals/vector.html</td>
+<td>docs</td>
+<td>high</td>
+<td>1, 2</td>
+<td>Vectorized execution. Default vector size 2048.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Concurrency</td>
+<td>https://duckdb.org/docs/stable/connect/concurrency.html</td>
+<td>docs</td>
+<td>high</td>
+<td>5</td>
+<td>One writer process. Multiple readers only when read-only.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>DuckDB: an Embeddable Analytical Database (SIGMOD 2019)</td>
+<td>https://doi.org/10.1145/3299869.3320212</td>
+<td>paper</td>
+<td>high</td>
+<td>1, 2, 7</td>
+<td>Raasveldt and Mühleisen. Why an in-process OLAP engine exists. Library page: https://duckdb.org/library/duckdb-sigmod-demo/</td>
+</tr>
+<tr>
+<td>5</td>
+<td>DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)</td>
+<td>https://www.youtube.com/watch?v=pZV9FvdKmLc</td>
+<td>video</td>
+<td>high</td>
+<td>2, 4</td>
+<td>2024-02-07. 1h20. Vectorized execution, morsels, when single-node wins.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>DuckDB overview (Hannes Mühleisen, TigerBeetle)</td>
+<td>https://www.youtube.com/watch?v=qWtc7k6tnVk</td>
+<td>video</td>
+<td>high</td>
+<td>2, 4</td>
+<td>2023-08-14. 25 min. Client-server versus in-process, vectorized core, extensions.</td>
+</tr>
+<tr>
+<td>7</td>
+<td>MonetDBLite: An Embedded Analytical Database (SIGMOD 2018)</td>
+<td>https://doi.org/10.1145/3183713.3183722</td>
+<td>paper</td>
+<td>high</td>
+<td>2</td>
+<td>Predecessor. Useful only as the "what came before DuckDB" contrast.</td>
+</tr>
+<tr>
+<td>8</td>
+<td>MotherDuck architecture and capabilities</td>
+<td>https://motherduck.com/docs/concepts/architecture-and-capabilities/</td>
+<td>docs</td>
+<td>high</td>
+<td>5</td>
+<td>Dual execution: local, cloud, or both. MotherDuck's own page.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)</td>
+<td>https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf</td>
+<td>paper</td>
+<td>high</td>
+<td>5</td>
+<td>Atwal et al. Primary paper for hybrid execution.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Securing DuckDB extensions</td>
+<td>https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions</td>
+<td>docs</td>
+<td>high</td>
+<td>5</td>
+<td>Auto-install, signed extensions, and the closed-room settings.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Smaug: A TEE-Assisted Secured SQLite (TDSC 2023)</td>
+<td>https://doi.org/10.1109/TDSC.2022.3216020</td>
+<td>paper</td>
+<td>high</td>
+<td>5</td>
+<td>Nearby work. SQLite in a TEE. Not a DuckDB evaluation.</td>
+</tr>
+<tr>
+<td>12</td>
+<td>BiTDB: Built-in TEE Secure Database for Embedded Systems (TKDE 2024)</td>
+<td>https://doi.org/10.1109/TKDE.2024.3380367</td>
+<td>paper</td>
+<td>high</td>
+<td>5</td>
+<td>Same gap. TEE database research is not a DuckDB certification.</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Modern alternatives to Hive (Information Systems 2026)</td>
+<td>https://doi.org/10.1016/j.is.2025.102635</td>
+<td>paper</td>
+<td>medium</td>
+<td>7</td>
+<td>Single-node SQL versus a cluster. Not a DuckDB product review.</td>
+</tr>
+</tbody>
+</table>
+<p>Elicit light search is in <a href="elicit.html">elicit-light-research</a>. Competitors, closed-lab, and cloud sources are in <a href="competitors.html">2026-10-10 - Competitors and closed lab</a>. No deep report was started.</p></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\reference\source-ledger.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><a href="quiz-bank.html">&larr; Previous</a><a href="resources.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

@@ -25,7 +25,7 @@ const GROUPS = {
 };
 const GROUP_OF = {};
 Object.keys(GROUPS).forEach(g=>GROUPS[g].forEach(v=>GROUP_OF[v]=g));
-const PILLARS = ["Architecture","Data security","Data governance","Data compliance","AI protections"];
+const PILLARS = ["Placement","Engine","Operations","Trust"];
 const GOAL = {challenge:3, shorts:1, reviews:5};
 const mq = window.matchMedia("(max-width: 899px)");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -134,7 +134,7 @@ function bindChallenge(root){
   const sh=$("#chShare",root);
   if(sh) sh.onclick=()=>{
     const st=chState(c.key);
-    const txt=`Learn Purview daily challenge ${c.key}: ${chScore(st)}/3 ${st.r.map(x=>x?"■":"□").join("")} · ${streak()} day streak\n${APP_URL}`;
+    const txt=`Learn DuckDB daily challenge ${c.key}: ${chScore(st)}/3 ${st.r.map(x=>x?"■":"□").join("")} · ${streak()} day streak\n${APP_URL}`;
     try{navigator.clipboard.writeText(txt).then(()=>toast("Result copied"),()=>toast(txt));}catch(e){toast(txt);}
   };
 }
@@ -158,7 +158,7 @@ function show(v,sub){
   $$("#mTabbar [data-tab]").forEach(el=>el.classList.toggle("active",el.dataset.tab===tab));
   document.body.dataset.view=v;
   LS.set(K("view"),v);
-  document.title = VIEWS[v]+" · Learn Purview";
+  document.title = VIEWS[v]+" · Learn DuckDB";
   closeSheet();
   pauseHiddenMedia();
   if(v==="today") renderToday();
@@ -359,7 +359,7 @@ window.renderShorts = function(){
   const w=Store.watched(); const nW=shortItems.filter(s=>w[s.id]).length;
   const list=filteredShorts();
   el.innerHTML=h`<h2 class="vh">Shorts <span class="vh-sub">${nW} of ${shortItems.length} watched</span></h2>
-  <div class="note danger" style="margin-bottom:1rem"><b>Secondary source.</b> NotebookLM media can overstate. Known issues: "Purview intercepts the retrieval" (agents inherit parent-app protections ${ec("[S17]")}); "audit always holds prompt text" (Copilot Studio audit holds a thread ID ${ec("[S21]")}). The architecture views win.</div>
+  <div class="note danger" style="margin-bottom:1rem"><b>Secondary source.</b> NotebookLM can overstate speed. The 10x line and the billion-row timing are slide claims. The concurrency contract is the official concurrency page.</div>
   <div class="sx-layout">
     <div class="sx-main">
       <div class="sx-player" id="sxPlayer"></div>
@@ -601,7 +601,7 @@ function navSheet(group){
       <div class="seg" role="group" aria-label="Palette">${[["github","GitHub"],["geist","Geist"],["catppuccin","Catppuccin"]].map(([k,l])=>`<button type="button" data-pal="${k}" aria-pressed="${pal===k}" class="${pal===k?"on":""}">${l}</button>`).join("")}</div></div>
       <div class="sheet-section"><h3>Your progress</h3><p class="muted">Saved in this browser only. Export it to move between laptop and phone.</p>
       <div class="btnrow"><button type="button" class="b" data-action="export">Export progress</button><button type="button" class="b" data-action="import">Import</button></div></div>
-      <p class="muted sheet-disc">Study material grounded in Microsoft sources. Verify licensing and government-cloud availability before relying on it.</p>`;
+      <p class="muted sheet-disc">Study material grounded in the DuckDB source ledger. Local DuckDB is not a classified authorization.</p>`;
   }
   openSheet(title,html,body=>{
     $$("[data-mode]",body).forEach(b=>b.onclick=()=>{applyTheme(LS.get("appPalette","github"),b.dataset.mode);navSheet(group);});
@@ -663,7 +663,7 @@ function ours(k){return k.startsWith(KEY)||SHARED_KEYS.includes(k);}
 function exportProgress(){
   const data={}; try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(ours(k)) data[k]=localStorage.getItem(k);}}catch(e){}
   const blob=new Blob([JSON.stringify({app:"learn-duckdb",version:1,exported:new Date().toISOString(),data},null,1)],{type:"application/json"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="purview-progress-"+dayKey()+".json"; document.body.appendChild(a); a.click();
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="duckdb-progress-"+dayKey()+".json"; document.body.appendChild(a); a.click();
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
 }
 function importProgress(file){

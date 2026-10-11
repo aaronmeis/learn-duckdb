@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESOURCES — DuckDB | Learn DuckDB</title>
+<meta name="description" content="High-trust sources for this one-day pack. Rows match the source ledger.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Reference</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Reference</div>
+  <h1 class="doctitle">RESOURCES — DuckDB</h1>
+  <p class="lead">High-trust sources for this one-day pack. Rows match the source ledger.</p>
+  
+  <article>
+<p>The numbered ledger is <a href="source-ledger.html">source-ledger</a>. This page is the reading order.</p>
+<h2>Start here</h2>
+<table>
+<thead>
+<tr>
+<th>Title</th>
+<th>URL</th>
+<th>Why</th>
+<th>Blocks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DuckDB documentation</td>
+<td>https://duckdb.org/docs/current/index</td>
+<td>Current behavior for SQL, files, Parquet, and CSV.</td>
+<td>1, 3, 5</td>
+</tr>
+<tr>
+<td>Execution format</td>
+<td>https://duckdb.org/docs/current/internals/vector.html</td>
+<td>Vector and DataChunk. Default size 2048.</td>
+<td>1, 2</td>
+</tr>
+<tr>
+<td>Concurrency</td>
+<td>https://duckdb.org/docs/stable/connect/concurrency.html</td>
+<td>One writer process. Readers only in read-only mode.</td>
+<td>5</td>
+</tr>
+<tr>
+<td>SIGMOD 2019 paper</td>
+<td>https://doi.org/10.1145/3299869.3320212</td>
+<td>Why an in-process OLAP engine exists.</td>
+<td>1, 2, 7</td>
+</tr>
+</tbody>
+</table>
+<h2>Talks named in the intake</h2>
+<table>
+<thead>
+<tr>
+<th>Title</th>
+<th>URL</th>
+<th>Length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Developer Voices, Hannes Mühleisen, 2024-02-07</td>
+<td>https://www.youtube.com/watch?v=pZV9FvdKmLc</td>
+<td>1h20</td>
+</tr>
+<tr>
+<td>TigerBeetle overview, Hannes Mühleisen, 2023-08-14</td>
+<td>https://www.youtube.com/watch?v=qWtc7k6tnVk</td>
+<td>25 min</td>
+</tr>
+</tbody>
+</table>
+<h2>Cloud line</h2>
+<table>
+<thead>
+<tr>
+<th>Title</th>
+<th>URL</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MotherDuck architecture</td>
+<td>https://motherduck.com/docs/concepts/architecture-and-capabilities/</td>
+<td>What <code>ATTACH 'md:'</code> leaves the machine for.</td>
+</tr>
+<tr>
+<td>CIDR 2024, Atwal et al.</td>
+<td>https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf</td>
+<td>Dual execution paper.</td>
+</tr>
+<tr>
+<td>Securing extensions</td>
+<td>https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions</td>
+<td>What a closed room turns off.</td>
+</tr>
+</tbody>
+</table>
+<h2>Not a DuckDB certification</h2>
+<p>Smaug (2023) and BiTDB (2024) study SQLite or embedded databases in a TEE. They are on the ledger so the closed-lab question has a negative result: no paper in this pack evaluates DuckDB in a classified lab.</p>
+<h2>Rejected as an authority</h2>
+<ul>
+<li>Slide claims of "10×" or "a billion rows in 157 ms" are briefing lines, not an SLA.</li>
+<li>DuckLake on a slide is not the concurrency contract. The contract is the concurrency doc.</li>
+<li>A secondary blog's claim about MotherDuck regions is not a MotherDuck commitment until it is on MotherDuck's regions page.</li>
+</ul></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\RESOURCES.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><a href="source-ledger.html">&larr; Previous</a><span></span></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

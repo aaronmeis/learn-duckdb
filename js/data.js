@@ -5,9 +5,13 @@ const SOURCES = [
   {n:4,g:"Papers",t:"DuckDB: an Embeddable Analytical Database (SIGMOD 2019)",u:"https://doi.org/10.1145/3299869.3320212",type:"paper",trust:"high",b:"1,2"},
   {n:5,g:"Talks",t:"Hannes Mühleisen, Developer Voices (2024)",u:"https://www.youtube.com/watch?v=pZV9FvdKmLc",type:"video",trust:"high",b:"2,4"},
   {n:6,g:"Talks",t:"Hannes Mühleisen, TigerBeetle overview (2023)",u:"https://www.youtube.com/watch?v=qWtc7k6tnVk",type:"video",trust:"high",b:"2"},
-  {n:7,g:"Cloud",t:"MotherDuck architecture and dual execution",u:"https://motherduck.com/docs/concepts/architecture-and-capabilities/",type:"docs",trust:"high",b:"5"},
-  {n:8,g:"Papers",t:"MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)",u:"https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf",type:"paper",trust:"high",b:"5"},
-  {n:9,g:"Official docs",t:"Securing extensions",u:"https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions",type:"docs",trust:"high",b:"5"}
+  {n:7,g:"Papers",t:"MonetDBLite (SIGMOD 2018)",u:"https://doi.org/10.1145/3183713.3183722",type:"paper",trust:"high",b:"2"},
+  {n:8,g:"Cloud",t:"MotherDuck architecture and capabilities",u:"https://motherduck.com/docs/concepts/architecture-and-capabilities/",type:"docs",trust:"high",b:"5"},
+  {n:9,g:"Papers",t:"MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)",u:"https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf",type:"paper",trust:"high",b:"5"},
+  {n:10,g:"Official docs",t:"Securing DuckDB extensions",u:"https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions",type:"docs",trust:"high",b:"5"},
+  {n:11,g:"Nearby work",t:"Smaug: TEE-assisted SQLite (2023)",u:"https://doi.org/10.1109/TDSC.2022.3216020",type:"paper",trust:"high",b:"5"},
+  {n:12,g:"Nearby work",t:"BiTDB: TEE database for embedded systems (2024)",u:"https://doi.org/10.1109/TKDE.2024.3380367",type:"paper",trust:"high",b:"5"},
+  {n:13,g:"Papers",t:"Modern alternatives to Hive (2026)",u:"https://doi.org/10.1016/j.is.2025.102635",type:"paper",trust:"medium",b:"7"}
 ];
 
 const DATA = {
@@ -36,12 +40,12 @@ const DATA = {
      ],
      vids:[{s:2},{s:5}]},
     {n:3,title:"Limits and the cloud line",time:"60 min",rungs:"300",lib:"",
-     opener:"One process writes. Other processes read only in read-only mode. ATTACH md: leaves the machine [S3][S7].",
+     opener:"One process writes. Other processes read only in read-only mode. ATTACH md: leaves the machine [S3][S8].",
      obj:"Name three refusals and the closed-lab rule for extensions.",
      deliv:"A failure mode with its tell and its fix.",
      mods:[
        {t:"Single writer [S3]",rl:"ops · 300", action:"State when a second process may open the file.", whyMatters:"Database locked is usually a second writer."},
-       {t:"Extensions and MotherDuck [S7][S9]",rl:"trust · 300", action:"List what must stay off in a closed room.", whyMatters:"An extension runs with the rights of the process, and auto-install fetches from the public site."}
+       {t:"Extensions and MotherDuck [S8][S10]",rl:"trust · 300", action:"List what must stay off in a closed room.", whyMatters:"An extension runs with the rights of the process, and auto-install fetches from the public site."}
      ],
      vids:[{s:3},{s:7}]}
   ],
@@ -58,8 +62,14 @@ const DATA = {
     {name:"MotherDuck",t:"Cloud warehouse. ATTACH md: can run part of the query in their cloud."}
   ],
   prompts:[
-    {cat:"Sketch",model:"any",desc:"Defend one query.",items:["Parquet events plus a small dimension"],
-     flagship:"Sketch a scan, join, and aggregate over a Parquet file of events and a small dimension table. Label which steps are columnar, which side the hash table is built on, and one failure mode."}
+    {cat:"Sketch",model:"any",desc:"Defend one query against the engine, not a feature list.",items:["Parquet events plus a small dimension","A CSV someone wants to load first"],
+     flagship:"Sketch a scan, join, and aggregate over a Parquet file of events and a small dimension table. Label which steps are columnar, which side the hash table is built on, and one failure mode. Cite the execution-format doc for the batch size. Do not treat slide speed claims as a guarantee."},
+    {cat:"Placement",model:"any",desc:"Pick the tool and name the one you refuse.",items:["40 GB of Parquet on one laptop","Orders table with hundreds of writers"],
+     flagship:"Place DuckDB, SQLite, Postgres, Polars, Spark, and MotherDuck on one workload. Say which quadrant DuckDB claims, which tool you would not pick, and why. Use the SIGMOD 2019 paper for the quadrant and the concurrency doc for writers."},
+    {cat:"Failure",model:"any",desc:"Name the tell and the fix.",items:["Database locked","Out of memory on a join","Stall on a network drive"],
+     flagship:"For each failure, give the tell a person sees, the cause from the concurrency or execution docs, and the change you would make before the next run. Include the closed-room case: auto-install and ATTACH md:."},
+    {cat:"Closed lab",model:"any",desc:"Separate a local binary from an authorization.",items:["Air-gapped laptop","Approved MotherDuck account"],
+     flagship:"Explain what local DuckDB with no network does and does not prove. Name Smaug and BiTDB as SQLite or embedded TEE papers, not DuckDB certifications. State the exact statement that leaves the machine for MotherDuck."}
   ],
   checklist:[
     {title:"Second writer",view:"Operations",src:"S3",
@@ -71,10 +81,10 @@ const DATA = {
     {title:"Network file",view:"Operations",src:"S3",
      good:"Keep the working database file on a local disk. Do not put the writer on a network share with weak locks.",
      bad:"Tell: corruption or a stall. Root cause: file locks on NFS or a network drive."},
-    {title:"Extension download in a closed room",view:"Trust",src:"S9",
+    {title:"Extension download in a closed room",view:"Trust",src:"S10",
      good:"Turn auto-install and auto-load off. Ship the signed extensions you trust. Leave community and unsigned extensions off.",
      bad:"Tell: the process reaches extensions.duckdb.org on first use of a feature."},
-    {title:"MotherDuck in a closed lab",view:"Trust",src:"S7",
+    {title:"MotherDuck in a closed lab",view:"Trust",src:"S8",
      good:"Do not ATTACH md: unless that cloud account is separately approved.",
      bad:"Tell: dual execution runs part of the query in MotherDuck's cloud."}
   ],
@@ -92,8 +102,11 @@ const DATA = {
     {section:2,question:"Why does a column store help a SUM?",answer:"It reads the summed column and skips the others.",src:"S2"},
     {section:2,question:"What problem do morsels avoid?",answer:"A fixed hash split that leaves threads idle when one key is huge.",src:"S5"},
     {section:3,question:"When may other processes open the same file?",answer:"Only to read, and only in read-only mode. A second writer is blocked.",src:"S3"},
-    {section:3,question:"What does ATTACH md: do?",answer:"It connects this process to MotherDuck. Hybrid execution can run part of the query in their cloud.",src:"S7"},
-    {section:3,question:"Is local DuckDB an authorization for classified data?",answer:"No. A lab still approves the binary, the extensions, and the machine.",src:"S9"}
+    {section:3,question:"What does ATTACH md: do?",answer:"It connects this process to MotherDuck. Hybrid execution can run part of the query in their cloud.",src:"S8"},
+    {section:3,question:"Is local DuckDB an authorization for classified data?",answer:"No. A lab still approves the binary, the extensions, and the machine. Smaug and BiTDB do not evaluate DuckDB.",src:"S11"},
+    {section:2,question:"Which side should a hash join build?",answer:"The smaller side. The larger side probes.",src:"S2"},
+    {section:3,question:"What does auto-install do?",answer:"It downloads an extension from extensions.duckdb.org. Turn it off in a closed room.",src:"S10"},
+    {section:1,question:"When is Spark the better tool?",answer:"When the working set will not fit one machine.",src:"S13"}
   ],
   glossary:[
     {category:"Placement",term:"DuckDB",rung:100,essential:true,definition:"An in-process analytical database. SQL runs in your process. One machine, one writer. [S1][S4]",source:"ledger"},
@@ -103,8 +116,32 @@ const DATA = {
     {category:"Engine",term:"Vectorized execution",rung:200,essential:true,definition:"Operators process a chunk, not one row at a time, so the working set stays in cache. [S2]",source:"ledger"},
     {category:"Engine",term:"Morsel",rung:200,essential:true,definition:"A chunk of a pipeline that an idle thread pulls from a queue. [S5]",source:"ledger"},
     {category:"Operations",term:"Single writer",rung:300,essential:true,definition:"One process may write a database file. Other processes may read only in read-only mode. [S3]",source:"ledger"},
-    {category:"Trust",term:"MotherDuck",rung:300,essential:true,definition:"A separate cloud warehouse. ATTACH md: can move query work off the machine. [S7][S8]",source:"ledger"},
-    {category:"Trust",term:"Extension",rung:200,definition:"Code loaded beside the core. It runs with the rights of the DuckDB process. [S9]",source:"ledger"}
+    {category:"Trust",term:"MotherDuck",rung:300,essential:true,definition:"A separate cloud product. ATTACH md: can move query work off the machine. [S8][S9]",source:"ledger"},
+    {category:"Trust",term:"Extension",rung:200,essential:true,definition:"Code loaded beside the core. It runs with the rights of the DuckDB process. [S10]",source:"ledger"},
+    {category:"Placement",term:"In-process",rung:100,essential:true,definition:"The engine and the program share one address space. No server, no socket copy of each result row. [S4]",source:"ledger"},
+    {category:"Placement",term:"Client-server",rung:100,definition:"The database is another process. Postgres and a warehouse work this way. [S4]",source:"ledger"},
+    {category:"Placement",term:"Missing quadrant",rung:100,essential:true,definition:"Embedded OLAP. SQLite already owns embedded OLTP. [S4]",source:"ledger"},
+    {category:"Placement",term:"SQLite",rung:100,definition:"In-process OLTP. Point lookups and small writes. [S4]",source:"ledger"},
+    {category:"Placement",term:"PostgreSQL",rung:100,definition:"Server OLTP. Many writers. A system of record. [S3]",source:"ledger"},
+    {category:"Placement",term:"Polars",rung:200,definition:"Dataframe API on one machine. Not a SQL catalog.",source:"ledger"},
+    {category:"Placement",term:"Spark",rung:200,definition:"Cluster engine for data that will not fit one machine. [S13]",source:"ledger"},
+    {category:"Engine",term:"Columnar storage",rung:100,essential:true,definition:"One column sits together, so a SUM reads that column and skips the rest. [S2]",source:"ledger"},
+    {category:"Engine",term:"Row store",rung:100,definition:"A whole row sits together. Good for fetching one row by key. [S2]",source:"ledger"},
+    {category:"Engine",term:"Vector",rung:200,definition:"One column inside a DataChunk. [S2]",source:"ledger"},
+    {category:"Engine",term:"Hash join",rung:200,essential:true,definition:"Build the hash table on the smaller side. Probe with the larger side. [S2]",source:"ledger"},
+    {category:"Engine",term:"Spill",rung:300,definition:"Writing an intermediate to disk when memory is not enough. A plan that cannot spill can kill the process. [S2]",source:"ledger"},
+    {category:"Engine",term:"Predicate pushdown",rung:200,definition:"A Parquet reader skips row groups that cannot match the filter. [S1]",source:"ledger"},
+    {category:"Engine",term:"Zero-copy scan",rung:200,definition:"Query CSV, Parquet, Pandas, or Arrow without a separate load into a new table. [S1]",source:"ledger"},
+    {category:"Engine",term:"EXPLAIN",rung:200,definition:"The plan DuckDB will run. Read it before trusting a timing. [S1]",source:"ledger"},
+    {category:"Operations",term:"Optimistic concurrency",rung:300,definition:"Inside the one writer process, transactions conflict if they edit the same rows. This is not multi-process writing. [S3]",source:"ledger"},
+    {category:"Operations",term:"READ_ONLY",rung:300,essential:true,definition:"The access mode other processes must use. They may read. They may not write. [S3]",source:"ledger"},
+    {category:"Operations",term:"Database locked",rung:300,definition:"The usual message when a second process tries to write. [S3]",source:"ledger"},
+    {category:"Trust",term:"Auto-install",rung:300,essential:true,definition:"Fetches an extension from extensions.duckdb.org on first use. Turn it off in a closed room. [S10]",source:"ledger"},
+    {category:"Trust",term:"httpfs",rung:200,definition:"Extension for HTTP and S3-style reads. Not in the zero-dependency core. [S10]",source:"ledger"},
+    {category:"Trust",term:"Iceberg",rung:200,definition:"Extension for Iceberg tables. Same trust rule as any other extension. [S10]",source:"ledger"},
+    {category:"Trust",term:"ATTACH md:",rung:300,essential:true,definition:"Connects this process to MotherDuck. The query is no longer confined to the machine. [S8]",source:"ledger"},
+    {category:"Trust",term:"Dual execution",rung:300,definition:"MotherDuck can run part of a query locally and part in its cloud. [S9]",source:"ledger"},
+    {category:"Trust",term:"Closed-lab rule",rung:300,essential:true,definition:"A local binary with no network is not permission to process classified data. Smaug and BiTDB do not certify DuckDB. [S11][S12]",source:"ledger"}
   ],
   views:{
     conceptual:{rule:"What and why. In-process analytics, not a server.",lib:"",img:[],
@@ -152,7 +189,7 @@ DATA.drills = {
     items:[
       {p:"A local SUM over a Parquet file",a:0,why:"DuckDB runs in the process.",src:"S1"},
       {p:"The live application rows, many writers",a:1,why:"That is Postgres or SQLite, not DuckDB.",src:"S3"},
-      {p:"A query after ATTACH md:",a:2,why:"Hybrid execution can run in MotherDuck's cloud.",src:"S7"},
+      {p:"A query after ATTACH md:",a:2,why:"Hybrid execution can run in MotherDuck's cloud.",src:"S8"},
       {p:"A join that will not fit one machine",a:3,why:"That is the Spark case.",src:"S4"}
     ]},
   auth:{title:"What may open the file?",ask:"Which access is allowed?",
@@ -161,7 +198,7 @@ DATA.drills = {
       {p:"INSERT from the application",a:0,why:"One process writes.",src:"S3"},
       {p:"A second script that also INSERTS",a:0,why:"The second writer is blocked. The answer you want is still one writer. The second attempt fails.",src:"S3"},
       {p:"Three report jobs",a:2,why:"They may read if the file is opened read-only.",src:"S3"},
-      {p:"First use of httpfs with auto-install on",a:3,why:"DuckDB will try to fetch the extension.",src:"S9"}
+      {p:"First use of httpfs with auto-install on",a:3,why:"DuckDB will try to fetch the extension.",src:"S10"}
     ]},
   altitude:{title:"Which idea is this?",ask:"Which layer does this belong to?",
     options:["Placement","Engine","Operations","Trust"],
@@ -169,6 +206,6 @@ DATA.drills = {
       {p:"In-process OLAP versus SQLite",a:0,why:"That is the quadrant.",src:"S4"},
       {p:"A DataChunk of 2048",a:1,why:"That is execution.",src:"S2"},
       {p:"READ_ONLY for other processes",a:2,why:"That is the concurrency rule.",src:"S3"},
-      {p:"Do not ATTACH md: in a closed lab",a:3,why:"That is the trust boundary.",src:"S7"}
+      {p:"Do not ATTACH md: in a closed lab",a:3,why:"That is the trust boundary.",src:"S8"}
     ]}
 };

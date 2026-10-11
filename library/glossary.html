@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLOSSARY — DuckDB | Learn DuckDB</title>
+<meta name="description" content="Study glossary for the DuckDB pack. Definitions follow the source ledger. They are not a claim that the study day was completed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Reference</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Reference</div>
+  <h1 class="doctitle">GLOSSARY — DuckDB</h1>
+  <p class="lead">Study glossary for the DuckDB pack. Definitions follow the source ledger. They are not a claim that the study day was completed.</p>
+  
+  <article>
+<p>Definitions below are study definitions tied to the source ledger. The one-day session has not been sat, so none of these are marked as earned in practice.</p>
+<table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Definition</th>
+<th>Block</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DuckDB</td>
+<td>In-process analytical database. SQL runs inside the calling process. MIT license, DuckDB Foundation. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>][<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>In-process</td>
+<td>The engine and the program share one address space. There is no database server and no result-row copy across a socket. [<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Client-server</td>
+<td>The database runs in another process. Every query pays for a protocol and a copy of the result. Postgres and Snowflake work this way. [<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>OLAP</td>
+<td>Few large scans, joins, and aggregates. The workload DuckDB is built for. [<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>OLTP</td>
+<td>Many small row reads and writes. SQLite and Postgres are built for this. [<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Missing quadrant</td>
+<td>Embedded OLTP is SQLite. Server OLTP is Postgres. Server OLAP is a warehouse. Embedded OLAP is the corner DuckDB claims. [<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>SQLite</td>
+<td>In-process OLTP. Point lookups and small writes. Not an analytical column store. [<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>Server OLTP and a system of record. Many writers. Use it when the database must stay correct under concurrent transactions. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Polars</td>
+<td>Dataframe API on one machine. Not a SQL catalog and not a multi-process database file.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Spark</td>
+<td>Cluster engine for data that will not fit one machine, or for a job that must survive a lost node.</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Columnar storage</td>
+<td>Values of one column sit together. A SUM reads that column and skips the rest. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Row store</td>
+<td>One row's fields sit together. Good for fetching a whole row by key. Wasteful when a query names two columns of a wide table. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Vector</td>
+<td>One column of a batch. The execution format is a set of these vectors. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>2</td>
+</tr>
+<tr>
+<td>DataChunk</td>
+<td>A batch of aligned vectors. The default batch is 2048 tuples (<code>STANDARD_VECTOR_SIZE</code>). Operators run on the chunk. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Vectorized execution</td>
+<td>Operators process a chunk, not one row at a time, so the working values stay in cache. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>][<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Morsel</td>
+<td>A piece of a pipeline that an idle thread takes from a queue. From the HyPer line of work, not invented in the 2019 paper. [<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Hash join</td>
+<td>Build a hash table on the smaller side, then probe with the larger side. The wrong build side is a common out-of-memory failure. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Spill</td>
+<td>Writing an intermediate result to disk when it does not fit in memory. A plan that cannot spill dies instead. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Replacement scan</td>
+<td>A scan of a registered data frame or Arrow table that stands in for a table name. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Predicate pushdown</td>
+<td>Filters applied inside a Parquet reader so row groups that cannot match are not decoded. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Zero-copy scan</td>
+<td>Reading CSV, Parquet, Pandas, or Arrow without a separate load step into a new table. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>EXPLAIN</td>
+<td>The plan DuckDB will run. Use it before trusting a timing, especially the join build side. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Single writer</td>
+<td>One process may write a database file. Other processes may open it only with <code>access_mode</code> set to <code>READ_ONLY</code>. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Optimistic concurrency</td>
+<td>Inside the writer process, transactions proceed and conflict if they touch the same rows. This is not multi-process writing. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Database locked</td>
+<td>The usual tell that a second process tried to write, or that a transaction conflicted. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Extension</td>
+<td>Optional code loaded beside the core. It runs with the rights of the DuckDB process. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Auto-install</td>
+<td>The setting that fetches an extension from extensions.duckdb.org on first use. Turn it off in a closed room. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>httpfs</td>
+<td>Extension for HTTP and S3-style reads. Not part of the zero-dependency core. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Iceberg</td>
+<td>Extension for Iceberg tables. Same trust rule as any other extension. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>MotherDuck</td>
+<td>A separate cloud product. It is not local DuckDB. [<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>][<a class="cite" href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf" target="_blank" rel="noopener" title="MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)">S9</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>ATTACH md:</td>
+<td>The statement that connects this process to MotherDuck. After it, the query is no longer confined to the machine. [<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Dual execution</td>
+<td>MotherDuck can run part of a query locally and part in its cloud. Described in the CIDR 2024 paper. [<a class="cite" href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf" target="_blank" rel="noopener" title="MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)">S9</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Closed-lab rule</td>
+<td>Local DuckDB with no network is a deployment proposal. It is not permission to process classified data. No paper in this pack evaluates DuckDB in a classified lab. [<a class="cite" href="https://doi.org/10.1109/TDSC.2022.3216020" target="_blank" rel="noopener" title="Smaug: A TEE-Assisted Secured SQLite (TDSC 2023)">S11</a>][<a class="cite" href="https://doi.org/10.1109/TKDE.2024.3380367" target="_blank" rel="noopener" title="BiTDB: Built-in TEE Secure Database for Embedded Systems (TKDE 2024)">S12</a>]</td>
+<td>5</td>
+</tr>
+</tbody>
+</table></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\GLOSSARY.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><span></span><a href="cheatsheet.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

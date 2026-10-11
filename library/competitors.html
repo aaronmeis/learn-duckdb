@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Competitors and closed lab | Learn DuckDB</title>
+<meta name="description" content="Light research for the DuckDB deep dive: competitors, and closed-lab versus cloud.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Plan</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Plan</div>
+  <h1 class="doctitle">Competitors and closed lab</h1>
+  <p class="lead">Light research for the DuckDB deep dive: competitors, and closed-lab versus cloud.</p>
+  
+  <article><h1>DuckDB — competitors, closed lab, and cloud</h1>
+<p><strong>Date:</strong> 2026-10-10
+<strong>Purpose:</strong> Add evidence to the DuckDB deep dive. Search only. No Elicit deep report was started.</p>
+<h2>Key takeaways</h2>
+<ul>
+<li>The academic anchor is still Raasveldt and Mühleisen, SIGMOD 2019. Later hits are the 2022 modularity talk, MonetDBLite (2018), and their CIDR 2020 note on embedded analytics for data science.</li>
+<li>A 2026 Information Systems review benchmarks single-node SQL-on-Hadoop alternatives. Use it as a "when one node is enough" pointer, not as a DuckDB product review.</li>
+<li>Elicit did not return a paper that evaluates DuckDB inside a classified or air-gapped lab. The nearby security papers are about SQLite in a trusted execution environment (Smaug 2023, BiTDB 2024). Those show the problem class. They do not certify DuckDB.</li>
+<li>Exa separates three deployments. Local DuckDB never leaves the process. DuckDB plus object storage you control stays inside your network. MotherDuck is a cloud warehouse: dual execution can run part of a query in their cloud. <code>ATTACH 'md:'</code> is the line that leaves a closed lab.</li>
+<li>MotherDuck's own architecture page and the CIDR 2024 paper (Atwal et al., p46) describe that hybrid. A secondary write-up (Markaicode) states MotherDuck is cloud-only and scoped to one AWS region per org, and points at MinIO plus dbt when residency is a hard rule. Treat the region claim as that article's wording until you confirm it on MotherDuck's current regions page.</li>
+</ul>
+<h2>What this does not say</h2>
+<p>DuckDB can run with no network. That is not an authorization to process classified data. A lab still approves the binary, the extensions, and the machine. No source in this pass is a government authority-to-operate for DuckDB or for MotherDuck.</p>
+<h2>Papers (Elicit)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Title</th>
+<th>Year</th>
+<th>Why it matters</th>
+<th>DOI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>DuckDB: an Embeddable Analytical Database</td>
+<td>2019</td>
+<td>System paper. In-process OLAP against the SQLite shape.</td>
+<td>https://doi.org/10.1145/3299869.3320212</td>
+</tr>
+<tr>
+<td>2</td>
+<td>DuckDB - A Modern Modular and Extensible Database System</td>
+<td>2022</td>
+<td>Extensions are the product surface. That is also the trust boundary.</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Modern alternatives to Hive: systematic review and single-node benchmark</td>
+<td>2026</td>
+<td>Single-node SQL versus a cluster.</td>
+<td>https://doi.org/10.1016/j.is.2025.102635</td>
+</tr>
+<tr>
+<td>4</td>
+<td>MonetDBLite: An Embedded Analytical Database</td>
+<td>2018</td>
+<td>Predecessor by the same authors.</td>
+<td>https://doi.org/10.1145/3183713.3183722</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Data Management for Data Science - Towards Embedded Analytics</td>
+<td>2020</td>
+<td>Why this class of engine exists for data science.</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Smaug: A TEE-Assisted Secured SQLite</td>
+<td>2023</td>
+<td>Secure embedded DB, SQLite not DuckDB.</td>
+<td>https://doi.org/10.1109/TDSC.2022.3216020</td>
+</tr>
+<tr>
+<td>7</td>
+<td>BiTDB: Built-in TEE Secure Database for Embedded Systems</td>
+<td>2024</td>
+<td>Same gap: TEE database research is not a DuckDB eval.</td>
+<td>https://doi.org/10.1109/TKDE.2024.3380367</td>
+</tr>
+</tbody>
+</table>
+<h2>Web (Exa)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Title</th>
+<th>URL</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>MotherDuck architecture and capabilities</td>
+<td>https://motherduck.com/docs/concepts/architecture-and-capabilities/</td>
+<td>Dual execution: local, cloud, or both.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)</td>
+<td>https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf</td>
+<td>Primary paper for the hybrid service.</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Best DuckDB setups for production AI pipelines</td>
+<td>https://markaicode.com/best/best-duckdb-setup-for-production-ai/</td>
+<td>Secondary. Residency ranking: MotherDuck, S3 plus Parquet, MinIO plus dbt.</td>
+</tr>
+</tbody>
+</table>
+<h2>Commands</h2>
+<pre><code class="language-powershell">cd C:\projects\hermes
+python hermes\scripts\elicit_hermes.py search &quot;embedded analytical database DuckDB versus SQLite PostgreSQL Spark single-node OLAP&quot; --max-results 6 --min-year 2018
+python hermes\scripts\elicit_hermes.py search &quot;secure deployment of embedded databases air-gapped analytical query engine extension trust&quot; --max-results 5 --min-year 2016
+$env:PYTHONPATH = &quot;C:\projects\nanobot-research\nanobot-research&quot;
+python hermes\scripts\exa_hermes.py search &quot;DuckDB offline air-gapped deployment versus MotherDuck cloud data residency&quot; --limit 5 --type fast
+</code></pre>
+<p>Firecrawl was not on PATH, so this pass used Exa. The Exa CLI only imports when <code>PYTHONPATH</code> points at <code>nanobot-research\nanobot-research</code>. Deep report: not started.</p></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\reference\2026-10-10 - Competitors and closed lab.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><a href="deep-dive.html">&larr; Previous</a><a href="elicit.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

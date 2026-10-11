@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cheatsheet — DuckDB | Learn DuckDB</title>
+<meta name="description" content="One-page decision card for the DuckDB study day.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Reference</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Reference</div>
+  <h1 class="doctitle">Cheatsheet — DuckDB</h1>
+  <p class="lead">One-page decision card for the DuckDB study day.</p>
+  
+  <article>
+<table>
+<thead>
+<tr>
+<th>Choose</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DuckDB</td>
+<td>The working set fits one machine and the question is a scan, join, or aggregate. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+</tr>
+<tr>
+<td>SQLite or Postgres</td>
+<td>Many small writes, many writers, or the file is the system of record. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>][<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+</tr>
+<tr>
+<td>Polars</td>
+<td>You want a dataframe API and you do not need a SQL catalog.</td>
+</tr>
+<tr>
+<td>Spark</td>
+<td>The data will not fit one machine.</td>
+</tr>
+<tr>
+<td>MotherDuck</td>
+<td>You have approved a cloud warehouse. <code>ATTACH 'md:'</code> is that approval's boundary. [<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>]</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Trap</th>
+<th>Tell</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Second writer</td>
+<td>Database locked</td>
+<td>One writer process. Other processes use <code>READ_ONLY</code>. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+</tr>
+<tr>
+<td>Huge join</td>
+<td>Process dies</td>
+<td>Build the hash table on the small side. Read <code>EXPLAIN</code>. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+</tr>
+<tr>
+<td>Network file</td>
+<td>Stall or corruption</td>
+<td>Keep the writer on a local disk. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+</tr>
+<tr>
+<td>Extension fetch</td>
+<td>Traffic to extensions.duckdb.org</td>
+<td>Disable auto-install and auto-load. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+</tr>
+<tr>
+<td>Closed lab</td>
+<td><code>ATTACH 'md:'</code></td>
+<td>Do not attach MotherDuck. Local DuckDB is not a classified authorization. [<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>][<a class="cite" href="https://doi.org/10.1109/TDSC.2022.3216020" target="_blank" rel="noopener" title="Smaug: A TEE-Assisted Secured SQLite (TDSC 2023)">S11</a>]</td>
+</tr>
+</tbody>
+</table>
+<p>Speed lines on the NotebookLM slides are claims to measure, not a guarantee.</p></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\reference\cheatsheet.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><a href="glossary.html">&larr; Previous</a><a href="quiz-bank.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

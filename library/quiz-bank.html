@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz bank — DuckDB | Learn DuckDB</title>
+<meta name="description" content="Quiz bank mirrored on the Learn DuckDB console.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Reference</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Reference</div>
+  <h1 class="doctitle">Quiz bank — DuckDB</h1>
+  <p class="lead">Quiz bank mirrored on the Learn DuckDB console.</p>
+  
+  <article>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Section</th>
+<th>Question</th>
+<th>Answer</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Placement</td>
+<td>Which quadrant does DuckDB claim?</td>
+<td>In-process OLAP. SQLite is in-process OLTP. A warehouse is client-server OLAP.</td>
+<td>[<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Engine</td>
+<td>What is the default vector size?</td>
+<td>2048 tuples in a DataChunk. Operators run on that batch.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Engine</td>
+<td>Why does a column store help a SUM?</td>
+<td>It reads the summed column and skips the others.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Engine</td>
+<td>What problem do morsels avoid?</td>
+<td>A fixed hash split that leaves threads idle when one key is huge.</td>
+<td>[<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Limits</td>
+<td>When may other processes open the same file?</td>
+<td>Only to read, and only in read-only mode.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Limits</td>
+<td>What does ATTACH md: do?</td>
+<td>It connects this process to MotherDuck. Hybrid execution can run part of the query in their cloud.</td>
+<td>[<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>][<a class="cite" href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf" target="_blank" rel="noopener" title="MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)">S9</a>]</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Limits</td>
+<td>Is local DuckDB an authorization for classified data?</td>
+<td>No. A lab still approves the binary, the extensions, and the machine. No paper here evaluates DuckDB in a classified lab.</td>
+<td>[<a class="cite" href="https://doi.org/10.1109/TDSC.2022.3216020" target="_blank" rel="noopener" title="Smaug: A TEE-Assisted Secured SQLite (TDSC 2023)">S11</a>][<a class="cite" href="https://doi.org/10.1109/TKDE.2024.3380367" target="_blank" rel="noopener" title="BiTDB: Built-in TEE Secure Database for Embedded Systems (TKDE 2024)">S12</a>]</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Engine</td>
+<td>Which side should a hash join build?</td>
+<td>The smaller side. The large side probes.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Trust</td>
+<td>What does auto-install do?</td>
+<td>It downloads an extension from extensions.duckdb.org. Turn it off in a closed room.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Placement</td>
+<td>When is Spark the better tool?</td>
+<td>When the working set will not fit one machine.</td>
+<td>[<a class="cite" href="https://doi.org/10.1016/j.is.2025.102635" target="_blank" rel="noopener" title="Modern alternatives to Hive (Information Systems 2026)">S13</a>]</td>
+</tr>
+</tbody>
+</table></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\reference\quiz-bank.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><a href="cheatsheet.html">&larr; Previous</a><a href="source-ledger.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

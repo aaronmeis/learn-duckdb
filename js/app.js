@@ -51,14 +51,14 @@ function renderDashboard(){
   const pillar=(img,title,sub,color)=>`<div style="background:var(--card-bg);border:1px solid var(--border-color);border-radius:12px;padding:.9rem 1.1rem;display:flex;align-items:center;gap:12px">
       <img src="assets/${img}.jpg" alt="" style="width:48px;height:48px;border-radius:10px;border:1px solid ${color};object-fit:cover;flex-shrink:0">
       <div><div style="font-weight:700;font-size:.88rem;color:var(--text-primary)">${title}</div><div style="font-size:.74rem;color:var(--text-dim)">${sub}</div></div></div>`;
-  let h=`<span class="badge">ENTERPRISE ARCHITECT CONSOLE</span>
-  <h1 style="margin-top:.9rem">Microsoft Purview: Architect Study Console</h1>
-  <p class="lead">One long, architecture-heavy day (about 7 hours, 8 blocks) on Microsoft Purview: conceptual, logical, and physical views, third-party integrations, the AI data path, and a TOGAF / DoDAF lens, ending in a design review. Every claim is grounded in a 36-row Microsoft source ledger.</p>
+  let h=`<span class="badge">STUDY CONSOLE</span>
+  <h1 style="margin-top:.9rem">DuckDB: in-process analytical engine</h1>
+  <p class="lead">A working-fluency day on DuckDB: the missing quadrant, columnar scans, vectors of 2048, morsels, one writer, and the MotherDuck line. Claims trace to the 13-row source ledger. Slide speed numbers are not an SLA.</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.5rem">
-    ${pillar("security","Data security","Labels · DLP · Insider Risk","var(--r200)")}
-    ${pillar("governance","Data governance","Data Map · Unified Catalog","var(--r300)")}
-    ${pillar("compliance","Data compliance","Audit · eDiscovery · Compliance Mgr","var(--r100)")}
-    ${pillar("ai","AI protections","DSPM for AI · AI audit","var(--warn)")}
+    ${pillar("100","Placement","In-process OLAP, not a server","var(--r100)")}
+    ${pillar("200","Engine","Columns, chunks, morsels","var(--r200)")}
+    ${pillar("300","Operations","One writer, read-only readers","var(--r300)")}
+    ${pillar("hero","Trust","Extensions and MotherDuck","var(--warn)")}
   </div>
   <div class="grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
     <div class="statcard"><div class="num">${pct}%</div><div class="lbl">curriculum complete (${done}/${mods.length} modules)</div>
@@ -67,15 +67,15 @@ function renderDashboard(){
     <div class="statcard"><div class="num">${selfSolid}/${totalRungs}</div><div class="lbl">ladder rungs self-rated "solid"</div></div>
     <div class="statcard"><div class="num">${fmDone}/${DATA.checklist.length}</div><div class="lbl">failure modes reviewed</div></div>
   </div>
-  <div class="note"><b>Mission.</b> By the end you can draw the conceptual, logical, and physical views from memory and say what changes between them; list the external systems Purview integrates with and how; trace the AI data path and name the control that stops oversharing; place the platform in TOGAF and DoDAF; and survive the block 8 design review. ${lib("mission","Mission note")} · ${lib("day-plan","Timed day plan")}</div>
+  <div class="note"><b>Mission.</b> By the end you can place DuckDB against SQLite, Postgres, Polars, and Spark, sketch a columnar pipeline, and say when a second process may open the file. You can also say what <code>ATTACH 'md:'</code> does, and that a local binary is not a classified authorization. ${lib("mission","Mission note")} · ${lib("day-plan","Timed day plan")} · ${lib("deep-dive","Deep dive")}</div>
   <div class="grid">
-    <div class="card"><h3>Curriculum</h3><p style="color:var(--text-secondary);font-size:.86rem">Eight timed blocks with action steps, artifact previews, and "why this matters" notes.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('curriculum')">Open curriculum →</button></div></div>
-    <div class="card"><h3>Architecture views</h3><p style="color:var(--text-secondary);font-size:.86rem">Conceptual, logical, physical, integration and AI, plus the government cloud matrix, with diagrams.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('views')">Open views →</button></div></div>
-    <div class="card"><h3>Progress map</h3><p style="color:var(--text-secondary);font-size:.86rem">The 100 / 200 / 300 ladder across five lanes. Self-rate each rung.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('map')">Open map →</button></div></div>
+    <div class="card"><h3>Curriculum</h3><p style="color:var(--text-secondary);font-size:.86rem">Three timed blocks: what it is, how a query runs, and the cloud line.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('curriculum')">Open curriculum →</button></div></div>
+    <div class="card"><h3>Views</h3><p style="color:var(--text-secondary);font-size:.86rem">Placement, pipeline, file access, scanners, and the closed-lab boundary.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('views')">Open views →</button></div></div>
+    <div class="card"><h3>Progress map</h3><p style="color:var(--text-secondary);font-size:.86rem">The 100 / 200 / 300 ladder for placement, engine, and operations.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('map')">Open map →</button></div></div>
     <div class="card"><h3>Flashcards and quiz</h3><p style="color:var(--text-secondary);font-size:.86rem">${DATA.glossary.length} spaced-repetition cards and the ${DATA.quiz.length}-question design-review quiz bank.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('flash')">Flashcards →</button><button class="b" onclick="go('quiz')">Quiz →</button></div></div>
     <div class="card"><h3>Shorts and media</h3><p style="color:var(--text-secondary);font-size:.86rem">Six vertical NotebookLM explainers, the 8.5-minute narrated deep-dive cut, and the audio overview.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('shorts')">Open media →</button><button class="b" onclick="go('deck')">Slide deck →</button></div></div>
     <div class="card"><h3>Failure modes</h3><p style="color:var(--text-secondary);font-size:.86rem">${DATA.checklist.length} failure modes across all four views: the tell, the fix, and the source.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('failures')">Failure modes →</button><button class="b" onclick="go('cheat')">Decision rules →</button></div></div>
-    <div class="card"><h3>EA mapping</h3><p style="color:var(--text-secondary);font-size:.86rem">TOGAF ADM phases, DoDAF viewpoints, altitude rules, and a component cross-walk.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('ea')">EA mapping →</button></div></div>
+    <div class="card"><h3>Neighbors</h3><p style="color:var(--text-secondary);font-size:.86rem">SQLite, Postgres, Polars, Spark, and MotherDuck, and the job each one owns.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('ea')">Open the map →</button></div></div>
     <div class="card"><h3>Library</h3><p style="color:var(--text-secondary);font-size:.86rem">${libCount} vault notes and NotebookLM reports rendered as web pages, with live source links.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('library')">Open library →</button><button class="b" onclick="go('refs')">Source ledger →</button></div></div>
   </div>`;
   el.innerHTML=h;
@@ -89,9 +89,9 @@ function allModules(){let a=[];DATA.weeks.forEach(w=>w.mods.forEach((m,i)=>a.pus
 function renderCurriculum(){
   const el=$("#v-curriculum");
   let h=`<h2 class="vh">Eight-block curriculum</h2>
-  <p class="lead">Work the blocks in order (about 420 focused minutes plus breaks). Each block has an architect context, action steps, artifact previews ("What does this look like?"), the primary Microsoft sources, and an exit criterion. ${lib("day-plan","Timed day plan")}</p>
+  <p class="lead">Three blocks, about three and a half hours of the study day. Each one has an action and a reason. ${lib("day-plan","Timed day plan")}</p>
   <div class="timeline" style="margin-bottom:1.2rem">${DATA.weeks.map(w=>`<span class="t">Block ${w.n}</span><span class="b">${esc(w.title)}</span><span class="m">${esc(w.time)}</span>`).join("")}</div>
-  <details class="look-box" style="margin:0 0 1.4rem"><summary>Scope mind map (what the day covers, block by block)</summary><img class="diagram" src="assets/diagrams/00-mindmap.png" alt="Microsoft Purview scope mind map" loading="lazy"><p style="font-size:.8rem;color:var(--text-dim)">${lib("mindmap","Mind map as text")} · ${lib("intake","Scope interview")}</p></details>`;
+  <details class="look-box" style="margin:0 0 1.4rem"><summary>Scope mind map</summary><p style="font-size:.8rem;color:var(--text-dim)">${lib("mindmap","Mind map as text")} · ${lib("intake-record","Intake record")}</p></details>`;
   DATA.weeks.forEach(w=>{
     const total=w.mods.length, done=w.mods.filter((_,i)=>LS.get(moduleKey(w.n,i),false)).length;
     h+=`<div class="card">
@@ -252,7 +252,7 @@ const ytSrc=id=>`https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=
 function renderDeck(){
   const el=$("#v-deck"), C=DATA.cut||{labels:[],slides:[],cards:[]};
   const video=DEEP.youtube
-    ?`<iframe class="wide-player" src="${ytSrc(DEEP.youtube)}" title="Microsoft Purview deep dive cut" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy" style="border:0"></iframe>`
+    ?`<iframe class="wide-player" src="${ytSrc(DEEP.youtube)}" title="DuckDB deep dive cut" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen loading="lazy" style="border:0"></iframe>`
     :`<video class="wide-player" controls preload="metadata" src="${esc(DEEP.file)}"></video>`;
   let h=`<h2 class="vh">Deck and deep-dive cut</h2>
   <p class="lead">The NotebookLM detailed deck (15 slides) and the narrated 8.5-minute cut built from it. Each slide shows its narration line and the question card the cut asks before it. Slides outlined in amber carry claims the source ledger does not support; the caption says what is wrong.</p>
@@ -260,9 +260,9 @@ function renderDeck(){
   ${DEEP.youtube?`<p class="obj" style="margin-top:.4rem"><a href="https://www.youtube.com/watch?v=${DEEP.youtube}" target="_blank" rel="noopener">Open the deep-dive cut on YouTube ↗</a></p>`:""}
   <div class="note" style="margin-top:1rem"><b>Opening line.</b> ${esc(C.open||"")}<br><b>Recap.</b> ${esc(C.recap||"")}</div>
   <h3 style="margin:1.4rem 0 .5rem;font-size:1.05rem">Audio overview <span class="pill">8 min 44 s</span></h3>
-  <p class="obj">NotebookLM audio overview from the same notebook ("Fixing Microsoft Purview technical curriculum gaps").</p>
+  <p class="obj">NotebookLM audio overview from the DuckDB notebook, when that file is staged.</p>
   <audio controls preload="none" src="media/audio-overview.m4a" style="width:100%;max-width:640px"></audio>
-  <p class="obj" style="margin-top:1rem"><b>Downloads:</b> <a href="assets/downloads/purview-technical-blueprint.pdf" download>Deck as PDF (12 MB)</a> · <a href="assets/downloads/purview-deck.pptx" download>Deck as PowerPoint (12 MB)</a> · ${lib("media-cut-script","Cut script: narration and question cards")} · ${lib("media-shorts-plan","Shorts plan")} · ${lib("diagram-sources","Diagram sources (draw.io, Mermaid)")}</p>
+  <p class="obj" style="margin-top:1rem"><b>Downloads:</b> <a href="assets/downloads/duckdb-architecture-blueprint.pdf" download>Architecture blueprint (PDF)</a> · <a href="assets/downloads/duckdb-presentation.pptx" download>NotebookLM deck (PowerPoint)</a> · ${lib("media-cut-script","Cut script: narration and question cards")} · ${lib("media-shorts-plan","Shorts plan")} · ${lib("deep-dive","Technical deep dive")}</p>
   <h3 style="margin:1.6rem 0 .6rem;font-size:1.05rem">Slides</h3>
   <div class="deckrows">`;
   for(let i=1;i<=15;i++){
@@ -314,7 +314,7 @@ function renderGlossary(){
   const q=(LS.get(KEY+"gq","")||"").toLowerCase(), cat=LS.get(KEY+"gcat","all");
   const cats=[...new Set(DATA.glossary.map(g=>g.category))];
   let h=`<h2 class="vh">Glossary <span style="font-size:1rem;color:var(--text-dim)">${DATA.glossary.length} terms</span></h2>
-  <p class="lead">Feeds the flashcard decks. The first four groups follow the view where a term is earned; the rest came from the 2026-09-28 glossary gap pass (NotebookLM data table, checked against the source ledger). ${lib("glossary","Glossary note")} · ${lib("nblm-gap-table","Gap pass data table")}</p>
+  <p class="lead">Study definitions from the DuckDB source ledger. They are not a claim that the study day was sat. ${lib("glossary","Glossary note")} · ${lib("source-ledger","Source ledger")}</p>
   <input class="search" id="gSearch" placeholder="filter terms…" value="${esc(q)}">
   <div class="gfilters"><button class="b ${cat==="all"?"on":""}" data-gc="all">All (${DATA.glossary.length})</button>${cats.map(c=>`<button class="b ${cat===c?"on":""}" data-gc="${esc(c)}">${esc(c)} (${DATA.glossary.filter(g=>g.category===c).length})</button>`).join("")}</div>`;
   cats.filter(c=>cat==="all"||c===cat).forEach(c=>{
@@ -335,7 +335,7 @@ function renderPrompts(){
   const pl=(window.LIBRARY||[]).filter(p=>p.section==="Prompts");
   let h=`<h2 class="vh">Prompt library</h2>
   <p class="lead">Study prompts for any LLM, plus the NotebookLM prompts that generated this pack's reports and media.</p>
-  <div class="note danger"><b>Data hygiene.</b> No tenant names, secrets, credentials, or customer data in any model. Use synthetic designs and public Microsoft documentation.</div>`;
+  <div class="note danger"><b>Data hygiene.</b> No secrets, credentials, or private data in any model. Use public DuckDB docs and synthetic tables.</div>`;
   DATA.prompts.forEach(p=>{
     h+=`<div class="promptcat"><h3>${esc(p.cat)} <span class="pill">${esc(p.model)}</span></h3>
       <div class="obj" style="margin:.15rem 0 .4rem">${esc(p.desc)}</div>
@@ -354,7 +354,7 @@ function renderCounsel(){
   const views=[...new Set(DATA.checklist.map(c=>c.view))];
   const done=DATA.checklist.filter((_,i)=>LS.get(KEY+"cl:"+i,false)).length;
   let h=`<h2 class="vh">Failure modes</h2>
-  <p class="lead">Block 7: what breaks, what leaks, and what the controls actually stop. Check an item once you can name its tell and its fix without looking. ${lib("block-07-failure-modes-and-security","Block 7 note")} · ${lib("nblm-failure-modes","NotebookLM failure catalog")}</p>
+  <p class="lead">What breaks in the engine and at the trust boundary. Check an item once you can name its tell and its fix without looking. ${lib("block-05-edge-cases","Edge cases")} · ${lib("nblm-failure-modes","NotebookLM failure catalog")}</p>
   <div class="card" style="margin-bottom:1rem"><div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap"><h3>Failure-mode review</h3><span class="pct" style="font-weight:700;color:var(--accent-color)">${done} / ${DATA.checklist.length} reviewed</span></div></div>
   <div class="gfilters"><button class="b ${f==="all"?"on":""}" data-fv="all">All views</button>${views.map(v=>`<button class="b ${f===v?"on":""}" data-fv="${esc(v)}">${esc(v)}</button>`).join("")}</div>`;
   DATA.checklist.forEach((item,i)=>{
@@ -379,8 +379,8 @@ function renderCounsel(){
 /* ---- Decision rules (cheatsheet) ---- */
 function renderCheat(){
   const el=$("#v-cheat");
-  let h=`<h2 class="vh">Decision rules</h2><p class="lead">The cheatsheet: "when X, reach for Y", each tied to a source. ${lib("cheatsheet","Cheatsheet note")}</p>`;
-  DATA.cheat.forEach(s=>{h+=`<h3 style="margin:1.3rem 0 .6rem;font-size:1rem;color:var(--accent-color)">${esc(s.h)}</h3>`+s.r.map(r=>`<div class="rule">${cite(r)}</div>`).join("");});
+  let h=`<h2 class="vh">Decision rules</h2><p class="lead">When to reach for DuckDB, and when not to. ${lib("cheatsheet","Cheatsheet note")}</p>`;
+  DATA.cheat.forEach(s=>{h+=`<div class="rule"><b>${esc(s.t)}</b> ${cite(s.d)}</div>`;});
   h+=`<h3 style="margin:1.3rem 0 .6rem;font-size:1rem;color:var(--warn)">Falsifier</h3><div class="rule falsifier">${ec(DATA.falsifier)}</div>`;
   el.innerHTML=h;
 }
@@ -390,13 +390,9 @@ function renderEA(){
   const el=$("#v-ea");
   const tab=LS.get(KEY+"eaTab","all"), E=DATA.eaFrameworks;
   const box=(head,sub,items,color)=>`<div class="ea-box"><h4>${esc(head)}</h4><div style="font-weight:600;font-size:.8rem;color:${color||"var(--accent-color)"};margin-bottom:.4rem">${esc(sub)}</div><ul>${items.map(i=>`<li>${ec(i)}</li>`).join("")}</ul></div>`;
-  let h=`<h2 class="vh">Enterprise architecture mapping</h2>
-  <p class="lead">Where each view and component lands in TOGAF ADM and DoDAF, and the altitude rules that keep the views honest. ${lib("nblm-crosswalk","NotebookLM crosswalk report")}</p>
-  <div class="ea-subnav">${[["all","All"],["togaf","TOGAF ADM"],["dodaf","DoDAF viewpoints"],["alt","Altitude rules"],["table","Component cross-walk"]].map(([k,l])=>`<button class="ea-tab-btn ${tab===k?"active":""}" data-eatab="${k}">${l}</button>`).join("")}</div>`;
-  if(tab==="all"||tab==="togaf") h+=`<div class="ea-card"><h3>TOGAF ADM</h3><div class="ea-grid">${E.togaf.map(t=>box(t.phase,t.t,t.items)).join("")}</div></div>`;
-  if(tab==="all"||tab==="dodaf") h+=`<div class="ea-card"><h3>DoDAF viewpoints</h3><div class="ea-grid">${E.dodaf.map(t=>box(t.view,t.t,t.items,"var(--r300)")).join("")}</div></div>`;
-  if(tab==="all"||tab==="alt") h+=`<div class="ea-card"><h3>Altitude rules</h3><table class="ea-table"><thead><tr><th>View</th><th>Question</th><th>Allowed</th><th>Not allowed</th><th>Note</th></tr></thead><tbody>${E.altitudes.map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.q)}</td><td>${esc(a.allowed)}</td><td>${esc(a.forbidden)}</td><td>${lib(a.lib,"Open")}</td></tr>`).join("")}</tbody></table></div>`;
-  if(tab==="all"||tab==="table") h+=`<div class="ea-card"><h3>Component cross-walk</h3><table class="ea-table"><thead><tr><th>Component</th><th>TOGAF</th><th>DoDAF</th><th>Capabilities</th></tr></thead><tbody>${E.table.map(r=>`<tr>${r.map((c,i)=>`<td>${i?esc(c):"<b>"+esc(c)+"</b>"}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+  let h=`<h2 class="vh">Where it sits</h2>
+  <p class="lead">${esc(E.note||"")} ${lib("competitors","Competitors and closed lab")}</p>`;
+  h+=`<div class="ea-card"><h3>Neighboring tools</h3><div class="ea-grid">${DATA.miniModules.map(m=>box(m.name,m.t,[])).join("")}</div></div>`;
   el.innerHTML=h;
   $$(".ea-tab-btn",el).forEach(b=>b.onclick=()=>{LS.set(KEY+"eaTab",b.dataset.eatab);renderEA();});
 }
@@ -424,7 +420,7 @@ function renderReferences(){
   const q=(LS.get(KEY+"refq","")||"").toLowerCase(), sel=LS.get(KEY+"refcat","all");
   const cats=[...new Set(SOURCES.map(s=>s.g))];
   let h=`<h2 class="vh">Source ledger <span style="font-size:1rem;color:var(--text-dim)">${SOURCES.length} sources</span></h2>
-  <p class="lead">Microsoft Learn, service descriptions, reference architectures, and Microsoft Mechanics only. Row 27 is partner-authored; row 31 is a vendor page used only to confirm the far side of the OneTrust connection. ${lib("source-ledger","Ledger note")} · ${lib("resources","Resources by kind")}</p>
+  <p class="lead">Thirteen sources. Official docs and the SIGMOD paper are high trust. Smaug and BiTDB are nearby TEE papers about other engines. ${lib("source-ledger","Ledger note")} · ${lib("resources","Reading order")}</p>
   <input class="search" id="refSearch" placeholder="filter by title, URL, or type…" value="${esc(q)}">
   <div class="gfilters"><button class="b ${sel==="all"?"on":""}" data-rcat="all">All (${SOURCES.length})</button>${cats.map(c=>`<button class="b ${sel===c?"on":""}" data-rcat="${esc(c)}">${esc(c)} (${SOURCES.filter(s=>s.g===c).length})</button>`).join("")}</div>`;
   cats.filter(c=>sel==="all"||sel===c).forEach(c=>{

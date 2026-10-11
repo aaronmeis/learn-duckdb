@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intake record | Learn DuckDB</title>
+<meta name="description" content="Intake for one-day mastery of DuckDB.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library · Plan</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Plan</div>
+  <h1 class="doctitle">Intake record</h1>
+  <p class="lead">Intake for one-day mastery of DuckDB.</p>
+  
+  <article><h1>Intake — DuckDB</h1>
+<p><strong>Date:</strong> 2026-10-10<br />
+<strong>Mode:</strong> B (interview → draft mind map)</p>
+<h2>Mission snapshot</h2>
+<ul>
+<li><strong>Outcome:</strong> By the end of the day, explain DuckDB from zero and sketch one local analytics query you could defend. The sketch names the storage layout, the execution model, and when DuckDB beats Postgres, SQLite, Polars, or Spark. Success is a short written explanation plus that sketch, with one named failure mode.</li>
+<li><strong>Audience:</strong> Self-study. Own fluency so Aaron can place DuckDB in an architecture conversation. Not an exam and not a customer deliverable today. The teach-it block is practice for that conversation.</li>
+<li><strong>Depth:</strong> Working fluency across the engine, not a survey of every SQL function and not a single-subsystem deep dive. Enough to sketch a scan-join-aggregate and say why the engine runs it that way. A later day can go deep on one slice (vectorized execution, or the storage format).</li>
+<li><strong>Constraints:</strong> Eight hours available. The pack's focused blocks are about 5.5 hours. Extra time is source reading. Prefer official docs, the DuckDB paper, and at least two named talks. No cluster build and no install lab is required.</li>
+</ul>
+<h2>Coverage matrix (mind map → blocks)</h2>
+<table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Title</th>
+<th>Coverage</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Core concepts</td>
+<td>mapped</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>Mental models</td>
+<td>mapped</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Active practice</td>
+<td>mapped</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>Teach it</td>
+<td>mapped</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>Edge cases</td>
+<td>mapped</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>Spaced review</td>
+<td>mapped</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>Application</td>
+<td>mapped</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="callout question" markdown="0"><div class="callout-title">Falsification check</div><p>The day is a waste if it is a feature tour of SQL syntax that never says how columnar storage and vectorized execution change a query, and never names when Postgres, SQLite, Polars, or Spark is the better tool.</p></div>
+
+<h2>Interview answers</h2>
+<h3>outcome</h3>
+<p>By the end of the day, explain DuckDB from zero and sketch one local analytics query you could defend. The sketch names the storage layout, the execution model, and when DuckDB beats Postgres, SQLite, Polars, or Spark. Success is a short written explanation plus that sketch, with one named failure mode.</p>
+<h3>audience</h3>
+<p>Self-study. Own fluency so Aaron can place DuckDB in an architecture conversation. Not an exam and not a customer deliverable today. The teach-it block is practice for that conversation.</p>
+<h3>prior_knowledge</h3>
+<p>Assume zero. Define a table, a query, a join, OLTP versus OLAP, and row storage versus column storage before any DuckDB-specific term. Do not assume the CLI, Parquet, or EXPLAIN.</p>
+<h3>boundaries</h3>
+<p>Must include: what DuckDB is (in-process SQL database), row versus column storage, vectorized execution, morsel-driven parallelism, the single-file database, reading Parquet and CSV, EXPLAIN at a sketch level, extensions in outline, and when not to use DuckDB.</p>
+<p>Out of scope: a production deploy, building a DuckDB extension in C++, distributed DuckDB clusters, and multi-week academy depth. No local lab is required today.</p>
+<h3>depth</h3>
+<p>Working fluency across the engine, not a survey of every SQL function and not a single-subsystem deep dive. Enough to sketch a scan-join-aggregate and say why the engine runs it that way. A later day can go deep on one slice (vectorized execution, or the storage format).</p>
+<h3>constraints</h3>
+<p>Eight hours available. The pack's focused blocks are about 5.5 hours. Extra time is source reading. Prefer official docs, the DuckDB paper, and at least two named talks. No cluster build and no install lab is required.</p>
+<h3>falsifiers</h3>
+<p>The day is a waste if it is a feature tour of SQL syntax that never says how columnar storage and vectorized execution change a query, and never names when Postgres, SQLite, Polars, or Spark is the better tool.</p>
+<h2>Next</h2>
+<ol>
+<li>Review <a href="mindmap.html">mindmap</a></li>
+<li>Fill <a href="source-ledger.html">source-ledger</a> (≥3 URLs)</li>
+<li><code>python -m one_day_mastery blocks --slug duckdb</code></li>
+<li>Human gate on <a href="day-plan.html">day-plan</a> before W8</li>
+</ol></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\intake\2026-10-10 - Intake.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><a href="mission.html">&larr; Previous</a><a href="day-plan.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>
