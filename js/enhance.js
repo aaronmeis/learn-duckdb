@@ -1,7 +1,7 @@
 /* ============================================================
    Engagement layer: hash routing, Today + daily architecture
    challenge, Shorts feed, mobile tab bar and sheets, search
-   palette, streaks, export. Ported from learn-ai-law; loads after
+   palette, streaks. Ported from learn-ai-law; loads after
    js/data.js and js/app.js and reuses their globals.
    All saved keys use the "ld:" prefix: learn-ai-law shares this
    github.io origin, so unprefixed keys would collide.
@@ -604,8 +604,6 @@ function navSheet(group){
     html+=h`<div class="sheet-section"><h3>Appearance</h3><div class="seg" role="group" aria-label="Mode">
       <button type="button" data-mode="light" aria-pressed="${mode==="light"}" class="${mode==="light"?"on":""}">Light</button><button type="button" data-mode="dark" aria-pressed="${mode==="dark"}" class="${mode==="dark"?"on":""}">Dark</button></div>
       <div class="seg" role="group" aria-label="Palette">${[["github","GitHub"],["geist","Geist"],["catppuccin","Catppuccin"]].map(([k,l])=>`<button type="button" data-pal="${k}" aria-pressed="${pal===k}" class="${pal===k?"on":""}">${l}</button>`).join("")}</div></div>
-      <div class="sheet-section"><h3>Your progress</h3><p class="muted">Saved in this browser only. Export it to move between laptop and phone.</p>
-      <div class="btnrow"><button type="button" class="b" data-action="export">Export progress</button><button type="button" class="b" data-action="import">Import</button></div></div>
       <p class="muted sheet-disc">Study material grounded in the DuckDB source ledger. Local DuckDB is not a classified authorization.</p>`;
   }
   openSheet(title,html,body=>{
@@ -670,28 +668,6 @@ document.addEventListener("keydown",e=>{
 $("#navSearch").onclick=openPalette; $("#mSearch").onclick=openPalette;
 if(/Mac|iPhone|iPad/.test(navigator.platform||"")) $$("kbd").forEach(k=>{if(k.textContent==="Ctrl K")k.textContent="⌘K";});
 
-/* ---------- Export / import ---------- */
-const SHARED_KEYS=["appMode","appPalette"];
-function ours(k){return k.startsWith(KEY)||SHARED_KEYS.includes(k);}
-function exportProgress(){
-  const data={}; try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i); if(ours(k)) data[k]=localStorage.getItem(k);}}catch(e){}
-  const blob=new Blob([JSON.stringify({app:"learn-duckdb",version:1,exported:new Date().toISOString(),data},null,1)],{type:"application/json"});
-  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="duckdb-progress-"+dayKey()+".json"; document.body.appendChild(a); a.click();
-  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
-}
-function importProgress(file){
-  const r=new FileReader();
-  r.onload=()=>{try{
-    const j=JSON.parse(r.result); if(j.app!=="learn-duckdb"||!j.data) throw new Error("Not a progress file from this site.");
-    let n=0; Object.entries(j.data).forEach(([k,v])=>{if(ours(k)&&typeof v==="string"){localStorage.setItem(k,v);n++;}});
-    toast("Imported "+n+" saved items. Reloading…"); setTimeout(()=>location.reload(),900);
-  }catch(err){toast("Import failed: "+err.message);}};
-  r.readAsText(file);
-}
-document.addEventListener("click",e=>{const b=e.target.closest("[data-action]"); if(!b) return;
-  if(b.dataset.action==="export") exportProgress();
-  if(b.dataset.action==="import") $("#importFile").click();});
-$("#importFile").addEventListener("change",e=>{const f=e.target.files[0]; if(f) importProgress(f); e.target.value="";});
 function toast(msg){let t=$("#toast"); if(!t){t=document.createElement("div");t.id="toast";t.setAttribute("role","status");document.body.appendChild(t);} t.textContent=msg; t.classList.add("show"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("show"),3000);}
 
 /* ---------- Theme extras ---------- */
