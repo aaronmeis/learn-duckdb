@@ -198,6 +198,101 @@
 <td>Local DuckDB with no network is a deployment proposal. It is not permission to process classified data. No paper in this pack evaluates DuckDB in a classified lab. [<a class="cite" href="https://doi.org/10.1109/TDSC.2022.3216020" target="_blank" rel="noopener" title="Smaug: A TEE-Assisted Secured SQLite (TDSC 2023)">S11</a>][<a class="cite" href="https://doi.org/10.1109/TKDE.2024.3380367" target="_blank" rel="noopener" title="BiTDB: Built-in TEE Secure Database for Embedded Systems (TKDE 2024)">S12</a>]</td>
 <td>5</td>
 </tr>
+<tr>
+<td>Volcano</td>
+<td>One row at a time. Postgres and SQLite. DuckDB passes a chunk instead.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>STANDARD_VECTOR_SIZE</td>
+<td>The default batch of 2048 tuples. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Pipeline breaker</td>
+<td>Hash-join build, hash aggregate, or sort. It must see all input before it emits.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Exchange operator</td>
+<td>A fixed hash split across workers. One huge key stalls a worker. Morsels do not split that way.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Replacement scan</td>
+<td>A file path or a data frame in FROM, with no CREATE TABLE first. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Out-of-core</td>
+<td>Spill a join or aggregate to disk when RAM is not enough.</td>
+<td>5</td>
+</tr>
+<tr>
+<td>max_memory</td>
+<td>The threshold where spilling starts.</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Flat vector</td>
+<td>Tuple i lives at offset i.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Dictionary vector</td>
+<td>Distinct values once, plus indexes.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Constant vector</td>
+<td>One repeated value for the chunk.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>String prefix</td>
+<td>A 4-byte prefix on long strings so many comparisons skip the heap pointer.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Host fate</td>
+<td>A fatal error in the engine ends the host process.</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Transaction conflict</td>
+<td>Two threads in the writer process edit the same row.</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Parquet</td>
+<td>Columnar files scanned in place. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Arrow</td>
+<td>Shared memory DuckDB can scan without a copy into its own table. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Core versus extension</td>
+<td>SQL core stays small. Parquet, JSON, httpfs, spatial, and ICU load beside it. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Quack</td>
+<td>Named in the NotebookLM briefing as a client-server idea. Not the concurrency contract. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>DuckLake</td>
+<td>Named on a slide and in the 2026 talk. It does not change one writer for a local file. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>MonetDB and X100</td>
+<td>The vectorized line DuckDB comes from. Morsels come from HyPer. [<a class="cite" href="https://doi.org/10.1145/3183713.3183722" target="_blank" rel="noopener" title="MonetDBLite: An Embedded Analytical Database (SIGMOD 2018)">S7</a>]</td>
+<td>2</td>
+</tr>
 </tbody>
 </table></article>
   <footer class="docfoot">
