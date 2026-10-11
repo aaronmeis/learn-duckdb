@@ -293,8 +293,49 @@
 <td>The vectorized line DuckDB comes from. Morsels come from HyPer. [<a class="cite" href="https://doi.org/10.1145/3183713.3183722" target="_blank" rel="noopener" title="MonetDBLite: An Embedded Analytical Database (SIGMOD 2018)">S7</a>]</td>
 <td>2</td>
 </tr>
+<tr>
+<td>Sequence vector</td>
+<td>A start and a step. Used for ranges and row ids.</td>
+<td>2</td>
+</tr>
+<tr>
+<td>MVCC</td>
+<td>Inside the one writer, readers see a stable version. Two threads that edit the same row conflict. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>INSTALL and LOAD</td>
+<td>INSTALL fetches an extension. LOAD turns it on. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+<td>5</td>
+</tr>
+<tr>
+<td>GROUP BY ALL</td>
+<td>Group by every selected column that is not aggregated.</td>
+<td>3</td>
+</tr>
+<tr>
+<td>QUALIFY</td>
+<td>Filter a window result without a wrapping query.</td>
+<td>3</td>
+</tr>
+<tr>
+<td>EXPLAIN ANALYZE</td>
+<td>Run the query and print real time and counts. EXPLAIN only prints the plan. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>3</td>
+</tr>
+<tr>
+<td>:memory:</td>
+<td>A database with no file. It ends with the connection.</td>
+<td>3</td>
+</tr>
+<tr>
+<td>COPY</td>
+<td>Write a query result to CSV, Parquet, or JSON.</td>
+<td>3</td>
+</tr>
 </tbody>
-</table></article>
+</table>
+<p>NotebookLM quiz, data table, and an 80-card deck were downloaded on 2026-10-11 to <code>C:\output\obsidian\notebooklm\odm-duckdb\gap-2026-10-11\</code>. The data table's Quack and DuckLake rows were kept as notebook-only. They are not the concurrency contract.</p></article>
   <footer class="docfoot">
     Rendered from <code>Learning\one-day-mastery\duckdb\GLOSSARY.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
     <div class="prevnext"><span></span><a href="cheatsheet.html">Next &rarr;</a></div>

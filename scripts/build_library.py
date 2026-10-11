@@ -65,6 +65,9 @@ PAGES = [
     ("pipeline-runner", PACK / "scripts" / "notebooklm_w8_odm-duckdb.ps1", "Pipeline", "NotebookLM W8 runner script", False),
     ("nblm-key-claims", EXP / "Major Claims About DuckDB.csv", "NotebookLM reports", "Major claims", True),
     ("nblm-mindmap", EXP / "DuckDB Mastery.json", "NotebookLM reports", "NotebookLM mind map", True),
+    ("nblm-gap-quiz", EXP / "2026-10-11 Quiz.md", "NotebookLM study sets", "Engine quiz, 2026-10-11", True),
+    ("nblm-gap-cards", EXP / "2026-10-11 Flashcards.md", "NotebookLM study sets", "Flashcards, 2026-10-11", True),
+    ("nblm-gap-table", EXP / "2026-10-11 Glossary table.md", "NotebookLM study sets", "Glossary data table, 2026-10-11", True),
 ]
 
 

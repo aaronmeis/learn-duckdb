@@ -306,5 +306,26 @@
     "section": "NotebookLM reports",
     "desc": "",
     "nblm": true
+  },
+  {
+    "slug": "nblm-gap-quiz",
+    "title": "Engine quiz, 2026-10-11",
+    "section": "NotebookLM study sets",
+    "desc": "",
+    "nblm": true
+  },
+  {
+    "slug": "nblm-gap-cards",
+    "title": "Flashcards, 2026-10-11",
+    "section": "NotebookLM study sets",
+    "desc": "",
+    "nblm": true
+  },
+  {
+    "slug": "nblm-gap-table",
+    "title": "Glossary data table, 2026-10-11",
+    "section": "NotebookLM study sets",
+    "desc": "",
+    "nblm": true
   }
 ]

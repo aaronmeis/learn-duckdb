@@ -106,7 +106,14 @@ const DATA = {
     {section:3,question:"Is local DuckDB an authorization for classified data?",answer:"No. A lab still approves the binary, the extensions, and the machine. Smaug and BiTDB do not evaluate DuckDB.",src:"S11"},
     {section:2,question:"Which side should a hash join build?",answer:"The smaller side. The larger side probes.",src:"S2"},
     {section:3,question:"What does auto-install do?",answer:"It downloads an extension from extensions.duckdb.org. Turn it off in a closed room.",src:"S10"},
-    {section:1,question:"When is Spark the better tool?",answer:"When the working set will not fit one machine.",src:"S13"}
+    {section:1,question:"When is Spark the better tool?",answer:"When the working set will not fit one machine.",src:"S13"},
+    {section:2,question:"What does a sequence vector store?",answer:"A start and a step, not every value.",src:"S2"},
+    {section:3,question:"What happens when two threads in the writer update the same row?",answer:"The later commit fails with a transaction conflict. Appends do not conflict. Rerun the failed one.",src:"S3"},
+    {section:3,question:"What is the difference between INSTALL and LOAD?",answer:"INSTALL fetches the extension. LOAD activates it. Auto-install does both and should be off in a closed room.",src:"S10"},
+    {section:2,question:"Do extensions run in a separate process?",answer:"No. They run inside the host process, with that process's rights.",src:"S10"},
+    {section:2,question:"What does EXPLAIN ANALYZE add?",answer:"It runs the query and prints actual time and row counts. EXPLAIN only shows the plan.",src:"S1"},
+    {section:2,question:"What is GROUP BY ALL?",answer:"It groups by every selected column that is not aggregated.",src:"S1"},
+    {section:3,question:"What does opening :memory: do?",answer:"It creates a database with no file. The data is gone when the connection closes.",src:"S1"}
   ],
   glossary:[
     {category:"Placement",term:"DuckDB",rung:100,essential:true,definition:"An in-process analytical database. SQL runs in your process. One machine, one writer. [S1][S4]",source:"ledger"},
@@ -160,7 +167,15 @@ const DATA = {
     {category:"Trust",term:"Core versus extension",rung:200,essential:true,definition:"The core is the SQL engine with no extra libraries. Parquet, JSON, httpfs, spatial, and ICU are extensions loaded beside it. [S10]",source:"ledger"},
     {category:"Trust",term:"Quack",rung:300,definition:"A client-server idea named in the NotebookLM briefing. It is not the concurrency contract. The contract is one writer process. [S3]",source:"nblm-briefing"},
     {category:"Trust",term:"DuckLake",rung:300,definition:"A catalog idea named on a slide and in the 2026 talk. It does not change the one-writer rule for a local DuckDB file. [S3]",source:"nblm-briefing"},
-    {category:"Placement",term:"MonetDB and X100",rung:200,definition:"The earlier vectorized engine. DuckDB's chunked execution comes from that line, then from HyPer's morsels. [S7]",source:"ledger"}
+    {category:"Placement",term:"MonetDB and X100",rung:200,definition:"The earlier vectorized engine. DuckDB's chunked execution comes from that line, then from HyPer's morsels. [S7]",source:"ledger"},
+    {category:"Engine",term:"Sequence vector",rung:300,definition:"A start value and a step. Ranges and row ids do not store every number.",source:"nblm-gap"},
+    {category:"Engine",term:"MVCC",rung:300,essential:true,definition:"Inside the one writer process, readers can see a stable version while another thread writes. Two threads that edit the same row conflict. [S3]",source:"nblm-gap"},
+    {category:"Operations",term:"INSTALL and LOAD",rung:200,essential:true,definition:"INSTALL downloads an extension. LOAD turns it on in this session. Auto-install does both. Turn that off in a closed room. [S10]",source:"nblm-gap"},
+    {category:"Operations",term:"GROUP BY ALL",rung:200,definition:"Groups by every selected column that is not inside an aggregate, so you do not retype the list.",source:"nblm-gap"},
+    {category:"Operations",term:"QUALIFY",rung:200,definition:"Filters a window-function result in the same query, without wrapping it in another SELECT.",source:"nblm-gap"},
+    {category:"Engine",term:"EXPLAIN ANALYZE",rung:200,definition:"Runs the query and prints real time and row counts. EXPLAIN only prints the plan. [S1]",source:"nblm-gap"},
+    {category:"Operations",term:":memory:",rung:100,definition:"The path that opens a database with no file. It disappears when the process ends.",source:"nblm-gap"},
+    {category:"Operations",term:"COPY",rung:100,definition:"Writes a table or a query result to CSV, Parquet, or JSON.",source:"nblm-gap"}
   ],
   views:{
     conceptual:{rule:"What and why. In-process analytics, not a server.",lib:"",img:[],
@@ -200,6 +215,334 @@ DATA.cut = {
   ],
   open: "This cut walks the NotebookLM slides.",
   recap: "In-process OLAP, vectors, morsels, one writer, and the line you do not cross into MotherDuck."
+};
+
+DATA.nblmDecks = {
+  "engine": {
+    "title": "NotebookLM deck, 2026-10-11",
+    "cards": [
+      {
+        "front": "What is DuckDB?",
+        "back": "An embeddable, in-process analytical (OLAP) SQL database management system."
+      },
+      {
+        "front": "How does DuckDB differ from SQLite in terms of workload optimization?",
+        "back": "SQLite is optimized for transactional workloads (OLTP), whereas DuckDB is optimized for analytical workloads (OLAP)."
+      },
+      {
+        "front": "What does it mean for DuckDB to be an 'in-process' database engine?",
+        "back": "The database engine runs directly inside the client host application process rather than as a separate client-server process."
+      },
+      {
+        "front": "What primary operational overhead is eliminated by DuckDB's in-process architecture?",
+        "back": "Client-server network protocol IPC overhead and socket serialization when transferring data."
+      },
+      {
+        "front": "Which programming language standard was used to implement DuckDB?",
+        "back": "C++11."
+      },
+      {
+        "front": "What dependency constraint was prioritized during DuckDB's core engine design?",
+        "back": "Zero external dependencies."
+      },
+      {
+        "front": "What is columnar storage?",
+        "back": "A physical data layout that organizes stored data contiguously column by column rather than row by row."
+      },
+      {
+        "front": "Why is columnar storage advantageous for analytical queries?",
+        "back": "Analytical queries typically select or aggregate a few columns over many rows, allowing the engine to read only the required columns from disk or memory."
+      },
+      {
+        "front": "What is vectorized query execution?",
+        "back": "An execution model where physical operators process uniform batches of data array vectors per operation rather than single rows at a time."
+      },
+      {
+        "front": "What is the default vector size (`STANDARD_VECTOR_SIZE`) in DuckDB?",
+        "back": "2048 tuples."
+      },
+      {
+        "front": "What is a `DataChunk` in DuckDB?",
+        "back": "A collection of column `Vector` instances representing a logical data block passed between execution operators."
+      },
+      {
+        "front": "How does vectorized query execution improve CPU performance during query processing?",
+        "back": "It keeps small working data vectors inside CPU cache, minimizes function call dispatch overhead, and improves branch prediction."
+      },
+      {
+        "front": "What is a Flat Vector in DuckDB's execution format?",
+        "back": "The standard uncompressed physical vector format stored as a contiguous memory array."
+      },
+      {
+        "front": "What is a Constant Vector in DuckDB?",
+        "back": "A physical vector format that stores only a single value to represent repeated constant elements across a batch."
+      },
+      {
+        "front": "What components make up a Dictionary Vector?",
+        "back": "A child vector containing unique data values and a selection vector containing index pointers into the child vector."
+      },
+      {
+        "front": "What information defines a Sequence Vector in DuckDB?",
+        "back": "A starting offset and a fixed increment value."
+      },
+      {
+        "front": "How are short strings ($\\le 12$ bytes) physically stored in DuckDB String Vectors?",
+        "back": "Short strings are inlined directly within the vector structure without using external pointers."
+      },
+      {
+        "front": "How are long strings ($> 12$ bytes) physically stored in DuckDB String Vectors?",
+        "back": "Long strings store a length, a 4-byte prefix, and a pointer to the auxiliary string buffer."
+      },
+      {
+        "front": "What is the optimization purpose of storing a 4-byte prefix in string vector entries?",
+        "back": "It allows early-out comparison without dereferencing pointer addresses when string prefixes do not match."
+      },
+      {
+        "front": "What is morsel-driven parallelism?",
+        "back": "A dynamic thread parallelism framework where worker threads dynamically retrieve small chunks of work (morsels) from query pipeline sources."
+      },
+      {
+        "front": "How does morsel-driven parallelism differ from traditional exchange-operator parallelism?",
+        "back": "Exchange operators bake fixed thread partitioning into query plans, whereas morsel-driven parallelism allows query operators to dynamically schedule tasks across available threads."
+      },
+      {
+        "front": "What is a query pipeline in DuckDB's execution model?",
+        "back": "A sequence of streaming operators connected between a data source operator and a blocking sink operator."
+      },
+      {
+        "front": "What is a pipeline breaker (blocking operator)?",
+        "back": "An operator that must consume and collect all input tuples before producing its output, such as `ORDER BY` or hash join build phases."
+      },
+      {
+        "front": "How does morsel-driven scheduling prevent worker threads from stalling on skewed key distributions?",
+        "back": "Idle threads automatically fetch subsequent unassigned morsels from the queue rather than waiting for a blocked thread to finish."
+      },
+      {
+        "front": "How many external writer processes can simultaneously write to a native DuckDB file in read-write mode?",
+        "back": "Exactly one process."
+      },
+      {
+        "front": "What concurrency control mechanisms manage multiple writer threads within a single DuckDB process?",
+        "back": "Multi-Version Concurrency Control (MVCC) combined with Optimistic Concurrency Control (OCC)."
+      },
+      {
+        "front": "When does Optimistic Concurrency Control raise a transaction conflict error in DuckDB?",
+        "back": "When two concurrent threads attempt to edit or delete the exact same row at the same time."
+      },
+      {
+        "front": "What is the recommended recovery action when DuckDB encounters an OCC transaction conflict error?",
+        "back": "Rerun the failed transaction."
+      },
+      {
+        "front": "What setting enables multiple independent external processes to read from the same DuckDB database file?",
+        "back": "`access_mode = 'READ_ONLY'`"
+      },
+      {
+        "front": "Under what condition is `READ_ONLY` mode safe across multiple processes?",
+        "back": "Provided that no process is concurrently attempting to perform write operations on the database file."
+      },
+      {
+        "front": "What risk exists when accessing native DuckDB database files stored on network-attached storage or shared operating systems?",
+        "back": "Inconsistent file locking behavior across differing file systems can corrupt or lock access."
+      },
+      {
+        "front": "What is a replacement scan in DuckDB?",
+        "back": "A mechanism that intercepts file path strings or in-memory dataframe variables inside a SQL `FROM` clause and substitutes a table scan operator."
+      },
+      {
+        "front": "What happens when a SQL query specifies `FROM 'data.parquet'` directly?",
+        "back": "DuckDB triggers a replacement scan to read the Parquet file directly without requiring a pre-loaded table schema."
+      },
+      {
+        "front": "How does DuckDB handle schema detection when executing `SELECT * FROM 'dataset.csv'`?",
+        "back": "Its CSV reader runs an automatic detection routine that infers delimiters, headers, and column data types dynamically."
+      },
+      {
+        "front": "How does Parquet metadata filter pushdown reduce read I/O during query execution?",
+        "back": "It inspects min/max column statistics stored in the Parquet metadata and skips reading whole row groups if filters fall outside range bounds."
+      },
+      {
+        "front": "What is DuckDB's out-of-core capability?",
+        "back": "The ability to execute analytical queries on working datasets that exceed total system RAM by spilling intermediate data to disk."
+      },
+      {
+        "front": "What query hazard can cause an Out-Of-Memory (OOM) failure despite out-of-core spilling capabilities?",
+        "back": "Unbounded Cartesian cross joins or unconstrained memory expansion across massive join keys."
+      },
+      {
+        "front": "What is the primary role of extensions in DuckDB?",
+        "back": "To dynamically add optional features, custom functions, specialized file formats, or storage backends without bloating core binary dependencies."
+      },
+      {
+        "front": "Which SQL command downloads and installs a DuckDB extension binary?",
+        "back": "`INSTALL extension_name;`"
+      },
+      {
+        "front": "Which SQL command activates an installed extension within a DuckDB session?",
+        "back": "`LOAD extension_name;`"
+      },
+      {
+        "front": "What is extension auto-installation in DuckDB?",
+        "back": "A feature where DuckDB automatically fetches, installs, and loads an officially supported extension when a related function or format is referenced."
+      },
+      {
+        "front": "What capabilities does the `httpfs` core extension provide?",
+        "back": "Direct HTTP(S) network file reading and S3 cloud storage object access."
+      },
+      {
+        "front": "Why is `httpfs` distributed as an extension rather than built into the core DuckDB engine binary?",
+        "back": "To prevent linking the heavy OpenSSL dependency directly into the zero-dependency core binary."
+      },
+      {
+        "front": "Why do DuckDB extensions represent a security trust boundary?",
+        "back": "Loaded extensions run arbitrary native dynamic code directly inside the host process space with full process permissions."
+      },
+      {
+        "front": "What is the purpose of the SQL `ATTACH` command in DuckDB?",
+        "back": "To mount an external DuckDB database file (or external database format) into the active catalog namespace."
+      },
+      {
+        "front": "How does DuckDB reference tables residing in attached database files?",
+        "back": "Using fully qualified schema notation: `database_name.schema_name.table_name`."
+      },
+      {
+        "front": "What does the `EXPLAIN` statement output when prepended to a SQL query?",
+        "back": "The logical and physical query execution plan tree showing scans, filters, joins, and aggregates without executing the query."
+      },
+      {
+        "front": "How does `EXPLAIN ANALYZE` differ from standard `EXPLAIN`?",
+        "back": "`EXPLAIN ANALYZE` actually executes the query and prints operator profiling details, including actual elapsed execution time and tuple counts."
+      },
+      {
+        "front": "When should an architect choose PostgreSQL over DuckDB?",
+        "back": "When the system requires a persistent, centralized, multi-user client-server OLTP database with heavy concurrent transactional writes."
+      },
+      {
+        "front": "When should an architect choose SQLite over DuckDB?",
+        "back": "When embedding an in-process transactional database focused on low-latency point reads and single-row updates."
+      },
+      {
+        "front": "When should an architect choose Apache Spark over DuckDB?",
+        "back": "When data scale requires distributed processing distributed across a compute cluster rather than single-node processing."
+      },
+      {
+        "front": "What architectural failure mode occurs if DuckDB is selected as the database engine for a concurrent web app OLTP server?",
+        "back": "Write concurrency bottlenecks and transaction conflicts occur because DuckDB permits only a single writer process."
+      },
+      {
+        "front": "What is the result of executing `FROM 'events.parquet'` in DuckDB's friendly SQL dialect?",
+        "back": "It expands implicitly into `SELECT * FROM 'events.parquet'`."
+      },
+      {
+        "front": "What does `GROUP BY ALL` do in DuckDB?",
+        "back": "It automatically groups by all non-aggregated columns present in the `SELECT` clause without listing column names explicitly."
+      },
+      {
+        "front": "What problem does Unified Vector Format solve inside physical operators?",
+        "back": "It provides a standardized vector abstraction that prevents a combinatorial explosion of operator code branches for different vector representations."
+      },
+      {
+        "front": "How are Struct Vectors logically and physically structured internally?",
+        "back": "As a list of child vectors where each child vector corresponds to one field in the struct schema."
+      },
+      {
+        "front": "How are List Vectors represented internally in DuckDB?",
+        "back": "Using a single flat child vector of elements alongside a vector of `list_entry_t` structs containing starting offsets and lengths."
+      },
+      {
+        "front": "How are Map Vectors physically stored in DuckDB's vector layer?",
+        "back": "As a `LIST[STRUCT(key, value)]`."
+      },
+      {
+        "front": "What is bulk MVCC in DuckDB?",
+        "back": "A multi-version concurrency control variant designed specifically to handle large column modifications and bulk appends efficiently."
+      },
+      {
+        "front": "Which data structure is utilized for internal indexes in DuckDB?",
+        "back": "Adaptive Radix Trees (ART)."
+      },
+      {
+        "front": "What historical database system served as the embedded analytical predecessor built by the same creators before DuckDB?",
+        "back": "MonetDBLite."
+      },
+      {
+        "front": "Who authored the foundational SIGMOD 2019 DuckDB system paper?",
+        "back": "Mark Raasveldt and Hannes Mühleisen."
+      },
+      {
+        "front": "How do concurrent threads behave during append operations in single-process mode?",
+        "back": "Appends never conflict with one another, allowing simultaneous concurrent thread inserts."
+      },
+      {
+        "front": "What protocol facilitates multi-process network client-server communication to native DuckDB database formats?",
+        "back": "The NotebookLM briefing names Quack as a client-server protocol. It is not the concurrency contract. A local file still has one writer process."
+      },
+      {
+        "front": "How does the DuckLake format coordinate concurrent database writes across independent processes?",
+        "back": "The briefing describes DuckLake as metadata in a catalog database. That is a notebook claim. It does not change one writer on a local DuckDB file."
+      },
+      {
+        "front": "How is a pure in-memory DuckDB instance instantiated?",
+        "back": "By opening a database connection using the special path string `':memory:'`."
+      },
+      {
+        "front": "What is the purpose of the `SUMMARIZE` query statement in DuckDB?",
+        "back": "It computes summary statistics (min, max, null count, distinct values, q25, median, q75) for every column in a target table."
+      },
+      {
+        "front": "How does DuckDB achieve efficient scans when executing SQL over Python Pandas DataFrames?",
+        "back": "It inspects and reads existing in-memory Pandas buffers directly without copying data into internal tables."
+      },
+      {
+        "front": "What in-memory standard format enables zero-copy interprocess data transfer between DuckDB and scientific runtimes?",
+        "back": "Apache Arrow."
+      },
+      {
+        "front": "Why does vectorized execution improve loop performance in modern CPU hardware?",
+        "back": "Tight loops over uniform primitive arrays allow compilers to generate SIMD instructions and keep instructions cache-resident."
+      },
+      {
+        "front": "What binary footprint downside is avoided by choosing vectorization over Just-In-Time (JIT) compilation?",
+        "back": "Avoiding the requirement to embed a heavy compiler infrastructure like LLVM inside the binary runtime."
+      },
+      {
+        "front": "What is the function of the SQL `COPY` statement in DuckDB?",
+        "back": "To export table data or query results directly into structured file formats like CSV, Parquet, or JSON."
+      },
+      {
+        "front": "What is Hive Partitioning recognition during file scans?",
+        "back": "A feature that automatically parses key-value directory paths (e.g. `/year=2024/month=10/`) into queryable virtual schema columns."
+      },
+      {
+        "front": "What operation does the `CHECKPOINT` statement trigger in DuckDB?",
+        "back": "It flushes in-memory transaction write-ahead logs to persistent main database storage blocks and reclaims file space."
+      },
+      {
+        "front": "What is the purpose of the `QUALIFY` clause in DuckDB SQL syntax?",
+        "back": "To filter the results of window functions directly without wrapping the query inside a subquery or CTE."
+      },
+      {
+        "front": "How does DuckDB's Secret Manager assist cloud storage access?",
+        "back": "It securely stores and manages authentication credentials for external services like S3 or Azure Object Store."
+      },
+      {
+        "front": "Why can parallel table scans return rows in variable order across query runs?",
+        "back": "Morsel scheduling dynamically distributes work chunks across threads, making output order non-deterministic unless `ORDER BY` is explicit."
+      },
+      {
+        "front": "What catalog caching advantage is provided by DuckDB's in-process connection model?",
+        "back": "Function pointers, schema catalogs, and memory buffers remain cached across queries on the same connection handle."
+      },
+      {
+        "front": "What is the primary difference between a logical query plan and a physical query plan?",
+        "back": "Logical plans define relational operations abstractly, while physical plans assign concrete execution algorithms (e.g. Hash Join vs. Nested Loop Join)."
+      },
+      {
+        "front": "How does subquery unnesting optimize nested SQL queries?",
+        "back": "It transforms correlated subqueries into equivalent joins or aggregates, avoiding repeated subquery re-execution per row."
+      }
+    ]
+  }
 };
 
 DATA.watch = [
