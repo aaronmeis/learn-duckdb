@@ -163,6 +163,8 @@ function show(v,sub){
   pauseHiddenMedia();
   if(v==="today") renderToday();
   if(v==="shorts"){ if(sub) selectShortById(sub,false); renderShorts(); }
+  const paint={glossary:renderGlossary,quiz:renderQuiz,views:renderViews,refs:renderReferences,flash:renderFlash,library:renderLibrary,cheat:renderCheat,failures:renderCounsel,prompts:renderPrompts,ea:renderEA,map:renderMap,dashboard:renderDashboard,curriculum:renderCurriculum,deck:renderDeck};
+  if(changed && paint[v]) paint[v]();
   if(changed){
     const main=$("#main"); if(main) main.scrollTop=0;
     window.scrollTo(0,0);
@@ -610,7 +612,15 @@ function navSheet(group){
 }
 $$("#mTabbar [data-sheet]").forEach(b=>b.onclick=()=>navSheet(b.dataset.sheet));
 $("#sheetBackdrop").onclick=closeSheet;
-$("#sheetBody").addEventListener("click",e=>{ if(e.target.closest(".sheet-list a")) closeSheet(); });
+$("#sheetBody").addEventListener("click",e=>{
+  const a=e.target.closest(".sheet-list a");
+  if(!a) return;
+  e.preventDefault();
+  const m=(a.getAttribute("href")||"").match(/#\/([\w-]+)/);
+  lastFocus=null;
+  closeSheet();
+  if(m) go(m[1]);
+});
 (function(){let y0=null;const s=$("#sheet");
   s.addEventListener("touchstart",e=>{if(s.scrollTop<=0&&e.target.closest(".sheet-grip,.sheet-title"))y0=e.touches[0].clientY;},{passive:true});
   s.addEventListener("touchend",e=>{if(y0!==null&&e.changedTouches[0].clientY-y0>60)closeSheet();y0=null;},{passive:true});})();

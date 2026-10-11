@@ -21,7 +21,7 @@ function go(v){
   $$("#nav .nav-item").forEach(el=>el.classList.toggle("active",el.dataset.v===v));
   $$("section.view").forEach(el=>el.classList.toggle("active",el.id==="v-"+v));
   LS.set(KEY+"view",v);
-  if(location.hash!=="#"+v) history.replaceState(null,"","#"+v);
+  if(location.hash!=="#/"+v) history.replaceState(null,"","#/"+v);
   window.scrollTo(0,0); const mc=$(".main-content"); if(mc) mc.scrollTop=0;
 }
 $$("#nav .nav-item").forEach(el=>el.onclick=()=>go(el.dataset.v));
