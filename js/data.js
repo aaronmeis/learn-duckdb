@@ -16,48 +16,106 @@ const SOURCES = [
 
 const DATA = {
   weeks:[
-    {n:1,title:"What DuckDB is",time:"60 min",rungs:"100",lib:"",
-     opener:"DuckDB is an in-process column store for analytics on one machine. It is not a server, and it is not a multi-user system of record [S1][S4].",
-     obj:"Name the missing quadrant: in-process OLAP. Say what the client-server hop costs.",
-     deliv:"A two-sentence definition and the tool you would not pick.",
+    {n:1,title:"Placement",time:"25 min",rungs:"100",lib:"block-01-core-concepts",
+     opener:"DuckDB is in-process OLAP. SQLite is in-process OLTP. Postgres is a server of record. A warehouse is client-server OLAP [S4].",
+     obj:"Name the missing quadrant and the tool you would not pick.",
+     deliv:"Two sentences: what DuckDB is, and one workload you refuse.",
      mods:[
-       {t:"In the process, not on the other side of a socket [S4]",rl:"scope · 100",
-        action:"Write the boundary: in for local scans and aggregates, out for many writers.",
-        whyMatters:"Most bad designs start by treating DuckDB as Postgres."},
-       {t:"The missing quadrant [S4]",rl:"scope · 100",
-        action:"Place SQLite, Postgres, Snowflake, and DuckDB on the OLTP/OLAP and embedded/server axes.",
-        whyMatters:"SQLite already owns embedded transactions. DuckDB owns the analytical corner."}
+       {t:"In-process versus client-server [S4]",rl:"scope · 100", action:"Write the hop you remove: the socket and the copy of each result row.", whyMatters:"A design that treats DuckDB as Postgres starts in the wrong quadrant."},
+       {t:"The four-box map [S4]",rl:"scope · 100", action:"Place SQLite, Postgres, Snowflake, and DuckDB on OLTP/OLAP and embedded/server.", whyMatters:"SQLite already owns embedded transactions."}
      ],
-     vids:[{s:1},{s:4}], lib:"block-01-core-concepts"},
-    {n:2,title:"How a query runs",time:"90 min",rungs:"200",lib:"",
-     opener:"A query reads the columns it names, in batches of 2048, and threads take morsels of that pipeline [S2][S5].",
-     obj:"Sketch a scan, a hash join built on the small side, and an aggregate.",
-     deliv:"The sketch, plus one line on what EXPLAIN should show.",
+     vids:[{s:4},{s:6}]},
+    {n:2,title:"Columnar storage",time:"20 min",rungs:"100",lib:"block-01-core-concepts",
+     opener:"Values of one column sit together. A SUM reads that column and skips the rest [S2].",
+     obj:"Say why a row store wastes I/O on a two-column query of a wide table.",
+     deliv:"One sketch: a SUM of amount that does not read name.",
      mods:[
-       {t:"Columnar scan [S2]",rl:"engine · 200", action:"Explain why SUM(amount) does not read the name column.", whyMatters:"This is the I/O win."},
-       {t:"DataChunk of 2048 [S2]",rl:"engine · 200", action:"Contrast a vectorized pipeline with a row-at-a-time loop.", whyMatters:"The batch stays in cache."},
-       {t:"Morsels [S5]",rl:"engine · 200", action:"Say what happens to idle threads when one key is huge.", whyMatters:"A fixed split stalls. A queue does not."}
+       {t:"Column versus row [S2]",rl:"engine · 100", action:"Draw a 4-column table both ways and circle what SUM(amount) reads.", whyMatters:"This is the I/O win, before any DuckDB-specific term."},
+       {t:"OLAP versus OLTP [S4]",rl:"scope · 100", action:"Name a query that belongs in each box.", whyMatters:"A point lookup of one order is not DuckDB's job."}
      ],
-     vids:[{s:2},{s:5}], lib:"block-02-mental-models"},
-    {n:3,title:"Limits and the cloud line",time:"60 min",rungs:"300",lib:"",
-     opener:"One process writes. Other processes read only in read-only mode. ATTACH md: leaves the machine [S3][S8].",
-     obj:"Name three refusals and the closed-lab rule for extensions.",
-     deliv:"A failure mode with its tell and its fix.",
+     vids:[{s:2},{s:4}]},
+    {n:3,title:"Vectors and DataChunk",time:"30 min",rungs:"200",lib:"block-02-mental-models",
+     opener:"Operators process a batch, not one row. The default batch is 2048 tuples, STANDARD_VECTOR_SIZE [S2].",
+     obj:"Contrast Volcano with a DataChunk.",
+     deliv:"One sentence on why 2048 sits in cache, and what changing that constant costs.",
      mods:[
-       {t:"Single writer [S3]",rl:"ops · 300", action:"State when a second process may open the file.", whyMatters:"Database locked is usually a second writer."},
-       {t:"Extensions and MotherDuck [S8][S10]",rl:"trust · 300", action:"List what must stay off in a closed room.", whyMatters:"An extension runs with the rights of the process, and auto-install fetches from the public site."}
+       {t:"Volcano versus a chunk [S2]",rl:"engine · 200", action:"Name the function-call cost of next() per row.", whyMatters:"Postgres and SQLite still pull one tuple at a time."},
+       {t:"Vector layouts",rl:"engine · 200", action:"Define flat, dictionary, constant, and sequence vectors in one line each.", whyMatters:"A constant + 5 is stored once, not 2048 times."}
      ],
-     vids:[{s:3},{s:7}], lib:"block-05-edge-cases"},
-    {n:4,title:"Practice and the reports",time:"90 min",rungs:"200",lib:"nblm-study-guide",
-     opener:"The NotebookLM study guide, failure catalog, and decision packet are the long read. The ledger still wins where they disagree.",
-     obj:"Work the quiz and one failure mode without notes.",
-     deliv:"One card you can explain, and one report claim you will not treat as an SLA.",
+     vids:[{s:2},{s:5}]},
+    {n:4,title:"Morsels",time:"20 min",rungs:"200",lib:"block-02-mental-models",
+     opener:"Idle threads pull work from a queue. That idea comes from HyPer, not from the 2019 paper [S5].",
+     obj:"Say what a fixed hash split does when one key is huge.",
+     deliv:"The stall, and the queue that avoids it.",
      mods:[
-       {t:"Study guide",rl:"engine · 200", action:"Read the in-process versus client-server section, then the vector section.", whyMatters:"This is the long form of blocks 1 and 2."},
-       {t:"Failure catalog",rl:"ops · 300", action:"Name the tell for a second writer, a join that will not fit, and a file on a network drive.", whyMatters:"Those three are the day-one traps."},
-       {t:"Decision packet",rl:"scope · 200", action:"Write the tool you would stop using for a file that fits one machine.", whyMatters:"The packet is a decision, not a feature list."}
+       {t:"Exchange versus morsel [S5]",rl:"engine · 200", action:"Write the idle-thread story for a skewed join key.", whyMatters:"A static partition leaves cores waiting."},
+       {t:"Scan order",rl:"engine · 200", action:"State when ORDER BY is required.", whyMatters:"Parallel scans can return rows in a different order each run."}
      ],
-     vids:[{s:5}]}
+     vids:[{s:5}]},
+    {n:5,title:"Files and replacement scans",time:"25 min",rungs:"200",lib:"block-03-active-practice",
+     opener:"FROM 'events.parquet' is a scan. There is no CREATE TABLE first [S1].",
+     obj:"Name three sources DuckDB can read without a load step.",
+     deliv:"A one-line query against a Parquet path, plus one risk of missing statistics.",
+     mods:[
+       {t:"Replacement scan [S1]",rl:"engine · 200", action:"Write SELECT from a Parquet path and from a Pandas frame.", whyMatters:"A loader script is often the thing to stop."},
+       {t:"Predicate pushdown [S1]",rl:"engine · 200", action:"Say what a Parquet row group skip does for a filter.", whyMatters:"The file format, not DuckDB magic, is doing that work."}
+     ],
+     vids:[{s:1},{s:2}]},
+    {n:6,title:"Joins, breakers, and spill",time:"30 min",rungs:"300",lib:"block-03-active-practice",
+     opener:"A hash join builds on the small side. A sort or a global aggregate must see all input before it emits [S2].",
+     obj:"Name a pipeline breaker and what happens when the hash table will not fit.",
+     deliv:"The EXPLAIN line you would look at, and the setting that starts a spill.",
+     mods:[
+       {t:"Hash join build side [S2]",rl:"engine · 300", action:"Label the small table as the build side on a sketch.", whyMatters:"The wrong side is a common out-of-memory death."},
+       {t:"Out-of-core and max_memory [S2]",rl:"engine · 300", action:"Write what a spill does, and what a plan that cannot spill does.", whyMatters:"max_memory is a threshold, not a safety net."}
+     ],
+     vids:[{s:2},{s:1}]},
+    {n:7,title:"One writer",time:"25 min",rungs:"300",lib:"block-05-edge-cases",
+     opener:"One process writes the file. Other processes open it only as READ_ONLY. Inside the writer, two threads that edit the same row conflict [S3].",
+     obj:"Separate a second process from a second thread.",
+     deliv:"The tell for Database locked, and the tell for a transaction conflict.",
+     mods:[
+       {t:"Process versus thread [S3]",rl:"ops · 300", action:"Write who may write, and who may only read.", whyMatters:"MVCC is inside the one writer. It is not multi-process writing."},
+       {t:"Appends versus updates [S3]",rl:"ops · 300", action:"Say which of two concurrent appends fail.", whyMatters:"Appends do not conflict. Same-row updates do."}
+     ],
+     vids:[{s:3}]},
+    {n:8,title:"Extensions",time:"20 min",rungs:"200",lib:"block-05-edge-cases",
+     opener:"The core is the SQL engine with no extra libraries. Parquet, JSON, httpfs, spatial, and ICU load beside it and run with the host's rights [S10].",
+     obj:"Separate INSTALL, LOAD, and auto-install.",
+     deliv:"The closed-room setting: auto-install off, unsigned extensions off.",
+     mods:[
+       {t:"Core versus extension [S10]",rl:"trust · 200", action:"List three features that are not in the core binary.", whyMatters:"A crash in an extension takes the host process down."},
+       {t:"Auto-install [S10]",rl:"trust · 300", action:"Name the host that DuckDB contacts on first use of a missing extension.", whyMatters:"A closed room cannot allow that fetch."}
+     ],
+     vids:[{s:10},{s:1}]},
+    {n:9,title:"MotherDuck",time:"20 min",rungs:"300",lib:"competitors",
+     opener:"MotherDuck is a separate cloud product. ATTACH md: mounts it into this session. Dual execution can run part of the query in their cloud [S8][S9].",
+     obj:"Name the statement that leaves the machine.",
+     deliv:"One sentence: local DuckDB is not MotherDuck.",
+     mods:[
+       {t:"ATTACH md: [S8]",rl:"trust · 300", action:"Write what credentials and network that statement needs.", whyMatters:"After it, the query is no longer confined to the laptop."},
+       {t:"Dual execution [S9]",rl:"trust · 300", action:"Say how shipping rows between local and cloud can erase a hoped-for speedup.", whyMatters:"The CIDR 2024 paper is the source, not a slide."}
+     ],
+     vids:[{s:8},{s:9}]},
+    {n:10,title:"Closed lab and host fate",time:"20 min",rungs:"300",lib:"competitors",
+     opener:"A local binary with no network is a deployment proposal. It is not permission to process classified data. Smaug and BiTDB study other engines [S11][S12].",
+     obj:"Name two papers that do not certify DuckDB, and one crash that takes the host down.",
+     deliv:"The closed-lab rule in one sentence.",
+     mods:[
+       {t:"Not an authorization [S11][S12]",rl:"trust · 300", action:"Write what a lab still has to approve: binary, extensions, machine.", whyMatters:"Nearby TEE papers are SQLite or embedded databases, not DuckDB."},
+       {t:"Host fate",rl:"ops · 300", action:"Contrast a server worker crash with an in-process abort.", whyMatters:"There is no daemon to isolate the engine."}
+     ],
+     vids:[{s:3},{s:10}]},
+    {n:11,title:"Decision packet",time:"25 min",rungs:"200",lib:"nblm-decision-packet",
+     opener:"Standardize local scans. Do not start Spark for a file that fits one machine. Do not load a CSV just to look at it. Slide speed numbers are not an SLA.",
+     obj:"Write the tool you would stop using, and one report claim you will not treat as a guarantee.",
+     deliv:"A three-line decision: in, out, and measure.",
+     mods:[
+       {t:"Stop the cluster [S13]",rl:"scope · 200", action:"Name the size at which you still stay on one box.", whyMatters:"Spark is for data that will not fit, or a job that must survive a lost node."},
+       {t:"Stop the loader [S1]",rl:"engine · 200", action:"Write the replacement-scan query you would run instead.", whyMatters:"The file is already the table."},
+       {t:"Measure the briefing",rl:"scope · 200", action:"Time one of your files. Do not quote 10x or 157 ms as a contract.", whyMatters:"Those lines are slide claims."}
+     ],
+     vids:[{s:1},{s:4}]}
   ],
   ladder:[
     {key:"place",name:"Placement",img:"100",r:[{n:100,t:"Say what DuckDB is and name the quadrant."},{n:200,t:"Place it against SQLite, Postgres, Polars, and Spark."},{n:300,t:"Defend one choice on a real workload."}]},
@@ -72,14 +130,28 @@ const DATA = {
     {name:"MotherDuck",t:"Cloud warehouse. ATTACH md: can run part of the query in their cloud."}
   ],
   prompts:[
-    {cat:"Sketch",model:"any",desc:"Defend one query against the engine, not a feature list.",items:["Parquet events plus a small dimension","A CSV someone wants to load first"],
-     flagship:"Sketch a scan, join, and aggregate over a Parquet file of events and a small dimension table. Label which steps are columnar, which side the hash table is built on, and one failure mode. Cite the execution-format doc for the batch size. Do not treat slide speed claims as a guarantee."},
-    {cat:"Placement",model:"any",desc:"Pick the tool and name the one you refuse.",items:["40 GB of Parquet on one laptop","Orders table with hundreds of writers"],
-     flagship:"Place DuckDB, SQLite, Postgres, Polars, Spark, and MotherDuck on one workload. Say which quadrant DuckDB claims, which tool you would not pick, and why. Use the SIGMOD 2019 paper for the quadrant and the concurrency doc for writers."},
-    {cat:"Failure",model:"any",desc:"Name the tell and the fix.",items:["Database locked","Out of memory on a join","Stall on a network drive"],
-     flagship:"For each failure, give the tell a person sees, the cause from the concurrency or execution docs, and the change you would make before the next run. Include the closed-room case: auto-install and ATTACH md:."},
-    {cat:"Closed lab",model:"any",desc:"Separate a local binary from an authorization.",items:["Air-gapped laptop","Approved MotherDuck account"],
-     flagship:"Explain what local DuckDB with no network does and does not prove. Name Smaug and BiTDB as SQLite or embedded TEE papers, not DuckDB certifications. State the exact statement that leaves the machine for MotherDuck."}
+    {cat:"1 · Placement",model:"any",desc:"The missing quadrant.",items:["40 GB of Parquet on a laptop","Orders table with hundreds of writers"],
+     flagship:"Place DuckDB, SQLite, Postgres, Polars, Spark, and MotherDuck on one workload. Name the quadrant DuckDB claims. Name the one tool you refuse and why. Cite the SIGMOD 2019 paper for the quadrant."},
+    {cat:"2 · Columnar storage",model:"any",desc:"What a SUM actually reads.",items:["Wide events table","Point lookup of one order"],
+     flagship:"Draw a four-column table as rows and as columns. Circle the bytes SUM(amount) reads in each layout. Say why a point lookup of one order is not this engine's job."},
+    {cat:"3 · Vectors",model:"any",desc:"Volcano versus a DataChunk of 2048.",items:["Filter then project","col + 5"],
+     flagship:"Contrast one-row-at-a-time next() with a DataChunk. State STANDARD_VECTOR_SIZE. Define flat, dictionary, constant, and sequence vectors in one line each. Cite the execution-format doc."},
+    {cat:"4 · Morsels",model:"any",desc:"Skewed keys and idle threads.",items:["Join on a country code","Huge group-by key"],
+     flagship:"A join key is heavily skewed. Explain what a fixed hash-split exchange does to idle threads, and what a morsel queue does instead. Say when ORDER BY is required. Cite the Developer Voices talk."},
+    {cat:"5 · Files",model:"any",desc:"Scan the file. Do not load it first.",items:["events.parquet","A Pandas frame already in memory"],
+     flagship:"Write SELECT * FROM 'events.parquet' WHERE dt = DATE '2026-10-01'. Label the replacement scan and the predicate pushdown. State one risk of missing statistics. Do not invent a CREATE TABLE step."},
+    {cat:"6 · Joins and spill",model:"any",desc:"Build side, breaker, max_memory.",items:["Small dimension, large fact","Sort of a billion-row table"],
+     flagship:"Sketch a hash join. Label the build side. Name two pipeline breakers. Say what happens when the hash table will not fit and the plan cannot spill. max_memory is a threshold, not a guarantee."},
+    {cat:"7 · One writer",model:"any",desc:"Process versus thread.",items:["Second script INSERT","Two threads UPDATE the same row"],
+     flagship:"A notebook is writing. A second OS process tries to INSERT. A second thread in the first process UPDATEs the same row. Name the tell for each. Cite the concurrency doc. Do not call this multi-process writing."},
+    {cat:"8 · Extensions",model:"any",desc:"Core, INSTALL, LOAD, auto-install.",items:["httpfs in a closed room","spatial on a laptop"],
+     flagship:"List three features that are not in the zero-dependency core. Separate INSTALL, LOAD, and auto-install. Name the host auto-install contacts. State that an extension runs with the host process rights."},
+    {cat:"9 · MotherDuck",model:"any",desc:"The statement that leaves the machine.",items:["Local Parquet only","Approved cloud account"],
+     flagship:"What does ATTACH 'md:' do? What does dual execution mean in the CIDR 2024 paper? Write one sentence that local DuckDB is not MotherDuck. Do not treat a blog's region list as a MotherDuck commitment."},
+    {cat:"10 · Closed lab",model:"any",desc:"A binary is not an authorization.",items:["Air-gapped laptop","Crash in an extension"],
+     flagship:"A lab wants to run DuckDB with the network off. What does that prove, and what does it not prove? Name Smaug and BiTDB as papers about other engines. Contrast a server worker crash with an in-process abort."},
+    {cat:"11 · Decision",model:"any",desc:"In, out, and measure.",items:["CSV someone wants to load","Cluster for 40 GB"],
+     flagship:"Write a three-line decision: when DuckDB is in, which tool you stop using, and one briefing number you will time instead of quoting. Slide 10x and 157 ms are claims, not an SLA."}
   ],
   checklist:[
     {title:"Second writer",view:"Operations",src:"S3",
@@ -195,7 +267,11 @@ const DATA = {
     {category:"Operations",term:"QUALIFY",rung:200,definition:"Filters a window-function result in the same query, without wrapping it in another SELECT.",source:"nblm-gap"},
     {category:"Engine",term:"EXPLAIN ANALYZE",rung:200,definition:"Runs the query and prints real time and row counts. EXPLAIN only prints the plan. [S1]",source:"nblm-gap"},
     {category:"Operations",term:":memory:",rung:100,definition:"The path that opens a database with no file. It disappears when the process ends.",source:"nblm-gap"},
-    {category:"Operations",term:"COPY",rung:100,definition:"Writes a table or a query result to CSV, Parquet, or JSON.",source:"nblm-gap"}
+    {category:"Operations",term:"COPY",rung:100,definition:"Writes a table or a query result to CSV, Parquet, or JSON.",source:"nblm-gap"},
+    {category:"Engine",term:"Hive partition",rung:200,definition:"Directory names such as /year=2026/ become virtual columns on a scan.",source:"nblm-gap"},
+    {category:"Operations",term:"CHECKPOINT",rung:300,definition:"Flushes in-memory writes into the database file and can reclaim space.",source:"nblm-gap"},
+    {category:"Engine",term:"Logical versus physical plan",rung:200,definition:"The logical plan is the relational operators. The physical plan picks algorithms such as hash join versus nested loop.",source:"nblm-gap"},
+    {category:"Engine",term:"Subquery unnesting",rung:300,definition:"A correlated subquery becomes a join or an aggregate so it is not re-run per row.",source:"nblm-gap"}
   ],
   views:{
     conceptual:{rule:"What and why. In-process analytics, not a server.",lib:"",img:[],
@@ -210,8 +286,47 @@ const DATA = {
       tables:[{caption:"Boundary",headers:["Situation","Keep off"],rows:[["Closed lab","ATTACH md:, auto-install, unsigned extensions"],["Your own VM","MotherDuck, unless approved"],["MotherDuck","Any claim that this is still the closed lab"]]}]}
   },
   eaFrameworks:{
-    note:"DuckDB is an engine choice, not an enterprise architecture. The ladder is placement, engine, and operations.",
-    rows:[]
+    note:"DuckDB is an engine you place, not a platform you roll out. These views are altitude rules for that placement.",
+    conceptual:[
+      {phase:"C1",t:"Workload",items:["OLAP scans, joins, aggregates on one machine.","OLTP point lookups and many writers stay with SQLite or Postgres."]},
+      {phase:"C2",t:"Quadrant",items:["Embedded OLAP is the missing box.","Client-server OLAP is a warehouse. DuckDB is not that box."]},
+      {phase:"C3",t:"Neighbors",items:["Polars: dataframe API, no SQL catalog.","Spark: data that will not fit one machine."]}
+    ],
+    logical:[
+      {phase:"L1",t:"Scan",items:["Named columns only.","Replacement scan of a file or a frame."]},
+      {phase:"L2",t:"Pipeline",items:["DataChunk of 2048.","Breakers: hash-join build, hash aggregate, sort."]},
+      {phase:"L3",t:"Parallelism",items:["Morsels from a queue.","A fixed hash split stalls on a huge key."]}
+    ],
+    physical:[
+      {phase:"P1",t:"Process",items:["One address space with the host.","A fatal error ends the host."]},
+      {phase:"P2",t:"File",items:["One writer process.","Other processes: READ_ONLY."]},
+      {phase:"P3",t:"Memory",items:["Spill when max_memory is hit.","A plan that cannot spill can still die."]}
+    ],
+    integration:[
+      {phase:"I1",t:"Local files",items:["Parquet with predicate pushdown.","CSV, Arrow, Pandas in the same process."]},
+      {phase:"I2",t:"Extensions",items:["httpfs, Iceberg, spatial, ICU.","Same rights as the host."]},
+      {phase:"I3",t:"Cloud",items:["ATTACH md: is MotherDuck.","Dual execution can leave the machine."]}
+    ],
+    trust:[
+      {phase:"T1",t:"Closed room",items:["Auto-install off.","Unsigned extensions off."]},
+      {phase:"T2",t:"Authorization",items:["Local binary is not a classified approval.","Smaug and BiTDB do not evaluate DuckDB."]},
+      {phase:"T3",t:"Quack and DuckLake",items:["Named in later talks and a briefing.","They are not the one-writer contract."]}
+    ],
+    altitudes:[
+      {name:"Conceptual",q:"Which quadrant?",allowed:"Workload and neighbors.",forbidden:"Vector size, file locks.",lib:"block-01-core-concepts"},
+      {name:"Logical",q:"How does a query move?",allowed:"Scan, chunk, join, morsel.",forbidden:"MotherDuck account details.",lib:"block-02-mental-models"},
+      {name:"Physical",q:"What process and file?",allowed:"One writer, READ_ONLY, spill.",forbidden:"SQL function catalogs.",lib:"block-05-edge-cases"},
+      {name:"Integration",q:"What does FROM read?",allowed:"Parquet, Arrow, httpfs.",forbidden:"Classified-lab approval.",lib:"block-03-active-practice"},
+      {name:"Trust",q:"What leaves the machine?",allowed:"Auto-install, ATTACH md:.",forbidden:"Slide speed as an SLA.",lib:"competitors"}
+    ],
+    table:[
+      ["Concern","View","Owner","Out"],
+      ["Quadrant","Conceptual","SIGMOD 2019 [S4]","Treating DuckDB as Postgres"],
+      ["Batch size 2048","Logical","Execution format [S2]","Changing STANDARD_VECTOR_SIZE without a rebuild"],
+      ["One writer","Physical","Concurrency [S3]","Second OS process writing"],
+      ["Parquet scan","Integration","Docs [S1]","Loader script just to look"],
+      ["MotherDuck","Trust","Architecture [S8], CIDR 2024 [S9]","Calling local DuckDB a cloud"]
+    ]
   },
   deckFlags:{
     2:"The slide says client protocols are at least 10x slower than raw netcat. Treat that as the slide's claim, not an SLA.",

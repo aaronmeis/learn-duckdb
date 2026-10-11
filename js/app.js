@@ -69,7 +69,7 @@ function renderDashboard(){
   </div>
   <div class="note"><b>Mission.</b> By the end you can place DuckDB against SQLite, Postgres, Polars, and Spark, sketch a columnar pipeline, and say when a second process may open the file. You can also say what <code>ATTACH 'md:'</code> does, and that a local binary is not a classified authorization. ${lib("mission","Mission note")} · ${lib("day-plan","Timed day plan")} · ${lib("deep-dive","Deep dive")}</div>
   <div class="grid">
-    <div class="card"><h3>Curriculum</h3><p style="color:var(--text-secondary);font-size:.86rem">Three timed blocks: what it is, how a query runs, and the cloud line.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('curriculum')">Open curriculum →</button></div></div>
+    <div class="card"><h3>Curriculum</h3><p style="color:var(--text-secondary);font-size:.86rem">${DATA.weeks.length} blocks from the missing quadrant through MotherDuck and the decision packet.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('curriculum')">Open curriculum →</button></div></div>
     <div class="card"><h3>Views</h3><p style="color:var(--text-secondary);font-size:.86rem">Placement, pipeline, file access, scanners, and the closed-lab boundary.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('views')">Open views →</button></div></div>
     <div class="card"><h3>Progress map</h3><p style="color:var(--text-secondary);font-size:.86rem">The 100 / 200 / 300 ladder for placement, engine, and operations.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('map')">Open map →</button></div></div>
     <div class="card"><h3>Flashcards and quiz</h3><p style="color:var(--text-secondary);font-size:.86rem">${DATA.glossary.length} spaced-repetition cards and the ${DATA.quiz.length}-question design-review quiz bank.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('flash')">Flashcards →</button><button class="b" onclick="go('quiz')">Quiz →</button></div></div>
@@ -89,8 +89,8 @@ function moduleKey(w,i){return KEY+"mod:"+w+":"+i;}
 function allModules(){let a=[];DATA.weeks.forEach(w=>w.mods.forEach((m,i)=>a.push({w:w.n,i,rung:(m.rl.match(/\b(100|200|300)\b/)||[])[1]||"200"})));return a;}
 function renderCurriculum(){
   const el=$("#v-curriculum");
-  let h=`<h2 class="vh">Eight-block curriculum</h2>
-  <p class="lead">Three blocks, about three and a half hours of the study day. Each one has an action and a reason. ${lib("day-plan","Timed day plan")}</p>
+  let h=`<h2 class="vh">${DATA.weeks.length}-block curriculum</h2>
+  <p class="lead">Eleven DuckDB topics, about four hours if you sit them in order. Each block has an action and a reason. ${lib("day-plan","Timed day plan")}</p>
   <div class="timeline" style="margin-bottom:1.2rem">${DATA.weeks.map(w=>`<span class="t">Block ${w.n}</span><span class="b">${esc(w.title)}</span><span class="m">${esc(w.time)}</span>`).join("")}</div>
   <details class="look-box" style="margin:0 0 1.4rem"><summary>Scope mind map</summary><p style="font-size:.8rem;color:var(--text-dim)">${lib("mindmap","Mind map as text")} · ${lib("intake-record","Intake record")}</p></details>`;
   DATA.weeks.forEach(w=>{
@@ -390,10 +390,18 @@ function renderCheat(){
 function renderEA(){
   const el=$("#v-ea");
   const tab=LS.get(KEY+"eaTab","all"), E=DATA.eaFrameworks;
-  const box=(head,sub,items,color)=>`<div class="ea-box"><h4>${esc(head)}</h4><div style="font-weight:600;font-size:.8rem;color:${color||"var(--accent-color)"};margin-bottom:.4rem">${esc(sub)}</div><ul>${items.map(i=>`<li>${ec(i)}</li>`).join("")}</ul></div>`;
-  let h=`<h2 class="vh">Where it sits</h2>
-  <p class="lead">${esc(E.note||"")} ${lib("competitors","Competitors and closed lab")}</p>`;
-  h+=`<div class="ea-card"><h3>Neighboring tools</h3><div class="ea-grid">${DATA.miniModules.map(m=>box(m.name,m.t,[])).join("")}</div></div>`;
+  const box=(head,sub,items,color)=>`<div class="ea-box"><h4>${esc(head)}</h4><div style="font-weight:600;font-size:.8rem;color:${color||"var(--accent-color)"};margin-bottom:.4rem">${esc(sub)}</div><ul>${(items||[]).map(i=>`<li>${ec(i)}</li>`).join("")}</ul></div>`;
+  const tabs=[["all","All"],["conceptual","Conceptual"],["logical","Logical"],["physical","Physical"],["integration","Integration"],["trust","Trust"],["alt","Altitude"],["table","Cross-walk"]];
+  let h=`<h2 class="vh">EA mapping</h2>
+  <p class="lead">${esc(E.note||"")} ${lib("competitors","Competitors and closed lab")} · ${lib("deep-dive","Deep dive")}</p>
+  <div class="ea-subnav">${tabs.map(([k,l])=>`<button class="ea-tab-btn ${tab===k?"active":""}" data-eatab="${k}">${l}</button>`).join("")}</div>`;
+  if(tab==="all"||tab==="conceptual") h+=`<div class="ea-card"><h3>Conceptual</h3><div class="ea-grid">${(E.conceptual||[]).map(t=>box(t.phase,t.t,t.items)).join("")}</div></div>`;
+  if(tab==="all"||tab==="logical") h+=`<div class="ea-card"><h3>Logical</h3><div class="ea-grid">${(E.logical||[]).map(t=>box(t.phase,t.t,t.items)).join("")}</div></div>`;
+  if(tab==="all"||tab==="physical") h+=`<div class="ea-card"><h3>Physical</h3><div class="ea-grid">${(E.physical||[]).map(t=>box(t.phase,t.t,t.items,"var(--r300)")).join("")}</div></div>`;
+  if(tab==="all"||tab==="integration") h+=`<div class="ea-card"><h3>Integration</h3><div class="ea-grid">${(E.integration||[]).map(t=>box(t.phase,t.t,t.items)).join("")}</div></div>`;
+  if(tab==="all"||tab==="trust") h+=`<div class="ea-card"><h3>Trust</h3><div class="ea-grid">${(E.trust||[]).map(t=>box(t.phase,t.t,t.items,"var(--warn)")).join("")}</div></div>`;
+  if(tab==="all"||tab==="alt") h+=`<div class="ea-card"><h3>Altitude rules</h3><table class="ea-table"><thead><tr><th>View</th><th>Question</th><th>Allowed</th><th>Not allowed</th><th>Note</th></tr></thead><tbody>${(E.altitudes||[]).map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.q)}</td><td>${esc(a.allowed)}</td><td>${esc(a.forbidden)}</td><td>${lib(a.lib,"Open")}</td></tr>`).join("")}</tbody></table></div>`;
+  if(tab==="all"||tab==="table") h+=`<div class="ea-card"><h3>Cross-walk</h3><table class="ea-table"><thead><tr>${(E.table[0]||[]).map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${(E.table||[]).slice(1).map(r=>`<tr>${r.map((c,i)=>`<td>${i?esc(c):"<b>"+esc(c)+"</b>"}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
   el.innerHTML=h;
   $$(".ea-tab-btn",el).forEach(b=>b.onclick=()=>{LS.set(KEY+"eaTab",b.dataset.eatab);renderEA();});
 }
