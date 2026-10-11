@@ -311,21 +311,21 @@
     "slug": "nblm-gap-quiz",
     "title": "Engine quiz, 2026-10-11",
     "section": "NotebookLM study sets",
-    "desc": "",
+    "desc": "NotebookLM engine quiz downloaded 2026-10-11. Ledger wins where this disagrees.",
     "nblm": true
   },
   {
     "slug": "nblm-gap-cards",
     "title": "Flashcards, 2026-10-11",
     "section": "NotebookLM study sets",
-    "desc": "",
+    "desc": "80 NotebookLM flashcards. Quack and DuckLake cards were corrected: they are not the concurrency contract.",
     "nblm": true
   },
   {
     "slug": "nblm-gap-table",
     "title": "Glossary data table, 2026-10-11",
     "section": "NotebookLM study sets",
-    "desc": "",
+    "desc": "NotebookLM glossary data table. Quack and DuckLake are notebook-only.",
     "nblm": true
   }
 ]

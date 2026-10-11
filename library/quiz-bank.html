@@ -104,8 +104,58 @@
 <td>When the working set will not fit one machine.</td>
 <td>[<a class="cite" href="https://doi.org/10.1016/j.is.2025.102635" target="_blank" rel="noopener" title="Modern alternatives to Hive (Information Systems 2026)">S13</a>]</td>
 </tr>
+<tr>
+<td>11</td>
+<td>Engine</td>
+<td>What does a sequence vector store?</td>
+<td>A start and a step, not every value.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Limits</td>
+<td>What happens when two threads in the writer update the same row?</td>
+<td>The later commit fails with a transaction conflict. Appends do not conflict.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Limits</td>
+<td>What is the difference between INSTALL and LOAD?</td>
+<td>INSTALL fetches the extension. LOAD activates it.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Engine</td>
+<td>Do extensions run in a separate process?</td>
+<td>No. They run inside the host process.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Engine</td>
+<td>What does EXPLAIN ANALYZE add?</td>
+<td>It runs the query and prints actual time and row counts.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Engine</td>
+<td>What is GROUP BY ALL?</td>
+<td>It groups by every selected column that is not aggregated.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Limits</td>
+<td>What does opening :memory: do?</td>
+<td>A database with no file. It ends when the connection closes.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+</tr>
 </tbody>
-</table></article>
+</table>
+<p>The 10-question NotebookLM multiple-choice quiz is <a href="nblm-gap-quiz.html">2026-10-11 Quiz</a>. The 80-card deck is <a href="nblm-gap-cards.html">2026-10-11 Flashcards</a>. The data table is <a href="nblm-gap-table.html">2026-10-11 Glossary table</a>.</p></article>
   <footer class="docfoot">
     Rendered from <code>Learning\one-day-mastery\duckdb\reference\quiz-bank.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
     <div class="prevnext"><a href="cheatsheet.html">&larr; Previous</a><a href="source-ledger.html">Next &rarr;</a></div>

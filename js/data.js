@@ -28,7 +28,7 @@ const DATA = {
         action:"Place SQLite, Postgres, Snowflake, and DuckDB on the OLTP/OLAP and embedded/server axes.",
         whyMatters:"SQLite already owns embedded transactions. DuckDB owns the analytical corner."}
      ],
-     vids:[{s:1},{s:4}]},
+     vids:[{s:1},{s:4}], lib:"block-01-core-concepts"},
     {n:2,title:"How a query runs",time:"90 min",rungs:"200",lib:"",
      opener:"A query reads the columns it names, in batches of 2048, and threads take morsels of that pipeline [S2][S5].",
      obj:"Sketch a scan, a hash join built on the small side, and an aggregate.",
@@ -38,7 +38,7 @@ const DATA = {
        {t:"DataChunk of 2048 [S2]",rl:"engine · 200", action:"Contrast a vectorized pipeline with a row-at-a-time loop.", whyMatters:"The batch stays in cache."},
        {t:"Morsels [S5]",rl:"engine · 200", action:"Say what happens to idle threads when one key is huge.", whyMatters:"A fixed split stalls. A queue does not."}
      ],
-     vids:[{s:2},{s:5}]},
+     vids:[{s:2},{s:5}], lib:"block-02-mental-models"},
     {n:3,title:"Limits and the cloud line",time:"60 min",rungs:"300",lib:"",
      opener:"One process writes. Other processes read only in read-only mode. ATTACH md: leaves the machine [S3][S8].",
      obj:"Name three refusals and the closed-lab rule for extensions.",
@@ -47,7 +47,17 @@ const DATA = {
        {t:"Single writer [S3]",rl:"ops · 300", action:"State when a second process may open the file.", whyMatters:"Database locked is usually a second writer."},
        {t:"Extensions and MotherDuck [S8][S10]",rl:"trust · 300", action:"List what must stay off in a closed room.", whyMatters:"An extension runs with the rights of the process, and auto-install fetches from the public site."}
      ],
-     vids:[{s:3},{s:7}]}
+     vids:[{s:3},{s:7}], lib:"block-05-edge-cases"},
+    {n:4,title:"Practice and the reports",time:"90 min",rungs:"200",lib:"nblm-study-guide",
+     opener:"The NotebookLM study guide, failure catalog, and decision packet are the long read. The ledger still wins where they disagree.",
+     obj:"Work the quiz and one failure mode without notes.",
+     deliv:"One card you can explain, and one report claim you will not treat as an SLA.",
+     mods:[
+       {t:"Study guide",rl:"engine · 200", action:"Read the in-process versus client-server section, then the vector section.", whyMatters:"This is the long form of blocks 1 and 2."},
+       {t:"Failure catalog",rl:"ops · 300", action:"Name the tell for a second writer, a join that will not fit, and a file on a network drive.", whyMatters:"Those three are the day-one traps."},
+       {t:"Decision packet",rl:"scope · 200", action:"Write the tool you would stop using for a file that fits one machine.", whyMatters:"The packet is a decision, not a feature list."}
+     ],
+     vids:[{s:5}]}
   ],
   ladder:[
     {key:"place",name:"Placement",img:"100",r:[{n:100,t:"Say what DuckDB is and name the quadrant."},{n:200,t:"Place it against SQLite, Postgres, Polars, and Spark."},{n:300,t:"Defend one choice on a real workload."}]},
@@ -95,7 +105,7 @@ const DATA = {
     {t:"Measure the briefing numbers",d:"10x and a billion rows in 157 ms are not an SLA. Time your files."}
   ],
   falsifier:"A SQL feature tour that never says how columnar storage and vectorized execution change a query, and never names when Postgres, SQLite, Polars, or Spark is the better tool.",
-  quizSections:{1:"Placement",2:"Engine",3:"Limits"},
+  quizSections:{1:"Placement",2:"Engine",3:"Limits",4:"NotebookLM"},
   quiz:[
     {section:1,question:"Which quadrant does DuckDB claim?",answer:"In-process OLAP. SQLite is in-process OLTP. A warehouse is client-server OLAP.",src:"S4"},
     {section:2,question:"What is the default vector size?",answer:"2048 tuples in a DataChunk. Operators run on that batch.",src:"S2"},
@@ -114,7 +124,17 @@ const DATA = {
     {section:2,question:"What does EXPLAIN ANALYZE add?",answer:"It runs the query and prints actual time and row counts. EXPLAIN only shows the plan.",src:"S1"},
     {section:2,question:"What is GROUP BY ALL?",answer:"It groups by every selected column that is not aggregated.",src:"S1"},
     {section:3,question:"What does opening :memory: do?",answer:"It creates a database with no file. The data is gone when the connection closes.",src:"S1"}
-  ],
+  ,
+{"section": 4, "type": "mc", "question": "What is the standard fixed vector size (`STANDARD_VECTOR_SIZE`) used by DuckDB's execution engine when passing data chunks between pipeline operators?", "options": ["2048 tuples", "64 tuples", "65536 tuples", "1 tuple"], "answer": "2048 tuples", "explanation": "Operating on vectors of 2048 elements balances instruction dispatch overhead with keeping working data chunks small enough to fit within CPU L1/L2 caches.", "src": "nblm"},
+{"section": 4, "type": "mc", "question": "In a single-process deployment, how does DuckDB manage concurrent transaction writes from multiple threads within the same database handle?", "options": ["It uses Multi-Version Concurrency Control (MVCC) with optimistic concurrency control, raising a transaction conflict error if two threads edit the same row simultaneously.", "It acquires exclusive table-level locks before every write, queuing all write operations into a single-threaded execution pipeline.", "It spawns background server processes to handle writing, communicating via inter-process IPC sockets.", "It allows both threads to overwrite the row and resolves conflicting values during database checkpointing."], "answer": "It uses Multi-Version Concurrency Control (MVCC) with optimistic concurrency control, raising a transaction conflict error if two threads edit the same row simultaneously.", "explanation": "DuckDB relies on optimistic concurrency control to maximize read and append performance, aborting the second writer thread if concurrent edits clash on identical rows.", "src": "nblm"},
+{"section": 4, "question": "Which physical vector formats does DuckDB support internally to represent logically uncompressed column data efficiently during execution?", "answer": "Identify physical representations that allow vectorized operators to keep data compressed without expanding into flat arrays.", "explanation": "Open question from the 2026-10-11 NotebookLM quiz. The full text is in the library.", "src": "nblm"},
+{"section": 4, "question": "To allow multiple separate operating system processes to read from the same DuckDB database file concurrently, connections must configure `access_mode = '___'`. ", "answer": "Think of the configuration option that guarantees no writing process will modify the persistent database file.", "explanation": "Open question from the 2026-10-11 NotebookLM quiz. The full text is in the library.", "src": "nblm"},
+{"section": 4, "type": "mc", "question": "What primary operational drawback of traditional exchange-operator parallelism does DuckDB eliminate by implementing morsel-driven parallelism?", "options": ["Static hash partitioning in exchange operators causes worker thread idle time when processing heavily skewed data keys.", "Exchange operators require queries to be compiled into C code via LLVM, introducing heavy compilation latency.", "Exchange operators force data chunks to be converted into row-oriented formats before crossing thread boundaries.", "Exchange operators restrict execution to a single CPU core whenever join operators are present in the query plan."], "answer": "Static hash partitioning in exchange operators causes worker thread idle time when processing heavily skewed data keys.", "explanation": "Morsel-driven parallelism allows threads to dynamically pull available data tasks from pipeline sources, avoiding thread bottlenecking when specific group keys are over-represented.", "src": "nblm"},
+{"section": 4, "question": "Explain how DuckDB's 'replacement scan' mechanism functions when a user executes a query referencing an external file path (e.g., `SELECT * FROM 'data.parquet'`) without prior schema creation.", "answer": "Focus on what happens during the query binding phase when an identifier does not match any existing catalog table.", "explanation": "Open question from the 2026-10-11 NotebookLM quiz. The full text is in the library.", "src": "nblm"},
+{"section": 4, "question": "In query pipeline construction, operators such as `GROUP BY` or `ORDER BY` that must collect and process all input tuples before yielding any output rows are termed pipeline ___.", "answer": "This term refers to blocking operators that break the continuous streaming of vectors from source to sink.", "explanation": "Open question from the 2026-10-11 NotebookLM quiz. The full text is in the library.", "src": "nblm"},
+{"section": 4, "type": "mc", "question": "Under DuckDB's optimistic concurrency control model, what occurs if two concurrent write transactions attempt to update the exact same row simultaneously?", "options": ["The transaction that attempts to commit second fails and throws a transaction conflict error.", "The database process blocks both threads indefinitely until a manual checkpoint is triggered.", "The engine automatically merges the changes and writes both values as a nested struct.", "The first transaction is rolled back while the second transaction silently overwrites the data."], "answer": "The transaction that attempts to commit second fails and throws a transaction conflict error.", "explanation": "DuckDB detects the concurrent modification on identical row version identifiers and aborts the conflicting transaction, requiring the application to retry.", "src": "nblm"},
+{"section": 4, "question": "Which of the following statements correctly describe DuckDB's extension system and binary design?", "answer": "Select choices that highlight DuckDB's zero-dependency core philosophy and in-process extension architecture.", "explanation": "Open question from the 2026-10-11 NotebookLM quiz. The full text is in the library.", "src": "nblm"},
+{"section": 4, "question": "Why does vectorized column processing yield higher performance on modern CPUs compared to traditional row-at-a-time (Volcano) query processing?", "answer": "Focus on hardware memory hierarchy (caches) and CPU instruction execution characteristics (branch prediction/dispatch overhead).", "explanation": "Open question from the 2026-10-11 NotebookLM quiz. The full text is in the library.", "src": "nblm"}],
   glossary:[
     {category:"Placement",term:"DuckDB",rung:100,essential:true,definition:"An in-process analytical database. SQL runs in your process. One machine, one writer. [S1][S4]",source:"ledger"},
     {category:"Placement",term:"OLAP",rung:100,essential:true,definition:"Few large scans and aggregates. The workload DuckDB is built for.",source:"ledger"},

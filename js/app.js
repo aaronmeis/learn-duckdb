@@ -127,7 +127,7 @@ function cell(c){
   if(s.startsWith("WARN:")) return `<td class="warnc">${ec(s.slice(5))}</td>`;
   return `<td>${ec(s)}</td>`;
 }
-function tableHTML(t){return `<h3 style="margin:1.2rem 0 .3rem;font-size:1rem">${esc(t.h)}</h3><table class="tbl"><thead><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${t.rows.map(r=>`<tr>${r.map(cell).join("")}</tr>`).join("")}</tbody></table>`;}
+function tableHTML(t){const cols=t.cols||t.headers||[];const title=t.h||t.caption||"";return `<h3 style="margin:1.2rem 0 .3rem;font-size:1rem">${esc(title)}</h3><table class="tbl"><thead><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${t.rows.map(r=>`<tr>${r.map(cell).join("")}</tr>`).join("")}</tbody></table>`;}
 function renderViews(){
   const el=$("#v-views");
   const tabs=[["conceptual","Conceptual"],["logical","Logical"],["physical","Physical"],["integration","Integration & AI"],["govcloud","Closed lab vs cloud"]];
@@ -285,12 +285,12 @@ function renderQuiz(){
   const el=$("#v-quiz");
   const secs=Object.keys(DATA.quizSections).map(Number);
   const sel=LS.get(KEY+"quizSec",secs[0]);
-  let h=`<h2 class="vh">Design-review quiz</h2>
-  <p class="lead">The block 8 quiz bank (${DATA.quiz.length} questions). Answer out loud before revealing. ${lib("quiz-bank","Quiz bank note")}</p>
-  <div class="btnrow">${secs.map(s=>`<button class="b ${s==sel?"on":""}" data-qs="${s}">${esc(DATA.quizSections[s])} (${DATA.quiz.filter(q=>q.week==s).length})</button>`).join("")}</div>`;
-  const qs=DATA.quiz.filter(q=>q.week==sel);
+  let h=`<h2 class="vh">Quiz</h2>
+  <p class="lead">${DATA.quiz.length} questions. The NotebookLM set is multiple choice. The others are short answers. ${lib("quiz-bank","Quiz bank")} · ${lib("nblm-gap-quiz","Full NotebookLM quiz")}</p>
+  <div class="btnrow">${secs.map(s=>`<button class="b ${s==sel?"on":""}" data-qs="${s}">${esc(DATA.quizSections[s])} (${DATA.quiz.filter(q=>q.section==s).length})</button>`).join("")}</div>`;
+  const qs=DATA.quiz.filter(q=>q.section==sel);
   qs.forEach((q,qi)=>{
-    h+=`<div class="qcard" data-qi="${qi}"><div class="qq">${esc(q.question)} <span class="pill r${q.rung}">${q.rung}</span> <span class="pill">${esc(q.pillar)}</span></div>`;
+    h+=`<div class="qcard" data-qi="${qi}"><div class="qq">${esc(q.question)}${q.rung?` <span class="pill r${q.rung}">${q.rung}</span>`:""}${q.src?` <span class="pill">${esc(q.src)}</span>`:""}</div>`;
     if(q.type==="mc") h+=`<div class="qopts">${q.options.map((o,oi)=>`<label data-o="${oi}"><input type="radio" name="q${qi}" style="margin-right:8px">${esc(o)}</label>`).join("")}</div>`;
     else h+=`<button class="reveal">Show model answer</button>`;
     h+=`<div class="qexp"><b>Answer:</b> ${ec(q.answer)}<br><br><b>Why / source:</b> ${ec(q.explanation)}</div></div>`;
