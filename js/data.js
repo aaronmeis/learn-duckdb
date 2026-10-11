@@ -151,7 +151,9 @@ const DATA = {
     {cat:"10 · Closed lab",model:"any",desc:"A binary is not an authorization.",items:["Air-gapped laptop","Crash in an extension"],
      flagship:"A lab wants to run DuckDB with the network off. What does that prove, and what does it not prove? Name Smaug and BiTDB as papers about other engines. Contrast a server worker crash with an in-process abort."},
     {cat:"11 · Decision",model:"any",desc:"In, out, and measure.",items:["CSV someone wants to load","Cluster for 40 GB"],
-     flagship:"Write a three-line decision: when DuckDB is in, which tool you stop using, and one briefing number you will time instead of quoting. Slide 10x and 157 ms are claims, not an SLA."}
+     flagship:"Write a three-line decision: when DuckDB is in, which tool you stop using, and one briefing number you will time instead of quoting. Slide 10x and 157 ms are claims, not an SLA."},
+    {cat:"12 · Warrants",model:"any",desc:"Why the evidence is supposed to count.",items:["Local binary in a closed room","A slide that says 10x"],
+     flagship:"Pick one live debate from the claims note. Write Claim A, Claim B, the warrant as If X then Y, one hidden assumption, and one test that would support A, one that would support B, and one that would weaken both. Cite ledger numbers. Do not treat a NotebookLM strong rating as primary evidence."}
   ],
   checklist:[
     {title:"Second writer",view:"Operations",src:"S3",
@@ -186,7 +188,7 @@ const DATA = {
     {t:"Measure the briefing numbers",d:"10x and a billion rows in 157 ms are not an SLA. Time your files."}
   ],
   falsifier:"A SQL feature tour that never says how columnar storage and vectorized execution change a query, and never names when Postgres, SQLite, Polars, or Spark is the better tool.",
-  quizSections:{1:"Placement",2:"Engine",3:"Limits",4:"NotebookLM"},
+  quizSections:{1:"Placement",2:"Engine",3:"Limits",4:"NotebookLM",5:"Warrants"},
   quiz:[
     {section:1,question:"Which quadrant does DuckDB claim?",answer:"In-process OLAP. SQLite is in-process OLTP. A warehouse is client-server OLAP.",src:"S4"},
     {section:2,question:"What is the default vector size?",answer:"2048 tuples in a DataChunk. Operators run on that batch.",src:"S2"},
@@ -204,7 +206,10 @@ const DATA = {
     {section:2,question:"Do extensions run in a separate process?",answer:"No. They run inside the host process, with that process's rights.",src:"S10"},
     {section:2,question:"What does EXPLAIN ANALYZE add?",answer:"It runs the query and prints actual time and row counts. EXPLAIN only shows the plan.",src:"S1"},
     {section:2,question:"What is GROUP BY ALL?",answer:"It groups by every selected column that is not aggregated.",src:"S1"},
-    {section:3,question:"What does opening :memory: do?",answer:"It creates a database with no file. The data is gone when the connection closes.",src:"S1"}
+    {section:3,question:"What does opening :memory: do?",answer:"It creates a database with no file. The data is gone when the connection closes.",src:"S1"},
+    {section:5,question:"What warrant makes a local binary a closed-lab proposal rather than an authorization?",answer:"No ATTACH md: and no auto-install means no MotherDuck session. A lab still approves the binary. Smaug and BiTDB do not evaluate DuckDB.",src:"S8"},
+    {section:5,question:"Why is a slide's 10× or 157 ms not a contract?",answer:"Those numbers describe a demo. The causal warrant for speed is vectorized columnar scans on your files, which you time.",src:"S2"},
+    {section:5,question:"What test would weaken both 'local means no network' and 'MotherDuck is the only leak'?",answer:"First httpfs query with auto-install on. Capture a fetch to extensions.duckdb.org.",src:"S10"}
   ,
 {"section": 4, "type": "mc", "question": "What is the standard fixed vector size (`STANDARD_VECTOR_SIZE`) used by DuckDB's execution engine when passing data chunks between pipeline operators?", "options": ["2048 tuples", "64 tuples", "65536 tuples", "1 tuple"], "answer": "2048 tuples", "explanation": "Operating on vectors of 2048 elements balances instruction dispatch overhead with keeping working data chunks small enough to fit within CPU L1/L2 caches.", "src": "nblm"},
 {"section": 4, "type": "mc", "question": "In a single-process deployment, how does DuckDB manage concurrent transaction writes from multiple threads within the same database handle?", "options": ["It uses Multi-Version Concurrency Control (MVCC) with optimistic concurrency control, raising a transaction conflict error if two threads edit the same row simultaneously.", "It acquires exclusive table-level locks before every write, queuing all write operations into a single-threaded execution pipeline.", "It spawns background server processes to handle writing, communicating via inter-process IPC sockets.", "It allows both threads to overwrite the row and resolves conflicting values during database checkpointing."], "answer": "It uses Multi-Version Concurrency Control (MVCC) with optimistic concurrency control, raising a transaction conflict error if two threads edit the same row simultaneously.", "explanation": "DuckDB relies on optimistic concurrency control to maximize read and append performance, aborting the second writer thread if concurrent edits clash on identical rows.", "src": "nblm"},
@@ -757,6 +762,7 @@ DATA.packPages = [
   {slug:"elicit",t:"Elicit light research"},
   {slug:"source-ledger",t:"Source ledger"},
   {slug:"quiz-bank",t:"Quiz bank"},
+  {slug:"claims-debates",t:"Claims and debates"},
   {slug:"watch-reading",t:"Talks and O'Reilly"}
 ];
 
@@ -777,7 +783,71 @@ DATA.fromReports = [
   {slug:"competitors",title:"Competitors note",point:"Elicit found no paper that evaluates DuckDB in a classified lab. Smaug and BiTDB are SQLite or embedded TEE work."},
   {slug:"competitors",title:"Competitors note",point:"Three deployments: local process, object storage you control, MotherDuck. ATTACH md: is the line that leaves a closed lab."},
   {slug:"elicit",title:"Elicit light",point:"The 2026 Information Systems review is a when-one-node-is-enough pointer. It is not a DuckDB product review."},
-  {slug:"nblm-decision-packet",title:"Decision packet",point:"The packet's 157 ms and 42,000 GitHub stars are briefing color. Do not treat them as a contract or as a reason to skip measuring your files."}
+  {slug:"nblm-decision-packet",title:"Decision packet",point:"The packet's 157 ms and 42,000 GitHub stars are briefing color. Do not treat them as a contract or as a reason to skip measuring your files."},
+  {slug:"claims-debates",title:"Claims and debates",point:"A warrant is the If X then Y that makes a source count. Nearby TEE papers do not warrant a DuckDB authorization. Slide speed does not warrant an SLA."}
+];
+
+DATA.debateProblem = {
+  practical:"Wrong placement: a warehouse for a local scan, or DuckDB for many writers or classified data.",
+  research:"Which public claims are definitional, which are causal performance stories, which are analogies, and which are briefing color.",
+  soWhat:"A placement that cannot name its warrant will not survive a design review."
+};
+
+DATA.debates = [
+  {title:"In-process is a win",src:"S4",
+   claimA:"The missing socket is the point: the query shares the host process.",
+   claimB:"Sharing the host is the liability: a fatal fault ends Python, R, or the JVM.",
+   warrant:"If the engine is a library in the host address space, then result rows skip a socket and a fatal fault is a host abort. Same fact, two readings.",
+   assume:"The host can spare RAM. The app can restart. The workload does not need a crash boundary.",
+   qualify:"Win for local scans. Cost for a long-lived service that must survive a bad query.",
+   testA:"Time a Parquet SUM in-process versus the same file loaded into Postgres over a socket.",
+   testB:"Load an extension that abort()s and record whether the host dies.",
+   testBoth:"Run under a supervisor that restarts the host and say whether that changes the isolation argument."},
+  {title:"One machine is enough",src:"S4",
+   claimA:"Analytical SQL that fits one box does not start a cluster. DuckDB is embedded OLAP.",
+   claimB:"When join state will not fit, or a dead node must not kill the job, Spark is in. S13 is a Hive-alternatives pointer, not a DuckDB review.",
+   warrant:"If scan, join state, and spill files fit one machine, a cluster buys coordination without changing the answer.",
+   assume:"Fits includes intermediates. Spill is fast enough. One machine dying is acceptable.",
+   qualify:"40 GB of Parquet can still OOM on a bad join. max_memory is a threshold.",
+   testA:"A local join that finishes with spill, EXPLAIN ANALYZE in hand.",
+   testB:"Grow the same join until DuckDB dies, then run it on Spark.",
+   testBoth:"A dataset that fits RAM with a hot key; measure morsel idle time versus a static split."},
+  {title:"Local DuckDB is the closed-lab answer",src:"S8",
+   claimA:"No account and no ATTACH md: means the process never contacts MotherDuck. That is a closed-lab proposal.",
+   claimB:"A local binary is not an authorization. Smaug and BiTDB evaluate other engines.",
+   warrant:"If the process never opens md: and never auto-installs, it is not using MotherDuck. A SQLite TEE paper does not warrant DuckDB is approved.",
+   assume:"No network includes auto-install and httpfs. Files already sit on disks the lab trusts.",
+   qualify:"Proposal, not ATO. ATTACH md: is the documented line that leaves the machine.",
+   testA:"Packet-capture a local Parquet session with auto-install off; show no outbound hosts.",
+   testB:"Keep S11 and S12 labeled nearby work. Elicit found no DuckDB classified eval.",
+   testBoth:"First httpfs query with auto-install on; capture extensions.duckdb.org. That leak is not MotherDuck."},
+  {title:"Speed multiples are the product",src:"S2",
+   claimA:"Vectors of 2048 and columnar layout keep analytical scans in cache.",
+   claimB:"10x to 100x and 157 ms per billion rows are briefing lines, not an SLA.",
+   warrant:"Cache-resident vectors should beat Volcano on the same core. A slide wall-clock is a claim about that demo.",
+   assume:"Hardware and file layout match the demo. STANDARD_VECTOR_SIZE is a rebuild constant.",
+   qualify:"Teach 2048 and columnar I/O. Time briefing numbers on your files before repeating them.",
+   testA:"EXPLAIN ANALYZE of a two-column aggregate versus a wide SELECT *.",
+   testB:"Reproduce 157 ms on a billion-row file you own; publish spec and result.",
+   testBoth:"The same query with a pipeline breaker that spills."},
+  {title:"Later names end the one-writer rule",src:"S3",
+   claimA:"One process writes. Other processes are READ_ONLY. OCC lives inside the writer.",
+   claimB:"Quack and DuckLake are named as multi-writer paths in briefings and a later talk. They are catalog claims until a release note is on the ledger.",
+   warrant:"The operations manual is the contract this pack grades. A generated briefing warrants discussion, not design.",
+   assume:"Readers equate every NotebookLM name with the Foundation engine.",
+   qualify:"One-writer is the refusal. Promote Quack or DuckLake only after a primary URL is checked.",
+   testA:"Two OS processes INSERT into one file; record the lock error.",
+   testB:"Read current DuckDB and DuckLake docs; add a ledger row if a primary page describes multi-writer.",
+   testBoth:"One writer plus READ_ONLY readers; readers succeed, a second writer fails."},
+  {title:"Auto-install is harmless convenience",src:"S10",
+   claimA:"Extensions keep OpenSSL, ICU, and remote IO out of the core binary.",
+   claimB:"Extensions run with host rights. Auto-install fetches from extensions.duckdb.org on first use.",
+   warrant:"If a feature is an extension, the core can omit it. If auto-install is on, first use is a network fetch.",
+   assume:"Signed means approved for this lab. The operator notices the first-use fetch.",
+   qualify:"Laptops can leave auto-install on. Closed room: off, unsigned off, ship the binaries you trust.",
+   testA:"List which scanners are core versus extension.",
+   testB:"Trigger httpfs with auto-install on and capture the host contacted.",
+   testBoth:"Vendor a signed extension offline, LOAD it with auto-install off, no fetch."}
 ];
 
 DATA.drills = {

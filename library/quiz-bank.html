@@ -14,7 +14,7 @@
 <body>
 <header class="topbar">
   <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
-  <span class="crumb">Library · Reference</span>
+  <span class="crumb">Library ┬╖ Reference</span>
   <a href="index.html" class="home">All pages</a>
 </header>
 <main class="doc">
@@ -152,6 +152,27 @@
 <td>What does opening :memory: do?</td>
 <td>A database with no file. It ends when the connection closes.</td>
 <td>[<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Warrants</td>
+<td>What warrant makes a local binary a closed-lab <em>proposal</em> rather than an authorization?</td>
+<td>No <code>ATTACH 'md:'</code> and no auto-install means no MotherDuck session. A lab still approves the binary. Nearby TEE papers do not evaluate DuckDB.</td>
+<td>[<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>][<a class="cite" href="https://doi.org/10.1109/TDSC.2022.3216020" target="_blank" rel="noopener" title="Smaug: A TEE-Assisted Secured SQLite (TDSC 2023)">S11</a>]</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Warrants</td>
+<td>Why is a slide's 10× or 157 ms not a contract?</td>
+<td>Those numbers describe a demo. The causal warrant for speed is vectorized columnar scans on <em>your</em> files, which you time.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>][<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Warrants</td>
+<td>What designed test would weaken both "local means no network" and "MotherDuck is the only leak"?</td>
+<td>First httpfs query with auto-install on; capture a fetch to extensions.duckdb.org.</td>
+<td>[<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
 </tr>
 </tbody>
 </table>

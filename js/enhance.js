@@ -16,12 +16,12 @@ const APP_URL="https://aaronmeis.github.io/learn-duckdb/";
 const VIEWS = {
   today:"Today", curriculum:"Curriculum", views:"Architecture views", shorts:"Shorts", deck:"Deck and deep-dive cut", library:"Library",
   flash:"Flashcards", quiz:"Quiz", failures:"Failure modes", prompts:"Prompts",
-  cheat:"Decision rules", map:"Progress map", glossary:"Glossary", ea:"EA mapping", refs:"Source ledger", dashboard:"Overview"
+  cheat:"Decision rules", map:"Progress map", glossary:"Glossary", ea:"EA mapping", debates:"Debates", refs:"Source ledger", dashboard:"Overview"
 };
 const GROUPS = {
   learn:["curriculum","views","shorts","deck","library"],
   practice:["flash","quiz","failures","prompts"],
-  reference:["cheat","map","glossary","ea","refs","dashboard"]
+  reference:["cheat","map","glossary","ea","debates","refs","dashboard"]
 };
 const GROUP_OF = {};
 Object.keys(GROUPS).forEach(g=>GROUPS[g].forEach(v=>GROUP_OF[v]=g));
@@ -163,7 +163,7 @@ function show(v,sub){
   pauseHiddenMedia();
   if(v==="today") renderToday();
   if(v==="shorts"){ if(sub) selectShortById(sub,false); renderShorts(); }
-  const paint={glossary:renderGlossary,quiz:renderQuiz,views:renderViews,refs:renderReferences,flash:renderFlash,library:renderLibrary,cheat:renderCheat,failures:renderCounsel,prompts:renderPrompts,ea:renderEA,map:renderMap,dashboard:renderDashboard,curriculum:renderCurriculum,deck:renderDeck};
+  const paint={glossary:renderGlossary,quiz:renderQuiz,views:renderViews,refs:renderReferences,flash:renderFlash,library:renderLibrary,cheat:renderCheat,failures:renderCounsel,prompts:renderPrompts,ea:renderEA,debates:renderDebates,map:renderMap,dashboard:renderDashboard,curriculum:renderCurriculum,deck:renderDeck};
   if(changed && paint[v]) paint[v]();
   if(changed){
     const main=$("#main"); if(main) main.scrollTop=0;

@@ -425,6 +425,27 @@ function renderLibrary(){
   el.innerHTML=h;
 }
 
+/* ---- Debates (claim, warrant, designed counter-evidence) ---- */
+function renderDebates(){
+  const el=$("#v-debates"), rows=DATA.debates||[];
+  let h=`<h2 class="vh">Debates</h2>
+  <p class="lead">Live claims an architect has to walk into a room with. Each row names two sides, the warrant that makes the evidence count, a hidden assumption, and a test that would change the picture. Full note: ${lib("claims-debates","Claims and debates")}.</p>
+  <p class="lead" style="margin-top:-.4rem">So what? ${esc((DATA.debateProblem&&DATA.debateProblem.soWhat)||"A placement that cannot name its warrant will not survive a design review.")}</p>`;
+  rows.forEach((d,i)=>{
+    h+=`<details class="cl-card" ${i===0?"open":""}><summary class="cl-header" style="cursor:pointer"><div class="cl-title">${esc(d.title)}</div><span class="pill">${esc(d.src||"")}</span></summary>
+      <div class="cl-detail open"><div class="good-bad-grid">
+        <div class="gb-box good-box"><h5>Claim A</h5>${ec(d.claimA)}</div>
+        <div class="gb-box bad-box"><h5>Claim B</h5>${ec(d.claimB)}</div>
+      </div>
+      <div class="rule" style="margin-top:.8rem"><b>Warrant.</b> ${ec(d.warrant)}</div>
+      <div class="rule"><b>Hidden assumption.</b> ${ec(d.assume)}</div>
+      <div class="rule"><b>Qualification.</b> ${ec(d.qualify)}</div>
+      <div class="rule"><b>Evidence that would change the picture.</b> Support A: ${ec(d.testA)} Support B: ${ec(d.testB)} Weaken both: ${ec(d.testBoth)}</div>
+      </div></details>`;
+  });
+  el.innerHTML=h;
+}
+
 /* ---- Source ledger ---- */
 function renderReferences(){
   const el=$("#v-refs");

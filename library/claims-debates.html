@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claims and debates | Learn DuckDB</title>
+<meta name="description" content="Live debates, warrants, hidden assumptions, and designed counter-evidence for DuckDB as a product an architect has to place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="library.css">
+<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+</head>
+<body>
+<header class="topbar">
+  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
+  <span class="crumb">Library ┬╖ Reference</span>
+  <a href="index.html" class="home">All pages</a>
+</header>
+<main class="doc">
+  <div class="kicker">Reference</div>
+  <h1 class="doctitle">Claims and debates</h1>
+  <p class="lead">Live debates, warrants, hidden assumptions, and designed counter-evidence for DuckDB as a product an architect has to place.</p>
+  
+  <article><h1>Claims and debates — DuckDB</h1>
+<p><strong>Community of readers:</strong> Aaron in self-study toward Expert AI Architect, briefing a room that will ask where this engine belongs, what it quietly assumes, and what would change the recommendation.</p>
+<p><strong>Skill:</strong> <em>research-craft</em> · <strong>Recipe:</strong> <em>72 - Research Craft for Architects</em> · <strong>Ledger:</strong> <a href="source-ledger.html">source-ledger</a></p>
+<h2>Business Explanation</h2>
+<div class="callout info" markdown="0"><div class="callout-title">Business Explanation</div><p>DuckDB is easy to collect facts about and easy to over-claim. This note holds the live debates an architect has to walk into a room with: in-process versus a server, one machine versus a cluster, local file versus MotherDuck, briefing speed versus a contract, the one-writer rule versus later multi-writer names, and auto-install versus a closed room. Every claim is tied to the ledger. Tests that would change anyone's mind stay on the page until they are run.</p></div>
+
+<h2>Research problem</h2>
+<table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Statement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Practical problem</td>
+<td>Teams reach for a warehouse, a cluster, or a shared file when the job is a local scan, and they reach for DuckDB when the job is many writers or classified data. Both mistakes cost time and create a trust incident.</td>
+</tr>
+<tr>
+<td>Research problem</td>
+<td>The pack already knows what DuckDB <em>is</em>. It still has to say which public claims are definitional, which are causal performance stories, which are analogies from nearby papers, and which are briefing color.</td>
+</tr>
+<tr>
+<td>So what?</td>
+<td>A placement that cannot name its warrant will not survive a design review.</td>
+</tr>
+</tbody>
+</table>
+<h2>How to read a debate</h2>
+<p>A <strong>claim</strong> is what you want a reader to accept. <strong>Evidence</strong> is the support. A <strong>warrant</strong> is the general principle that makes the evidence relevant (<em>If X, then Y</em>). <strong>Qualifications</strong> limit scope and certainty. <strong>Hidden assumptions</strong> are the unstated conditions the warrant needs. <strong>Evidence to run</strong> is designed to challenge every side, including the side this pack currently prefers.</p>
+<p>NotebookLM's "Major Claims" table rates rows strong/medium/thin. Those ratings are tertiary. The ledger wins.</p>
+<h2>Live debates</h2>
+<h3>Debate 1 — In-process is a win</h3>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claim A</td>
+<td>Removing the client-server hop is the point of the engine: the query shares the host process, so there is no socket and no copy of each result row. <code>[<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</code> <code>[<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</code></td>
+</tr>
+<tr>
+<td>Claim B</td>
+<td>Sharing the host process is the liability: a fatal engine or extension fault ends Python, R, or the JVM with it. A server isolates that crash. <code>[<a class="cite" href="https://www.youtube.com/watch?v=qWtc7k6tnVk" target="_blank" rel="noopener" title="DuckDB overview (Hannes Mühleisen, TigerBeetle)">S6</a>]</code> (talk framing) plus the host-fate line in the deep dive.</td>
+</tr>
+<tr>
+<td>Evidence on the table</td>
+<td>SIGMOD 2019 presents an embeddable analytical engine with SQLite's in-process shape <code>[<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</code>. Docs describe in-process SQL against files and frames <code>[<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</code>. The TigerBeetle talk contrasts client-server with in-process <code>[<a class="cite" href="https://www.youtube.com/watch?v=qWtc7k6tnVk" target="_blank" rel="noopener" title="DuckDB overview (Hannes Mühleisen, TigerBeetle)">S6</a>]</code>. No source in this pack measures crash-coupling on a named workload.</td>
+</tr>
+<tr>
+<td>Warrant</td>
+<td><strong>Definitional + causal.</strong> If an engine is a library in the host address space, then (a) result rows need not cross a socket, and (b) a fatal fault in that library is a host abort. (a) and (b) are the same architectural fact read as benefit or as cost.</td>
+</tr>
+<tr>
+<td>Hidden assumptions</td>
+<td>The host can spare RAM and CPU for the engine. The application can restart. The workload does not require a separate security boundary between query and app.</td>
+</tr>
+<tr>
+<td>Qualifications</td>
+<td>The win is real for local scans and frame handoff. The cost is real for a long-lived service that must survive a bad query. This pack does not claim in-process is always the right isolation story.</td>
+</tr>
+<tr>
+<td>Evidence that would change the picture</td>
+<td><strong>Support A (unrun):</strong> time <code>SUM</code> over the same Parquet from in-process DuckDB versus loading into Postgres and querying over a socket; publish file size, row count, and machine. <strong>Support B (unrun):</strong> load an extension that abort()s and record whether the host process dies. <strong>Weaken both (unrun):</strong> run the same query under a supervisor that restarts the host, and say whether that operational wrapper changes the isolation argument.</td>
+</tr>
+</tbody>
+</table>
+<h3>Debate 2 — One machine is enough</h3>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claim A</td>
+<td>For analytical SQL that fits one box, a cluster is the wrong default. DuckDB is the missing embedded-OLAP quadrant. <code>[<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</code> <code>[<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</code></td>
+</tr>
+<tr>
+<td>Claim B</td>
+<td>When the working set, including join state, will not fit one machine, or a dead node must not kill the job, Spark (or another cluster) is the tool. A 2026 Information Systems review of single-node SQL-on-Hadoop alternatives is a literature pointer for that fork, not a DuckDB product review. <code>[<a class="cite" href="https://doi.org/10.1016/j.is.2025.102635" target="_blank" rel="noopener" title="Modern alternatives to Hive (Information Systems 2026)">S13</a>]</code></td>
+</tr>
+<tr>
+<td>Evidence on the table</td>
+<td>SIGMOD 2019 and the Developer Voices talk argue single-node vectorized execution <code>[<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</code> <code>[<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</code>. S13 is a Hive-alternatives review. This pack has no head-to-head of DuckDB versus Spark on a named dataset that spills.</td>
+</tr>
+<tr>
+<td>Warrant</td>
+<td><strong>Causal, scoped to working set.</strong> If the scan, join state, and spill files fit one machine, then adding a cluster buys coordination cost without changing the answer. If they do not fit, the same warrant says the cluster is in.</td>
+</tr>
+<tr>
+<td>Hidden assumptions</td>
+<td>"Fits" includes intermediates, not only the input file. Spill to disk is available and fast enough. One machine dying is acceptable.</td>
+</tr>
+<tr>
+<td>Qualifications</td>
+<td>40 GB of Parquet on a laptop can still OOM on a bad join. <code>max_memory</code> is a threshold, not a guarantee. S13 must not be cited as "the DuckDB paper."</td>
+</tr>
+<tr>
+<td>Evidence that would change the picture</td>
+<td><strong>Support A (unrun):</strong> a local join that finishes with spill under <code>max_memory</code>, with EXPLAIN ANALYZE. <strong>Support B (unrun):</strong> grow the same join until DuckDB dies or thrashes, then run it on Spark and record wall time and failure mode. <strong>Weaken both (unrun):</strong> a dataset that fits RAM but has a hot key; measure morsel idle time versus a static split.</td>
+</tr>
+</tbody>
+</table>
+<h3>Debate 3 — Local DuckDB is the closed-lab answer</h3>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claim A</td>
+<td>A local DuckDB process with no account and no <code>ATTACH 'md:'</code> never contacts MotherDuck. That is a reasonable <strong>proposal</strong> for an air-gapped workflow. <code>[<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</code> <code>[<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>]</code> <code>[<a class="cite" href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf" target="_blank" rel="noopener" title="MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)">S9</a>]</code></td>
+</tr>
+<tr>
+<td>Claim B</td>
+<td>A local binary is not an authorization to process classified data. Nearby TEE papers (Smaug 2023, BiTDB 2024) evaluate other engines. A lab still approves the binary, the extensions, and the machine. <code>[<a class="cite" href="https://doi.org/10.1109/TDSC.2022.3216020" target="_blank" rel="noopener" title="Smaug: A TEE-Assisted Secured SQLite (TDSC 2023)">S11</a>]</code> <code>[<a class="cite" href="https://doi.org/10.1109/TKDE.2024.3380367" target="_blank" rel="noopener" title="BiTDB: Built-in TEE Secure Database for Embedded Systems (TKDE 2024)">S12</a>]</code></td>
+</tr>
+<tr>
+<td>Evidence on the table</td>
+<td>MotherDuck architecture and CIDR 2024 describe dual/hybrid execution <code>[<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>]</code> <code>[<a class="cite" href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf" target="_blank" rel="noopener" title="MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)">S9</a>]</code>. Elicit returned no DuckDB classified-lab eval (competitors note). Smaug and BiTDB are SQLite/TEE work <code>[<a class="cite" href="https://doi.org/10.1109/TDSC.2022.3216020" target="_blank" rel="noopener" title="Smaug: A TEE-Assisted Secured SQLite (TDSC 2023)">S11</a>]</code> <code>[<a class="cite" href="https://doi.org/10.1109/TKDE.2024.3380367" target="_blank" rel="noopener" title="BiTDB: Built-in TEE Secure Database for Embedded Systems (TKDE 2024)">S12</a>]</code>.</td>
+</tr>
+<tr>
+<td>Warrant</td>
+<td><strong>Definitional for the network line; analogical (invalid as certification) for the TEE papers.</strong> If the process never opens <code>md:</code> and never auto-installs, then it does not use MotherDuck. If a paper evaluates SQLite in a TEE, that does <strong>not</strong> warrant "DuckDB is approved." The second warrant is the one this pack refuses.</td>
+</tr>
+<tr>
+<td>Hidden assumptions</td>
+<td>"No network" includes extension auto-install and any httpfs path. "Local" means the files already sit on disks the lab trusts. Analogical transfer from SQLite-in-TEE to DuckDB is tempting and wrong.</td>
+</tr>
+<tr>
+<td>Qualifications</td>
+<td>Closed-lab <strong>proposal</strong>, not ATO. <code>ATTACH 'md:'</code> is the documented line that leaves the machine. Hybrid execution is a cloud feature.</td>
+</tr>
+<tr>
+<td>Evidence that would change the picture</td>
+<td><strong>Support A (unrun):</strong> packet capture a session that only scans a local Parquet with auto-install off; show no outbound hosts. <strong>Support B (already in ledger):</strong> no DuckDB classified eval in the Elicit pass; keep S11/S12 labeled nearby work. <strong>Weaken both (unrun):</strong> first <code>httpfs</code> query with auto-install <strong>on</strong> and capture the fetch to <code>extensions.duckdb.org</code>; that breaks the "local means no network" assumption without touching MotherDuck.</td>
+</tr>
+</tbody>
+</table>
+<h3>Debate 4 — Speed multiples are the product</h3>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claim A</td>
+<td>Vectorized batches of 2048 and columnar layout are why analytical scans stay in cache and beat row-at-a-time engines on the same machine. <code>[<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</code> <code>[<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</code></td>
+</tr>
+<tr>
+<td>Claim B</td>
+<td>"10×–100×" and "~157 ms per billion rows" are briefing lines from talks and NotebookLM packets. They are not an SLA and not a reason to skip measuring your files.</td>
+</tr>
+<tr>
+<td>Evidence on the table</td>
+<td>Execution-format doc fixes <code>STANDARD_VECTOR_SIZE</code> at 2048 <code>[<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</code>. Developer Voices walks the cache argument <code>[<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</code>. No ledger row is a DuckDB SLA. The 157 ms figure is briefing color in the decision packet.</td>
+</tr>
+<tr>
+<td>Warrant</td>
+<td><strong>Causal (microarchitecture) versus authority (marketing number).</strong> If operators run on cache-resident vectors, then scans of a few columns should beat Volcano on the same core — that warrant supports A. If a slide states a wall-clock number, then that number is a claim about <em>that</em> demo, not a contract — that warrant supports B.</td>
+</tr>
+<tr>
+<td>Hidden assumptions</td>
+<td>Hardware, file layout, and query shape match the demo. Changing <code>STANDARD_VECTOR_SIZE</code> is a rebuild, not a session setting. A bigger number on a slide is treated as better engineering.</td>
+</tr>
+<tr>
+<td>Qualifications</td>
+<td>Teach 2048 and columnar I/O as the engine story. Time briefing numbers on your files before repeating them in a room.</td>
+</tr>
+<tr>
+<td>Evidence that would change the picture</td>
+<td><strong>Support A (unrun):</strong> <code>EXPLAIN ANALYZE</code> of a two-column aggregate versus a wide SELECT <em>, same file. </em><em>Support B (unrun):</em><em> attempt to reproduce 157 ms on a billion-row file you own; publish spec and result, including failure. </em><em>Weaken both (unrun):</em>* the same query with a pipeline breaker that spills; wall clock will not match the scan-only story.</td>
+</tr>
+</tbody>
+</table>
+<h3>Debate 5 — Later names end the one-writer rule</h3>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claim A</td>
+<td>One process writes the file. Other processes open it only as <code>READ_ONLY</code>. Inside the writer, OCC/MVCC handles threads; same-row edits conflict. That is the concurrency contract. <code>[<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</code></td>
+</tr>
+<tr>
+<td>Claim B</td>
+<td>NotebookLM and a later talk name <strong>Quack</strong> (remote protocol) and <strong>DuckLake</strong> (catalog/table format) as paths to multi-process writing. Treat those names as catalog claims until a current release note is on the ledger.</td>
+</tr>
+<tr>
+<td>Evidence on the table</td>
+<td>Official concurrency page <code>[<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</code>. Quack/DuckLake appear in generated briefings and in the 2026 Developer Voices episode (watch list; not promoted to the ledger as the contract). No current release-note URL is an <code>[S#]</code> for either name.</td>
+</tr>
+<tr>
+<td>Warrant</td>
+<td><strong>Authority, scoped to the current official page.</strong> If the operations manual states one writer process, then that is the contract this pack grades. A generated briefing does not warrant a new contract. A talk can warrant "this is being discussed," not "design on it."</td>
+</tr>
+<tr>
+<td>Hidden assumptions</td>
+<td>Readers equate "DuckDB Foundation engine" with "every name in a NotebookLM catalog." Multi-writer is assumed to be a file-format switch rather than a different product shape.</td>
+</tr>
+<tr>
+<td>Qualifications</td>
+<td>One-writer is the refusal this pack teaches. Quack and DuckLake stay unverified for design. Promote them to the ledger only after a primary URL is checked.</td>
+</tr>
+<tr>
+<td>Evidence that would change the picture</td>
+<td><strong>Support A (unrun):</strong> two OS processes INSERT into one file; record the lock error. <strong>Support B (unrun):</strong> read current DuckDB and DuckLake docs; if a primary page describes multi-writer, add a ledger row and rewrite this debate. <strong>Weaken both (unrun):</strong> one writer plus several <code>READ_ONLY</code> readers on a local file; confirm readers succeed while a second writer fails.</td>
+</tr>
+</tbody>
+</table>
+<h3>Debate 6 — Auto-install is harmless convenience</h3>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claim A</td>
+<td>Extensions keep OpenSSL, ICU, and remote IO out of the core binary so the core stays small and portable. <code>[<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</code> <code>[<a class="cite" href="https://doi.org/10.1145/3299869.3320212" target="_blank" rel="noopener" title="DuckDB: an Embeddable Analytical Database (SIGMOD 2019)">S4</a>]</code></td>
+</tr>
+<tr>
+<td>Claim B</td>
+<td>Extensions run with the host process's rights. Default auto-install fetches from <code>extensions.duckdb.org</code> on first use. In a closed room that fetch is the incident. <code>[<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</code></td>
+</tr>
+<tr>
+<td>Evidence on the table</td>
+<td>Securing-extensions doc <code>[<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</code>. SIGMOD 2019 and later modularity talks present extensions as the product surface.</td>
+</tr>
+<tr>
+<td>Warrant</td>
+<td><strong>Causal, two directions.</strong> If a feature is an extension, then the core binary can omit it (A). If auto-install is on, then first use of that feature is a network fetch with host rights (B). Convenience and the trust boundary are the same mechanism.</td>
+</tr>
+<tr>
+<td>Hidden assumptions</td>
+<td>"Signed" is treated as "approved for this lab." The operator notices the first-use fetch. Community/unsigned extensions stay off.</td>
+</tr>
+<tr>
+<td>Qualifications</td>
+<td>Laptop analytics can leave auto-install on. Closed room: auto-install and auto-load off, unsigned off, ship the binaries you trust.</td>
+</tr>
+<tr>
+<td>Evidence that would change the picture</td>
+<td><strong>Support A (unrun):</strong> build or inspect a binary and list which scanners are core versus extension. <strong>Support B (unrun):</strong> with auto-install on, trigger httpfs and capture the host contacted. <strong>Weaken both (unrun):</strong> vendor a signed extension offline, LOAD it with auto-install off, and show the feature works with no fetch.</td>
+</tr>
+</tbody>
+</table>
+<h2>Cross-cutting hidden assumptions</h2>
+<ul>
+<li>"The file fits" includes hash-join build state and sort runs.</li>
+<li>"Air-gapped" includes extension auto-install and httpfs, not only MotherDuck.</li>
+<li>A nearby paper about SQLite in a TEE transfers to DuckDB.</li>
+<li>A NotebookLM "strong" rating is as good as a docs page.</li>
+<li>A slide speed number generalizes across machines and file layouts.</li>
+<li>In-process and "no server to manage" also means "no crash boundary."</li>
+</ul>
+<h2>What this pack still cannot claim</h2>
+<ul>
+<li>DuckDB is approved for classified data.</li>
+<li>10×–100× or 157 ms as a contract.</li>
+<li>Quack or DuckLake as the concurrency contract.</li>
+<li>MotherDuck region topology from a secondary blog (Markaicode) until confirmed on MotherDuck's own regions page.</li>
+<li>Any Elicit deep report; only the light search exists.</li>
+</ul>
+<p>Designed tests above stay <strong>unrun</strong> until a sitting logs results on the Progress Log.</p>
+<h2>Changelog</h2>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>Agent</th>
+<th>Change</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-10-11</td>
+<td>grok</td>
+<td>First draft from the ledger, deep dive, and competitors note, using NEXUS 72.</td>
+</tr>
+</tbody>
+</table></article>
+  <footer class="docfoot">
+    Rendered from <code>Learning\one-day-mastery\duckdb\CLAIMS-AND-DEBATES.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
+    <div class="prevnext"><a href="source-ledger.html">&larr; Previous</a><a href="resources.html">Next &rarr;</a></div>
+  </footer>
+</main>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
+mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
+</script>
+</body>
+</html>

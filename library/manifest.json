@@ -140,6 +140,13 @@
     "nblm": false
   },
   {
+    "slug": "claims-debates",
+    "title": "Claims and debates",
+    "section": "Reference",
+    "desc": "Live debates, warrants, hidden assumptions, and designed counter-evidence for DuckDB as a product an architect has to place.",
+    "nblm": false
+  },
+  {
     "slug": "resources",
     "title": "RESOURCES \u2014 DuckDB",
     "section": "Reference",
