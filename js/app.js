@@ -315,7 +315,7 @@ function renderGlossary(){
   const q=(LS.get(KEY+"gq","")||"").toLowerCase(), cat=LS.get(KEY+"gcat","all");
   const cats=[...new Set(DATA.glossary.map(g=>g.category))];
   let h=`<h2 class="vh">Glossary <span style="font-size:1rem;color:var(--text-dim)">${DATA.glossary.length} terms</span></h2>
-  <p class="lead">Study definitions from the DuckDB source ledger. They are not a claim that the study day was sat. ${lib("glossary","Glossary note")} · ${lib("source-ledger","Source ledger")}</p>
+  <p class="lead">Study definitions. Rows marked gap pass take their wording from the 2026-10-11 NotebookLM data table, checked against the ledger. ${lib("glossary","Glossary note")} · ${lib("nblm-gap-table","Data table")} · ${lib("source-ledger","Source ledger")}</p>
   <input class="search" id="gSearch" placeholder="filter terms…" value="${esc(q)}">
   <div class="gfilters"><button class="b ${cat==="all"?"on":""}" data-gc="all">All (${DATA.glossary.length})</button>${cats.map(c=>`<button class="b ${cat===c?"on":""}" data-gc="${esc(c)}">${esc(c)} (${DATA.glossary.filter(g=>g.category===c).length})</button>`).join("")}</div>`;
   cats.filter(c=>cat==="all"||c===cat).forEach(c=>{

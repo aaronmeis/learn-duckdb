@@ -100,7 +100,7 @@
 </tr>
 <tr>
 <td>DataChunk</td>
-<td>A batch of aligned vectors. The default batch is 2048 tuples (<code>STANDARD_VECTOR_SIZE</code>). Operators run on the chunk. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>A horizontal slice of a columnar table: equal-length vectors processed together. Filters can punch holes in a chunk. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
 <td>2</td>
 </tr>
 <tr>
@@ -110,7 +110,7 @@
 </tr>
 <tr>
 <td>Morsel</td>
-<td>A piece of a pipeline that an idle thread takes from a queue. From the HyPer line of work, not invented in the 2019 paper. [<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</td>
+<td>A small unit of work an idle thread pulls from a queue. From the HyPer line of work, not invented in the 2019 paper. [<a class="cite" href="https://www.youtube.com/watch?v=pZV9FvdKmLc" target="_blank" rel="noopener" title="DuckDB: How to Build 100x Faster Analytics Databases (Hannes Mühleisen, Developer Voices)">S5</a>]</td>
 <td>2</td>
 </tr>
 <tr>
@@ -145,7 +145,7 @@
 </tr>
 <tr>
 <td>Single writer</td>
-<td>One process may write a database file. Other processes may open it only with <code>access_mode</code> set to <code>READ_ONLY</code>. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
+<td>Only one process may hold the write lock. A second writer gets a lock error. Other processes may open the file only as <code>READ_ONLY</code>. [<a class="cite" href="https://duckdb.org/docs/stable/connect/concurrency.html" target="_blank" rel="noopener" title="Concurrency">S3</a>]</td>
 <td>5</td>
 </tr>
 <tr>
@@ -165,12 +165,12 @@
 </tr>
 <tr>
 <td>Auto-install</td>
-<td>The setting that fetches an extension from extensions.duckdb.org on first use. Turn it off in a closed room. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+<td>On first use, DuckDB downloads a missing extension. That needs a network. Turn it off in a closed room. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
 <td>5</td>
 </tr>
 <tr>
 <td>httpfs</td>
-<td>Extension for HTTP and S3-style reads. Not part of the zero-dependency core. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
+<td>Reads and writes files over HTTP and S3. Remote reads wait on the network. Not part of the zero-dependency core. [<a class="cite" href="https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions" target="_blank" rel="noopener" title="Securing DuckDB extensions">S10</a>]</td>
 <td>5</td>
 </tr>
 <tr>
@@ -185,12 +185,12 @@
 </tr>
 <tr>
 <td>ATTACH md:</td>
-<td>The statement that connects this process to MotherDuck. After it, the query is no longer confined to the machine. [<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>]</td>
+<td>Mounts a MotherDuck database in this session. It needs credentials and a network. [<a class="cite" href="https://motherduck.com/docs/concepts/architecture-and-capabilities/" target="_blank" rel="noopener" title="MotherDuck architecture and capabilities">S8</a>]</td>
 <td>5</td>
 </tr>
 <tr>
 <td>Dual execution</td>
-<td>MotherDuck can run part of a query locally and part in its cloud. Described in the CIDR 2024 paper. [<a class="cite" href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf" target="_blank" rel="noopener" title="MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)">S9</a>]</td>
+<td>MotherDuck can split a query between this process and its cloud. Shipping rows between them can erase the speed. [<a class="cite" href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf" target="_blank" rel="noopener" title="MotherDuck: DuckDB in the cloud and in the client (CIDR 2024)">S9</a>]</td>
 <td>5</td>
 </tr>
 <tr>
@@ -200,17 +200,17 @@
 </tr>
 <tr>
 <td>Volcano</td>
-<td>One row at a time. Postgres and SQLite. DuckDB passes a chunk instead.</td>
+<td>Operators pull one row at a time. That costs a function call per row. DuckDB passes a chunk instead.</td>
 <td>2</td>
 </tr>
 <tr>
 <td>STANDARD_VECTOR_SIZE</td>
-<td>The default batch of 2048 tuples. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
+<td>Compile-time default, usually 2048 values in one vector. Changing it means rebuilding DuckDB. [<a class="cite" href="https://duckdb.org/docs/current/internals/vector.html" target="_blank" rel="noopener" title="Execution format (Vector and DataChunk)">S2</a>]</td>
 <td>2</td>
 </tr>
 <tr>
 <td>Pipeline breaker</td>
-<td>Hash-join build, hash aggregate, or sort. It must see all input before it emits.</td>
+<td>A sort or a global hash aggregate must consume its whole input before it can emit. That can force a spill.</td>
 <td>2</td>
 </tr>
 <tr>
@@ -220,12 +220,12 @@
 </tr>
 <tr>
 <td>Replacement scan</td>
-<td>A file path or a data frame in FROM, with no CREATE TABLE first. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
+<td>An unknown name or a file path in FROM becomes a scan of that file or frame. Statistics for that scan may be missing. [<a class="cite" href="https://duckdb.org/docs/current/index" target="_blank" rel="noopener" title="DuckDB documentation (current)">S1</a>]</td>
 <td>3</td>
 </tr>
 <tr>
 <td>Out-of-core</td>
-<td>Spill a join or aggregate to disk when RAM is not enough.</td>
+<td>Work that does not fit RAM spills to disk. The spill is much slower, and a plan that cannot spill can still die.</td>
 <td>5</td>
 </tr>
 <tr>
