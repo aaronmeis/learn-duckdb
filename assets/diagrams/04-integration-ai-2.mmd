@@ -1,0 +1,9 @@
+flowchart LR
+  USER["User or agent prompt"] --> AI["Copilot / agent / AI app"]
+  AI --> GROUND["Grounding data (SharePoint, OneDrive, Teams)"]
+  GROUND --> CTRL{"Labels, DLP, access checks"}
+  CTRL -->|allowed| AI
+  AI --> RESP["Response"]
+  AI --> LOG["Unified audit log: CopilotInteraction"]
+  LOG --> DSPM["DSPM for AI activity explorer"]
+  LOG --> RET["Retention and eDiscovery"]

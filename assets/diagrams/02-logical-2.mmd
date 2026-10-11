@@ -1,0 +1,10 @@
+flowchart LR
+  SRC["Data sources"] --> SCAN["Scan and extract metadata"]
+  SCAN --> CLS["Classify"]
+  CLS --> CAT["Data Map and catalog"]
+  CLS --> LBL["Label and protect"]
+  LBL --> DLP["DLP policy decision"]
+  DLP --> EVT["Activity events and alerts"]
+  AI["AI interaction"] --> EVT
+  EVT --> AUD["Unified audit log"]
+  AUD --> INV["DSPM, IRM, eDiscovery"]

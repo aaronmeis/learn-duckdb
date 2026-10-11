@@ -1,0 +1,8 @@
+flowchart LR
+  subgraph Org["Organization boundary"]
+    U["People and agents"] --> WORK["Work with data"]
+    WORK --> CAP["Know, protect, govern, comply, secure AI"]
+  end
+  EXT["Non-Microsoft clouds, SaaS, on-prem stores"] --> CAP
+  AIAPPS["Copilots, agents, third-party AI apps"] <--> CAP
+  REG["Regulators and auditors"] -.evidence.-> CAP

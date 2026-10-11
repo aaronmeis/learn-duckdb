@@ -1,0 +1,10 @@
+erDiagram
+  LABEL_POLICY ||--o{ SENSITIVITY_LABEL : publishes
+  SENSITIVITY_LABEL }o--o{ CONTENT_ITEM : "applied to"
+  SIT }o--o{ CONTENT_ITEM : "detected in"
+  DATA_SOURCE ||--o{ ASSET : contains
+  SIT }o--o{ ASSET : classifies
+  POLICY }o--o{ SIT : uses
+  AI_INTERACTION ||--|| AUDIT_RECORD : emits
+  AI_INTERACTION }o--o{ CONTENT_ITEM : references
+  CASE }o--o{ AI_INTERACTION : collects

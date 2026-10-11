@@ -1,0 +1,16 @@
+flowchart LR
+  subgraph P["Microsoft Purview boundary"]
+    DM["Data Map"]
+    MIP["Information Protection + DLP"]
+    DSPM["DSPM / DSPM for AI"]
+    AUD["Unified audit log"]
+  end
+  S3["AWS S3"] -->|"AWS IR, Role ARN"| DM
+  SF["Snowflake"] -->|"key pair"| DM
+  SFDC["Salesforce"] -->|"REST API, connected app"| DM
+  FS["On-prem file shares"] <-->|"scanner, SMB"| MIP
+  OT["OneTrust"] -->|"via Sentinel"| DSPM
+  SPO["SharePoint Online"] <--> MIP
+  SPO --> DSPM
+  AIAPPS["Copilots and agents"] --> AUD
+  AUD --> DSPM

@@ -1,0 +1,31 @@
+flowchart TB
+  subgraph M365["Microsoft 365 tenant (Commercial, GCC, GCC High, or DoD)"]
+    PORTAL["Purview portal"]
+    SOL["DLP · Labels · IRM · Audit · eDiscovery · Compliance Manager · DSPM for AI"]
+    UAL["Unified audit log"]
+  end
+  subgraph AZ["Azure subscription (Commercial or Azure Government)"]
+    ACCT["Purview account: Data Map and Unified Catalog"]
+    KV["Key Vault: scan secrets"]
+    MVNET["Managed VNet IR / private endpoints"]
+  end
+  subgraph AWSX["AWS"]
+    AWSIR["AWS IR hosted by Purview"]
+    S3["S3 buckets"]
+  end
+  subgraph ONP["Customer estate"]
+    SHIR["Self-hosted IR (JDK 11)"]
+    SCN["Information protection scanner + SQL Server"]
+    FS["File shares (SMB / NFS)"]
+    DEV["Onboarded devices + browser extension"]
+  end
+  PORTAL --> SOL
+  SOL --> UAL
+  ACCT --> KV
+  ACCT --> MVNET
+  AWSIR --> S3
+  AWSIR --> ACCT
+  SHIR --> ACCT
+  SCN --> FS
+  SCN --> SOL
+  DEV --> SOL
