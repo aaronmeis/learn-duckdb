@@ -76,6 +76,7 @@ function renderDashboard(){
     <div class="card"><h3>Shorts and media</h3><p style="color:var(--text-secondary);font-size:.86rem">Six vertical NotebookLM explainers, the 8.5-minute narrated deep-dive cut, and the audio overview.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('shorts')">Open media →</button><button class="b" onclick="go('deck')">Slide deck →</button></div></div>
     <div class="card"><h3>Failure modes</h3><p style="color:var(--text-secondary);font-size:.86rem">${DATA.checklist.length} failure modes across all four views: the tell, the fix, and the source.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('failures')">Failure modes →</button><button class="b" onclick="go('cheat')">Decision rules →</button></div></div>
     <div class="card"><h3>Neighbors</h3><p style="color:var(--text-secondary);font-size:.86rem">SQLite, Postgres, Polars, Spark, and MotherDuck, and the job each one owns.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('ea')">Open the map →</button></div></div>
+    <div class="card"><h3>On the phone</h3><p style="color:var(--text-secondary);font-size:.86rem">Report lines, eight creator talks, and the O'Reilly DuckDB shelf, above the source ledger.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('refs')">Open references →</button></div></div>
     <div class="card"><h3>Library</h3><p style="color:var(--text-secondary);font-size:.86rem">${libCount} vault notes and NotebookLM reports rendered as web pages, with live source links.</p><div class="btnrow" style="margin:.8rem 0 0"><button class="b" onclick="go('library')">Open library →</button><button class="b" onclick="go('refs')">Source ledger →</button></div></div>
   </div>`;
   el.innerHTML=h;
@@ -419,7 +420,26 @@ function renderReferences(){
   const el=$("#v-refs");
   const q=(LS.get(KEY+"refq","")||"").toLowerCase(), sel=LS.get(KEY+"refcat","all");
   const cats=[...new Set(SOURCES.map(s=>s.g))];
-  let h=`<h2 class="vh">Source ledger <span style="font-size:1rem;color:var(--text-dim)">${SOURCES.length} sources</span></h2>
+  let h=`<h2 class="vh">From the NotebookLM reports</h2>
+  <p class="lead">The long reports are in the library. These are the lines worth reviewing on a phone. Where a report and the ledger disagree, the ledger wins.</p>`;
+  (DATA.fromReports||[]).forEach(r=>{
+    h+=`<div class="ref-card"><div class="ref-info"><b>${esc(r.point)}</b><div class="ref-sources">${lib(r.slug,r.title)}</div></div></div>`;
+  });
+  h+=`<h2 class="vh" style="margin-top:1.6rem">Talks <span style="font-size:1rem;color:var(--text-dim)">${(DATA.watch||[]).length}</span></h2>
+  <p class="lead">Creator talks. Two of them are already on the ledger. The 2026 Developer Voices episode is newer than this pack.</p>`;
+  (DATA.watch||[]).forEach(v=>{
+    h+=`<div class="ref-card"><div class="ref-info"><a class="ref-anchor" href="${esc(v.url)}" target="_blank" rel="noopener">${esc(v.title)}</a>
+      <div class="ref-url">${esc(v.who)} · ${esc(v.min)}</div><div class="ref-sources">${esc(v.why)}</div></div>
+      <a class="b" href="${esc(v.url)}" target="_blank" rel="noopener" style="font-size:.76rem;flex-shrink:0">Watch ↗</a></div>`;
+  });
+  h+=`<h2 class="vh" style="margin-top:1.6rem">O'Reilly <span style="font-size:1rem;color:var(--text-dim)">${(DATA.books||[]).length}</span></h2>
+  <p class="lead">Catalog search on 2026-10-11. These need an O'Reilly login. They are practice material, not a higher source than the docs.</p>`;
+  (DATA.books||[]).forEach(b=>{
+    h+=`<div class="ref-card"><div class="ref-info"><a class="ref-anchor" href="${esc(b.url)}" target="_blank" rel="noopener">${esc(b.title)}</a>
+      <div class="ref-url">${esc(b.kind)} · ${esc(b.who)}</div></div>
+      <a class="b" href="${esc(b.url)}" target="_blank" rel="noopener" style="font-size:.76rem;flex-shrink:0">Open ↗</a></div>`;
+  });
+  h+=`<h2 class="vh" style="margin-top:1.6rem">Source ledger <span style="font-size:1rem;color:var(--text-dim)">${SOURCES.length} sources</span></h2>
   <p class="lead">Thirteen sources. Official docs and the SIGMOD paper are high trust. Smaug and BiTDB are nearby TEE papers about other engines. ${lib("source-ledger","Ledger note")} · ${lib("resources","Reading order")}</p>
   <input class="search" id="refSearch" placeholder="filter by title, URL, or type…" value="${esc(q)}">
   <div class="gfilters"><button class="b ${sel==="all"?"on":""}" data-rcat="all">All (${SOURCES.length})</button>${cats.map(c=>`<button class="b ${sel===c?"on":""}" data-rcat="${esc(c)}">${esc(c)} (${SOURCES.filter(s=>s.g===c).length})</button>`).join("")}</div>`;

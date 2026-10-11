@@ -147,6 +147,13 @@
     "nblm": false
   },
   {
+    "slug": "watch-reading",
+    "title": "Talks and O'Reilly",
+    "section": "Reference",
+    "desc": "Talks and O'Reilly titles for the on-the-go study console. Not part of the numbered source ledger.",
+    "nblm": false
+  },
+  {
     "slug": "prompt-library",
     "title": "Prompt library \u2014 DuckDB",
     "section": "Prompts",

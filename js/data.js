@@ -183,6 +183,37 @@ DATA.cut = {
   recap: "In-process OLAP, vectors, morsels, one writer, and the line you do not cross into MotherDuck."
 };
 
+DATA.watch = [
+  {who:"Hannes Mühleisen",title:"Developer Voices, 2024",url:"https://www.youtube.com/watch?v=pZV9FvdKmLc",why:"Vectors, morsels, and when one machine wins. Ledger S5.",min:"80 min"},
+  {who:"Hannes Mühleisen",title:"TigerBeetle overview, 2023",url:"https://www.youtube.com/watch?v=qWtc7k6tnVk",why:"Client-server versus in-process. Ledger S6.",min:"25 min"},
+  {who:"Hannes Mühleisen",title:"Data wrangling like a boss, Posit 2024",url:"https://www.youtube.com/watch?v=GELhdezYmP0",why:"CSV, Parquet, Arrow, and the design rationale.",min:"58 min"},
+  {who:"Mühleisen and Raasveldt",title:"In-process analytical data management, PyData Amsterdam 2023",url:"https://www.youtube.com/watch?v=5ddoZR6PYNU",why:"Both authors. Shortest of the creator talks.",min:"23 min"},
+  {who:"Hannes Mühleisen",title:"Why single-node beats distributed, 2025",url:"https://www.youtube.com/watch?v=o53onmgnQDU",why:"When a cluster is the wrong tool.",min:"34 min"},
+  {who:"Hannes Mühleisen",title:"Changing data with confidence, PyData Global 2024",url:"https://www.youtube.com/watch?v=7UqLMHloTsQ",why:"Transactions around changes to analysis data.",min:"30 min"},
+  {who:"Hannes Mühleisen",title:"DuckDB and the future of databases, Posit 2025",url:"https://www.youtube.com/watch?v=GvgbcWtHgVY",why:"Plain account of the architecture and the cloud line.",min:"59 min"},
+  {who:"Hannes Mühleisen",title:"What happens when a database gets popular, Developer Voices 2026",url:"https://www.youtube.com/watch?v=C3l4CsP1Ak0",why:"Extensions, Quack, and DuckLake. Later than this pack. Not the concurrency contract.",min:"106 min"}
+];
+
+DATA.books = [
+  {kind:"Book",title:"DuckDB: Up and Running",who:"Wei-Meng Lee",url:"https://learning.oreilly.com/library/view/-/9781098159689/"},
+  {kind:"Book",title:"Getting Started with DuckDB",who:"Simon Aubury, Ned Letcher",url:"https://learning.oreilly.com/library/view/-/9781803241005/"},
+  {kind:"Book",title:"DuckDB in Action",who:"Mark Needham, Michael Hunger, Michael Simons",url:"https://learning.oreilly.com/library/view/-/9781633437258/"},
+  {kind:"Video",title:"DuckDB Essentials",who:"Stephanie Wang",url:"https://learning.oreilly.com/videos/-/0642572040192/"},
+  {kind:"Video",title:"DuckDB in Action, video edition",who:"Hunger, Needham, Simons",url:"https://learning.oreilly.com/videos/-/9781633437258VE/"},
+  {kind:"Live series",title:"Transforming and Analyzing Data With DuckDB",who:"Christian Winkler",url:"https://learning.oreilly.com/live-events/-/0642572418007/"}
+];
+
+DATA.fromReports = [
+  {slug:"nblm-study-guide",title:"Study guide",point:"In-process means the query and the program share memory. Client-server pays for a socket and a copy. The report's 100x line is its wording, not an SLA."},
+  {slug:"nblm-study-guide",title:"Study guide",point:"Three execution shapes: one row at a time, the whole result at once, or a chunk of 2048. DuckDB uses the chunk. Volcano is the Postgres and SQLite shape."},
+  {slug:"nblm-mental-models",title:"Mental models",point:"A pipeline breaker (hash-join build, hash aggregate, sort) must see all of its input before it can emit. Morsels schedule the scan around that."},
+  {slug:"nblm-failure-modes",title:"Failure catalog",point:"Database locked, an out-of-memory join, and a database file on a weak network drive are the three traps to be able to name."},
+  {slug:"nblm-working-brief",title:"Working briefing",point:"The comparison table is the placement card: DuckDB, Postgres, SQLite, Polars, Spark. Use it when the quiz asks which tool you would refuse."},
+  {slug:"nblm-decision-packet",title:"Decision packet",point:"Standardize local scans and aggregates. Do not start a cluster for a file that fits the machine. Do not load a CSV just to look at it."},
+  {slug:"nblm-playbook",title:"Practice playbook",point:"The falsifier still holds: a SQL tour that never explains columns, vectors, or the tool you would not pick."},
+  {slug:"nblm-briefing",title:"Briefing",point:"Quack and DuckLake show up here as multi-writer ideas. The contract you can grade yourself on is still the concurrency doc: one writer process, other processes read-only."}
+];
+
 DATA.drills = {
   where:{title:"Where does it run?",ask:"Where does this work run?",
     options:["Inside your process","A database server","MotherDuck cloud","A Spark cluster"],

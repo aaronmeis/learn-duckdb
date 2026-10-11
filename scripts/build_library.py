@@ -42,6 +42,7 @@ PAGES = [
     ("quiz-bank", PACK / "reference" / "quiz-bank.md", "Reference", None, False),
     ("source-ledger", PACK / "reference" / "source-ledger.md", "Reference", None, False),
     ("resources", PACK / "RESOURCES.md", "Reference", None, False),
+    ("watch-reading", PACK / "reference" / "watch-and-reading.md", "Reference", "Talks and O'Reilly", False),
     ("prompt-library", PACK / "prompts" / "00 - Prompt Library.md", "Prompts", None, False),
     ("prompts-all", PACK / "prompts" / "notebooklm-all-prompts.md", "Prompts", "All NotebookLM prompts (archive)", False),
     ("prompts-notebooklm-set", PACK / "prompts" / "notebooklm-prompt-set.md", "Prompts", None, False),
