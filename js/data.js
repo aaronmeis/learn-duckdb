@@ -11,13 +11,17 @@ const SOURCES = [
   {n:10,g:"Official docs",t:"Securing DuckDB extensions",u:"https://duckdb.org/docs/stable/operations_manual/securing_duckdb/securing_extensions",type:"docs",trust:"high",b:"5"},
   {n:11,g:"Nearby work",t:"Smaug: TEE-assisted SQLite (2023)",u:"https://doi.org/10.1109/TDSC.2022.3216020",type:"paper",trust:"high",b:"5"},
   {n:12,g:"Nearby work",t:"BiTDB: TEE database for embedded systems (2024)",u:"https://doi.org/10.1109/TKDE.2024.3380367",type:"paper",trust:"high",b:"5"},
-  {n:13,g:"Papers",t:"Modern alternatives to Hive (2026)",u:"https://doi.org/10.1016/j.is.2025.102635",type:"paper",trust:"medium",b:"7"}
+  {n:13,g:"Papers",t:"Modern alternatives to Hive (2026)",u:"https://doi.org/10.1016/j.is.2025.102635",type:"paper",trust:"medium",b:"7"},
+  {n:14,g:"Official docs",t:"DuckLake v1.0 (April 2026)",u:"https://ducklake.select/2026/04/13/ducklake-10/",type:"docs",trust:"high",b:"5"},
+  {n:15,g:"Official docs",t:"Quack: The DuckDB Client-Server Protocol (May 2026)",u:"https://duckdb.org/2026/05/12/quack-remote-protocol",type:"docs",trust:"high",b:"5"},
+  {n:16,g:"Official docs",t:"Quack Remote Protocol overview",u:"https://duckdb.org/docs/current/quack/overview",type:"docs",trust:"high",b:"5"}
 ];
 
 const DATA = {
+  checked:"Checked against DuckDB 1.5.6 / 1.4.5 LTS on 2026-10-11",
   weeks:[
     {n:1,title:"Placement",time:"25 min",rungs:"100",lib:"block-01-core-concepts",
-     opener:"DuckDB is in-process OLAP. SQLite is in-process OLTP. Postgres is a server of record. A warehouse is client-server OLAP [S4].",
+     opener:"DuckDB is in-process OLAP. SQLite is in-process OLTP. Postgres is a server of record. A warehouse is client-server OLAP [S4]. Plain English: the engine sits inside your app. Analogy: a calculator bolted into the notebook, not a bank teller window.",
      obj:"Name the missing quadrant and the tool you would not pick.",
      deliv:"Two sentences: what DuckDB is, and one workload you refuse.",
      mods:[
@@ -26,7 +30,7 @@ const DATA = {
      ],
      vids:[{s:4},{s:6}]},
     {n:2,title:"Columnar storage",time:"20 min",rungs:"100",lib:"block-01-core-concepts",
-     opener:"Values of one column sit together. A SUM reads that column and skips the rest [S2].",
+     opener:"Values of one column sit together. A SUM reads that column and skips the rest [S2]. Plain English: scans touch only the columns you name. Analogy: reading only the price column on a receipt tape.",
      obj:"Say why a row store wastes I/O on a two-column query of a wide table.",
      deliv:"One sketch: a SUM of amount that does not read name.",
      mods:[
@@ -35,7 +39,7 @@ const DATA = {
      ],
      vids:[{s:2},{s:4}]},
     {n:3,title:"Vectors and DataChunk",time:"30 min",rungs:"200",lib:"block-02-mental-models",
-     opener:"Operators process a batch, not one row. The default batch is 2048 tuples, STANDARD_VECTOR_SIZE [S2].",
+     opener:"Operators process a batch, not one row. The default batch is 2048 tuples, STANDARD_VECTOR_SIZE [S2]. Plain English: work moves in cache-sized batches. Analogy: a forklift moving a pallet of 2048 boxes, not one box at a time.",
      obj:"Contrast Volcano with a DataChunk.",
      deliv:"One sentence on why 2048 sits in cache, and what changing that constant costs.",
      mods:[
@@ -44,7 +48,7 @@ const DATA = {
      ],
      vids:[{s:2},{s:5}]},
     {n:4,title:"Morsels",time:"20 min",rungs:"200",lib:"block-02-mental-models",
-     opener:"Idle threads pull work from a queue. That idea comes from HyPer, not from the 2019 paper [S5].",
+     opener:"Idle threads pull work from a queue. That idea comes from HyPer, not from the 2019 paper [S5]. Plain English: busy cores do not park waiting on one hot key. Analogy: a deli ticket queue—idle clerks take the next ticket.",
      obj:"Say what a fixed hash split does when one key is huge.",
      deliv:"The stall, and the queue that avoids it.",
      mods:[
@@ -53,7 +57,7 @@ const DATA = {
      ],
      vids:[{s:5}]},
     {n:5,title:"Files and replacement scans",time:"25 min",rungs:"200",lib:"block-03-active-practice",
-     opener:"FROM 'events.parquet' is a scan. There is no CREATE TABLE first [S1].",
+     opener:"FROM 'events.parquet' is a scan. There is no CREATE TABLE first [S1]. Plain English: the file is already the table. Analogy: opening a spreadsheet in place instead of copying it into a new workbook.",
      obj:"Name three sources DuckDB can read without a load step.",
      deliv:"A one-line query against a Parquet path, plus one risk of missing statistics.",
      mods:[
@@ -62,7 +66,7 @@ const DATA = {
      ],
      vids:[{s:1},{s:2}]},
     {n:6,title:"Joins, breakers, and spill",time:"30 min",rungs:"300",lib:"block-03-active-practice",
-     opener:"A hash join builds on the small side. A sort or a global aggregate must see all input before it emits [S2].",
+     opener:"A hash join builds on the small side. A sort or a global aggregate must see all input before it emits [S2]. Plain English: some steps cannot stream. Analogy: sorting mail into bins—you need the whole pile before the last bin is done.",
      obj:"Name a pipeline breaker and what happens when the hash table will not fit.",
      deliv:"The EXPLAIN line you would look at, and the setting that starts a spill.",
      mods:[
@@ -71,16 +75,16 @@ const DATA = {
      ],
      vids:[{s:2},{s:1}]},
     {n:7,title:"One writer",time:"25 min",rungs:"300",lib:"block-05-edge-cases",
-     opener:"One process writes the file. Other processes open it only as READ_ONLY. Inside the writer, two threads that edit the same row conflict [S3].",
-     obj:"Separate a second process from a second thread.",
-     deliv:"The tell for Database locked, and the tell for a transaction conflict.",
+     opener:"Native .duckdb: one read-write process or many READ_ONLY. Quack (beta) for multi-process/remote writes. DuckLake v1.0 + Postgres catalog for stable multi-writer [S3][S14][S15][S16]. Plain English: the local file still has one clipboard; Quack and DuckLake are other rooms for shared writing. Analogy: one person writing on a shared whiteboard, or a meeting with a chair (Quack/DuckLake).",
+     obj:"Separate native-file locking from Quack and DuckLake multi-writer paths.",
+     deliv:"Name the three tiers, the tell for Database locked, and the tell for a transaction conflict.",
      mods:[
-       {t:"Process versus thread [S3]",rl:"ops · 300", action:"Write who may write, and who may only read.", whyMatters:"MVCC is inside the one writer. It is not multi-process writing."},
+       {t:"Process versus thread [S3]",rl:"ops · 300", action:"Write who may write a native file, and who may only read.", whyMatters:"MVCC/OCC is inside the one native writer process. Multi-process writes need Quack or DuckLake."},
        {t:"Appends versus updates [S3]",rl:"ops · 300", action:"Say which of two concurrent appends fail.", whyMatters:"Appends do not conflict. Same-row updates do."}
      ],
      vids:[{s:3}]},
     {n:8,title:"Extensions",time:"20 min",rungs:"200",lib:"block-05-edge-cases",
-     opener:"The core is the SQL engine with no extra libraries. Parquet, JSON, httpfs, spatial, and ICU load beside it and run with the host's rights [S10].",
+     opener:"The core is the SQL engine with no extra libraries. Parquet, JSON, httpfs, spatial, and ICU load beside it and run with the host's rights [S10]. Plain English: optional features load beside the core. Analogy: browser plugins—powerful, and they run with the browser's rights.",
      obj:"Separate INSTALL, LOAD, and auto-install.",
      deliv:"The closed-room setting: auto-install off, unsigned extensions off.",
      mods:[
@@ -89,7 +93,7 @@ const DATA = {
      ],
      vids:[{s:10},{s:1}]},
     {n:9,title:"MotherDuck",time:"20 min",rungs:"300",lib:"competitors",
-     opener:"MotherDuck is a separate cloud product. ATTACH md: mounts it into this session. Dual execution can run part of the query in their cloud [S8][S9].",
+     opener:"MotherDuck is a separate cloud product. ATTACH md: mounts it into this session. Dual execution can run part of the query in their cloud [S8][S9]. Plain English: that statement can leave the laptop. Analogy: dialing into a cloud desk from your local session.",
      obj:"Name the statement that leaves the machine.",
      deliv:"One sentence: local DuckDB is not MotherDuck.",
      mods:[
@@ -98,7 +102,7 @@ const DATA = {
      ],
      vids:[{s:8},{s:9}]},
     {n:10,title:"Closed lab and host fate",time:"20 min",rungs:"300",lib:"competitors",
-     opener:"A local binary with no network is a deployment proposal. It is not permission to process classified data. Smaug and BiTDB study other engines [S11][S12].",
+     opener:"A local binary with no network is a deployment proposal. It is not permission to process classified data. Smaug and BiTDB study other engines [S11][S12]. Plain English: offline is a proposal, not a clearance. Analogy: a locked toolbox is not a security badge.",
      obj:"Name two papers that do not certify DuckDB, and one crash that takes the host down.",
      deliv:"The closed-lab rule in one sentence.",
      mods:[
@@ -107,7 +111,7 @@ const DATA = {
      ],
      vids:[{s:3},{s:10}]},
     {n:11,title:"Decision packet",time:"25 min",rungs:"200",lib:"nblm-decision-packet",
-     opener:"Standardize local scans. Do not start Spark for a file that fits one machine. Do not load a CSV just to look at it. Slide speed numbers are not an SLA.",
+     opener:"Standardize local scans. Do not start Spark for a file that fits one machine. Do not load a CSV just to look at it. Slide speed numbers are not an SLA. Plain English: pick the right tool for the job size, then time your own files. Analogy: do not charter a freighter for a backpack.",
      obj:"Write the tool you would stop using, and one report claim you will not treat as a guarantee.",
      deliv:"A three-line decision: in, out, and measure.",
      mods:[
@@ -143,7 +147,7 @@ const DATA = {
     {cat:"6 · Joins and spill",model:"any",desc:"Build side, breaker, max_memory.",items:["Small dimension, large fact","Sort of a billion-row table"],
      flagship:"Sketch a hash join. Label the build side. Name two pipeline breakers. Say what happens when the hash table will not fit and the plan cannot spill. max_memory is a threshold, not a guarantee."},
     {cat:"7 · One writer",model:"any",desc:"Process versus thread.",items:["Second script INSERT","Two threads UPDATE the same row"],
-     flagship:"A notebook is writing. A second OS process tries to INSERT. A second thread in the first process UPDATEs the same row. Name the tell for each. Cite the concurrency doc. Do not call this multi-process writing."},
+     flagship:"A notebook is writing a native .duckdb file. A second OS process tries to INSERT. A second thread in the first process UPDATEs the same row. Name the tell for each. Cite the concurrency doc for the native-file rule, then name Quack (beta) and DuckLake v1.0 + Postgres catalog as the multi-writer tiers."},
     {cat:"8 · Extensions",model:"any",desc:"Core, INSTALL, LOAD, auto-install.",items:["httpfs in a closed room","spatial on a laptop"],
      flagship:"List three features that are not in the zero-dependency core. Separate INSTALL, LOAD, and auto-install. Name the host auto-install contacts. State that an extension runs with the host process rights."},
     {cat:"9 · MotherDuck",model:"any",desc:"The statement that leaves the machine.",items:["Local Parquet only","Approved cloud account"],
@@ -157,8 +161,8 @@ const DATA = {
   ],
   checklist:[
     {title:"Second writer",view:"Operations",src:"S3",
-     good:"One process writes. Other processes open the file only with access_mode READ_ONLY.",
-     bad:"Tell: Database locked or Transaction conflict. Root cause: two processes tried to write, or two transactions edited the same rows."},
+     good:"Native .duckdb: one read-write process, or many READ_ONLY. Multi-process writes need Quack (beta) or DuckLake v1.0 + Postgres catalog.",
+     bad:"Tell: Database locked or Transaction conflict on a native file. Root cause: two processes tried to write the same .duckdb, or two threads edited the same rows."},
     {title:"Join memory",view:"Engine",src:"S2",
      good:"Build the hash table on the small side. Gather statistics and read EXPLAIN before trusting a timing.",
      bad:"Tell: the process dies out of memory. Root cause: the plan materializes an intermediate it cannot spill."},
@@ -183,7 +187,7 @@ const DATA = {
   ],
   cheat:[
     {t:"Use DuckDB",d:"The working set fits one machine and the question is a scan, join, or aggregate."},
-    {t:"Use SQLite or Postgres",d:"Many small writes, or many writers, or the database is the system of record."},
+    {t:"Use Postgres (or SQLite for embedded OLTP)",d:"Postgres for many writers / server of record. SQLite is also single-writer on its file—use it for embedded point reads and small writes, not as the multi-writer answer."},
     {t:"Use Spark",d:"The data will not fit one machine, or a dead node must not kill the job."},
     {t:"Measure the briefing numbers",d:"10x and a billion rows in 157 ms are not an SLA. Time your files."}
   ],
@@ -194,7 +198,7 @@ const DATA = {
     {section:2,question:"What is the default vector size?",answer:"2048 tuples in a DataChunk. Operators run on that batch.",src:"S2"},
     {section:2,question:"Why does a column store help a SUM?",answer:"It reads the summed column and skips the others.",src:"S2"},
     {section:2,question:"What problem do morsels avoid?",answer:"A fixed hash split that leaves threads idle when one key is huge.",src:"S5"},
-    {section:3,question:"When may other processes open the same file?",answer:"Only to read, and only in read-only mode. A second writer is blocked.",src:"S3"},
+    {section:3,question:"When may other processes open the same native .duckdb file?",answer:"Only to read, and only in READ_ONLY mode. A second native writer is blocked. Multi-process writes use Quack (beta) or DuckLake v1.0 + Postgres catalog.",src:"S3"},
     {section:3,question:"What does ATTACH md: do?",answer:"It connects this process to MotherDuck. Hybrid execution can run part of the query in their cloud.",src:"S8"},
     {section:3,question:"Is local DuckDB an authorization for classified data?",answer:"No. A lab still approves the binary, the extensions, and the machine. Smaug and BiTDB do not evaluate DuckDB.",src:"S11"},
     {section:2,question:"Which side should a hash join build?",answer:"The smaller side. The larger side probes.",src:"S2"},
@@ -222,13 +226,13 @@ const DATA = {
 {"section": 4, "question": "Which of the following statements correctly describe DuckDB's extension system and binary design?", "answer": "Select choices that highlight DuckDB's zero-dependency core philosophy and in-process extension architecture.", "explanation": "Open question from the 2026-10-11 NotebookLM quiz. The full text is in the library.", "src": "nblm"},
 {"section": 4, "question": "Why does vectorized column processing yield higher performance on modern CPUs compared to traditional row-at-a-time (Volcano) query processing?", "answer": "Focus on hardware memory hierarchy (caches) and CPU instruction execution characteristics (branch prediction/dispatch overhead).", "explanation": "Open question from the 2026-10-11 NotebookLM quiz. The full text is in the library.", "src": "nblm"}],
   glossary:[
-    {category:"Placement",term:"DuckDB",rung:100,essential:true,definition:"An in-process analytical database. SQL runs in your process. One machine, one writer. [S1][S4]",source:"ledger"},
+    {category:"Placement",term:"DuckDB",rung:100,essential:true,definition:"An in-process analytical database. SQL runs in your process. Native .duckdb file: one read-write process or many READ_ONLY. [S1][S3][S4]",source:"ledger"},
     {category:"Placement",term:"OLAP",rung:100,essential:true,definition:"Few large scans and aggregates. The workload DuckDB is built for.",source:"ledger"},
     {category:"Placement",term:"OLTP",rung:100,essential:true,definition:"Many small row reads and writes. SQLite and Postgres are built for this.",source:"ledger"},
     {category:"Engine",term:"DataChunk",rung:200,essential:true,definition:"A horizontal slice of a columnar table: equal-length vectors processed together. Filters can punch holes in a chunk, and the batch has to stay inside cache. [S2]",source:"nblm-gap"},
     {category:"Engine",term:"Vectorized execution",rung:200,essential:true,definition:"Operators process a chunk, not one row at a time, so the working set stays in cache. [S2]",source:"ledger"},
     {category:"Engine",term:"Morsel",rung:200,essential:true,definition:"A small unit of work an idle thread pulls from a queue. Operators have to be able to run on that piece. A bad size either starves threads or spends the time scheduling. [S5]",source:"nblm-gap"},
-    {category:"Operations",term:"Single writer",rung:300,essential:true,definition:"Only one process may hold the write lock on a database file. A second process that tries to write gets a lock error. [S3]",source:"nblm-gap"},
+    {category:"Operations",term:"Single writer",rung:300,essential:true,definition:"On a native .duckdb file, only one process may hold the write lock. A second writer gets a lock error. Multi-process writes use Quack (beta) or DuckLake v1.0 + Postgres catalog. [S3][S14][S15]",source:"nblm-gap"},
     {category:"Trust",term:"MotherDuck",rung:300,essential:true,definition:"A separate cloud product. ATTACH md: can move query work off the machine. [S8][S9]",source:"ledger"},
     {category:"Trust",term:"Extension",rung:200,essential:true,definition:"Code loaded beside the core. It runs with the rights of the DuckDB process. [S10]",source:"ledger"},
     {category:"Placement",term:"In-process",rung:100,essential:true,definition:"The engine and the program share one address space. No server, no socket copy of each result row. [S4]",source:"ledger"},
@@ -246,8 +250,8 @@ const DATA = {
     {category:"Engine",term:"Predicate pushdown",rung:200,definition:"A Parquet reader skips row groups that cannot match the filter. [S1]",source:"ledger"},
     {category:"Engine",term:"Zero-copy scan",rung:200,definition:"Query CSV, Parquet, Pandas, or Arrow without a separate load into a new table. [S1]",source:"ledger"},
     {category:"Engine",term:"EXPLAIN",rung:200,definition:"The plan DuckDB will run. Read it before trusting a timing. [S1]",source:"ledger"},
-    {category:"Operations",term:"Optimistic concurrency",rung:300,definition:"Inside the one writer process, transactions conflict if they edit the same rows. This is not multi-process writing. [S3]",source:"ledger"},
-    {category:"Operations",term:"READ_ONLY",rung:300,essential:true,definition:"The access mode other processes must use. They may read. They may not write. [S3]",source:"ledger"},
+    {category:"Operations",term:"Optimistic concurrency",rung:300,definition:"Inside one native writer process, transactions conflict if they edit the same rows. That OCC rule is per process; multi-process writes need Quack or DuckLake. [S3][S15][S14]",source:"ledger"},
+    {category:"Operations",term:"READ_ONLY",rung:300,essential:true,definition:"On a native .duckdb file, other processes must use this access mode. They may read. They may not write. [S3]",source:"ledger"},
     {category:"Operations",term:"Database locked",rung:300,definition:"The usual message when a second process tries to write. [S3]",source:"ledger"},
     {category:"Trust",term:"Auto-install",rung:300,essential:true,definition:"On first use of a missing extension, DuckDB downloads and installs it. That needs a network and permission to write the extension files. Turn it off in a closed room. [S10]",source:"nblm-gap"},
     {category:"Trust",term:"httpfs",rung:200,definition:"Extension that reads and writes files over HTTP and S3. Remote reads wait on the network. It stays out of the zero-dependency core. [S10]",source:"nblm-gap"},
@@ -267,15 +271,15 @@ const DATA = {
     {category:"Engine",term:"Constant vector",rung:300,definition:"One value repeated for the whole chunk, as in col + 5. The 5 is stored once.",source:"nblm-mental-models"},
     {category:"Engine",term:"String prefix",rung:300,definition:"Strings longer than 12 bytes keep a 4-byte prefix in the vector so many comparisons never chase the pointer.",source:"nblm-mental-models"},
     {category:"Operations",term:"Host fate",rung:300,essential:true,definition:"DuckDB is in the same process as your program. A fatal engine error takes the host down with it. A server would not.",source:"nblm-mental-models"},
-    {category:"Operations",term:"Transaction conflict",rung:300,definition:"Inside the one writer, two threads that edit the same row conflict. Appends do not. This is not a second process writing.",source:"nblm-study-guide"},
+    {category:"Operations",term:"Transaction conflict",rung:300,definition:"Inside one native writer process, two threads that edit the same row conflict. Appends do not. A second OS process writing the same native file is a lock error, not this OCC message.",source:"nblm-study-guide"},
     {category:"Operations",term:"Parquet",rung:100,essential:true,definition:"Columnar files DuckDB can scan in place, with filters pushed into row groups. [S1]",source:"ledger"},
     {category:"Operations",term:"Arrow",rung:200,definition:"A shared memory layout. DuckDB can scan an Arrow table without copying it into its own table. [S1]",source:"ledger"},
     {category:"Trust",term:"Core versus extension",rung:200,essential:true,definition:"The core is the SQL engine with no extra libraries. Parquet, JSON, httpfs, spatial, and ICU are extensions loaded beside it. [S10]",source:"ledger"},
-    {category:"Trust",term:"Quack",rung:300,definition:"A client-server idea named in the NotebookLM briefing. It is not the concurrency contract. The contract is one writer process. [S3]",source:"nblm-briefing"},
-    {category:"Trust",term:"DuckLake",rung:300,definition:"A catalog idea named on a slide and in the 2026 talk. It does not change the one-writer rule for a local DuckDB file. [S3]",source:"nblm-briefing"},
+    {category:"Trust",term:"Quack",rung:300,definition:"DuckDB remote/client-server protocol for multi-process and remote writes to a DuckDB server. Beta as of DuckDB ~v1.5.x; aimed at maturity with DuckDB v2.0 (fall 2026). Native .duckdb files still follow one RW or many READ_ONLY. [S15][S16][S3]",source:"ledger"},
+    {category:"Trust",term:"DuckLake",rung:300,definition:"Lakehouse format (v1.0, April 2026). Stable multi-writer when coordinated through a PostgreSQL catalog; does not lift the one-writer rule on a lone native .duckdb file. [S14][S3]",source:"ledger"},
     {category:"Placement",term:"MonetDB and X100",rung:200,definition:"The earlier vectorized engine. DuckDB's chunked execution comes from that line, then from HyPer's morsels. [S7]",source:"ledger"},
     {category:"Engine",term:"Sequence vector",rung:300,definition:"A start value and a step. Ranges and row ids do not store every number.",source:"nblm-gap"},
-    {category:"Engine",term:"MVCC",rung:300,essential:true,definition:"Inside the one writer process, readers can see a stable version while another thread writes. Two threads that edit the same row conflict. [S3]",source:"nblm-gap"},
+    {category:"Engine",term:"MVCC",rung:300,essential:true,definition:"Inside one native writer process, readers can see a stable version while another thread writes. Two threads that edit the same row conflict. [S3]",source:"nblm-gap"},
     {category:"Operations",term:"INSTALL and LOAD",rung:200,essential:true,definition:"INSTALL downloads an extension. LOAD turns it on in this session. Auto-install does both. Turn that off in a closed room. [S10]",source:"nblm-gap"},
     {category:"Operations",term:"GROUP BY ALL",rung:200,definition:"Groups by every selected column that is not inside an aggregate, so you do not retype the list.",source:"nblm-gap"},
     {category:"Operations",term:"QUALIFY",rung:200,definition:"Filters a window-function result in the same query, without wrapping it in another SELECT.",source:"nblm-gap"},
@@ -290,11 +294,11 @@ const DATA = {
   views:{
     conceptual:{rule:"What and why. In-process analytics, not a server.",lib:"nblm-study-guide",img:[],
       tables:[{caption:"Quadrant",headers:["","OLTP","OLAP"],rows:[["In process","SQLite","DuckDB"],["Client-server","Postgres","Snowflake / ClickHouse"]]},
-      {caption:"Selection (from the study guide)",headers:["","DuckDB","Postgres","SQLite","Polars","Spark"],rows:[["Shape","In-process OLAP","Server OLTP","In-process OLTP","Dataframe","Cluster"],["Layout","Columnar","Row","Row / B-tree","Columnar in RAM","Distributed files"],["Writers","One process","Many","One file lock","Process-local","Cluster"],["Avoid","Many writers","Embedded mobile","Wide aggregates","Joins bigger than RAM","A file that fits one box"]]}]},
+      {caption:"Selection (from the study guide)",headers:["","DuckDB","Postgres","SQLite","Polars","Spark"],rows:[["Shape","In-process OLAP","Server OLTP","In-process OLTP","Dataframe","Cluster"],["Layout","Columnar","Row","Row / B-tree","Columnar in RAM","Distributed files"],["Writers","Native: one process (Quack/DuckLake for multi)","Many","One file lock","Process-local","Cluster"],["Avoid","Native multi-writer without Quack/DuckLake","Embedded mobile","Wide aggregates","Joins bigger than RAM","A file that fits one box"]]}]},
     logical:{rule:"How a query moves. Columns, chunks, morsels.",lib:"",img:[],
       tables:[{caption:"Pipeline",headers:["Step","What it reads"],rows:[["Scan","Named columns only"],["Join","Hash table on the small side"],["Aggregate","The same pipeline"],["Threads","Morsels, not private copies of the query"]]}]},
-    physical:{rule:"One process, one file, local disk.",lib:"",img:[],
-      tables:[{caption:"Access",headers:["Mode","Who"],rows:[["Read-write","One writer process, many threads inside it"],["Read-only","Other processes, no writers"]]}]},
+    physical:{rule:"Native file: one RW or many READ_ONLY. Quack/DuckLake for multi-writer.",lib:"",img:[],
+      tables:[{caption:"Access",headers:["Mode","Who"],rows:[["Native read-write","One writer process, many threads inside it"],["Native read-only","Other processes, no writers"],["Quack (beta)","Multi-process/remote writers via DuckDB server"],["DuckLake v1.0","Multi-writer via Postgres catalog"]]}]},
     integration:{rule:"Files and frames in place. Extensions for the rest.",lib:"",img:[],
       tables:[{caption:"Scanners",headers:["Source","Note"],rows:[["Parquet","Predicate pushdown"],["CSV","Type detection can guess wrong"],["Arrow / Pandas","Read from memory"],["httpfs / Iceberg","Extensions, not the core"]]}]},
     govcloud:{rule:"Closed lab is local DuckDB. MotherDuck is the cloud case.",lib:"",img:[],
@@ -303,7 +307,7 @@ const DATA = {
   eaFrameworks:{
     note:"DuckDB is an engine you place, not a platform you roll out. These views are altitude rules for that placement.",
     conceptual:[
-      {phase:"C1",t:"Workload",items:["OLAP scans, joins, aggregates on one machine.","OLTP point lookups and many writers stay with SQLite or Postgres."]},
+      {phase:"C1",t:"Workload",items:["OLAP scans, joins, aggregates on one machine.","OLTP many writers / server of record: Postgres. SQLite for embedded OLTP (also single-writer on its file)."]},
       {phase:"C2",t:"Quadrant",items:["Embedded OLAP is the missing box.","Client-server OLAP is a warehouse. DuckDB is not that box."]},
       {phase:"C3",t:"Neighbors",items:["Polars: dataframe API, no SQL catalog.","Spark: data that will not fit one machine."]}
     ],
@@ -314,7 +318,7 @@ const DATA = {
     ],
     physical:[
       {phase:"P1",t:"Process",items:["One address space with the host.","A fatal error ends the host."]},
-      {phase:"P2",t:"File",items:["One writer process.","Other processes: READ_ONLY."]},
+      {phase:"P2",t:"File",items:["Native .duckdb: one RW process or many READ_ONLY.","Quack (beta) or DuckLake v1.0 + Postgres for multi-writer."]},
       {phase:"P3",t:"Memory",items:["Spill when max_memory is hit.","A plan that cannot spill can still die."]}
     ],
     integration:[
@@ -325,12 +329,12 @@ const DATA = {
     trust:[
       {phase:"T1",t:"Closed room",items:["Auto-install off.","Unsigned extensions off."]},
       {phase:"T2",t:"Authorization",items:["Local binary is not a classified approval.","Smaug and BiTDB do not evaluate DuckDB."]},
-      {phase:"T3",t:"Quack and DuckLake",items:["Named in later talks and a briefing.","They are not the one-writer contract."]}
+      {phase:"T3",t:"Quack and DuckLake",items:["Quack: multi-process/remote writes (beta; v2.0 maturity target).","DuckLake v1.0 + Postgres catalog: stable multi-writer. Native file stays one RW or many READ_ONLY."]}
     ],
     altitudes:[
       {name:"Conceptual",q:"Which quadrant?",allowed:"Workload and neighbors.",forbidden:"Vector size, file locks.",lib:"block-01-core-concepts"},
       {name:"Logical",q:"How does a query move?",allowed:"Scan, chunk, join, morsel.",forbidden:"MotherDuck account details.",lib:"block-02-mental-models"},
-      {name:"Physical",q:"What process and file?",allowed:"One writer, READ_ONLY, spill.",forbidden:"SQL function catalogs.",lib:"block-05-edge-cases"},
+      {name:"Physical",q:"What process and file?",allowed:"Native one RW / READ_ONLY; Quack; DuckLake; spill.",forbidden:"SQL function catalogs.",lib:"block-05-edge-cases"},
       {name:"Integration",q:"What does FROM read?",allowed:"Parquet, Arrow, httpfs.",forbidden:"Classified-lab approval.",lib:"block-03-active-practice"},
       {name:"Trust",q:"What leaves the machine?",allowed:"Auto-install, ATTACH md:.",forbidden:"Slide speed as an SLA.",lib:"competitors"}
     ],
@@ -338,14 +342,14 @@ const DATA = {
       ["Concern","View","Owner","Out"],
       ["Quadrant","Conceptual","SIGMOD 2019 [S4]","Treating DuckDB as Postgres"],
       ["Batch size 2048","Logical","Execution format [S2]","Changing STANDARD_VECTOR_SIZE without a rebuild"],
-      ["One writer","Physical","Concurrency [S3]","Second OS process writing"],
+      ["Native one writer","Physical","Concurrency [S3]; Quack [S15][S16]; DuckLake [S14]","Second OS process writing a native file"],
       ["Parquet scan","Integration","Docs [S1]","Loader script just to look"],
       ["MotherDuck","Trust","Architecture [S8], CIDR 2024 [S9]","Calling local DuckDB a cloud"]
     ]
   },
   deckFlags:{
     2:"The slide says client protocols are at least 10x slower than raw netcat. Treat that as the slide's claim, not an SLA.",
-    11:"DuckLake is named on the slide as a multi-writer idea. The concurrency contract is still the official concurrency page [S3]."
+    11:"Three tiers: native .duckdb is one RW or many READ_ONLY [S3]; Quack enables multi-process/remote writes (beta) [S15][S16]; DuckLake v1.0 + Postgres catalog is the stable multi-writer path [S14]."
   }
 };
 
@@ -359,7 +363,7 @@ DATA.cut = {
     "Slide 5 is vectorized execution. DuckDB does not pull one row at a time through filter, projection, and aggregate. It moves a DataChunk of 2048 tuples, kept in cache. Row-at-a-time work falls out to main memory, which the slide marks as about one hundred times slower.",
     "Slide 6 is morsel-driven parallelism. A fixed hash partition stalls when one key is huge and the other threads sit idle. DuckDB puts morsels on a task queue. An idle thread takes the next morsel, so skew does not park the machine.",
     "Slide 7 is the zero-copy router. You do not have to load a file into a DuckDB table first. Scanners read CSV, Parquet, a Pandas frame, or Arrow. Parquet can push the filter down. Arrow and data frames can be read from memory.",
-    "Slide 8 is the concurrency contract. One process may write, and that process may use many threads for a bulk update. A second process that tries to write is blocked. Other processes may read only when the file is opened read-only.",
+    "Slide 8 is concurrency in three tiers. A native .duckdb file allows one read-write process, or many READ_ONLY processes. Quack (beta) adds multi-process and remote writes through a DuckDB server. DuckLake v1.0 with a Postgres catalog is the stable multi-writer lakehouse path.",
     "Slide 9 is the extension surface. The core ships with no external libraries. JSON, spatial, Iceberg, and httpfs, including S3, load beside the core. The slide notes that httpfs links OpenSSL so the core binary does not carry that weight.",
     "Slide 10 is the fit matrix. SQLite for point reads and writes. Postgres when you need a server and mixed work. Spark when the data needs a cluster. DuckDB when the analytical working set fits one machine's RAM and disk.",
     "Slide 11 is the day-one ledger. Database locked means two writers, or a transaction conflict. An out-of-memory crash on a join means the plan built an intermediate it could not spill. A network drive can corrupt the file or stall on weak locks. The fixes on the slide are: rerun the transaction, gather statistics and reorder the join, and keep the working file on a local drive.",
@@ -372,14 +376,14 @@ DATA.cut = {
     {question:"What is a DataChunk?",detail:"2048 tuples. Operators run on the batch.",why:"The batch stays in cache.",example:"Filter, project, and aggregate share the chunk.",cardSlide:5},
     {question:"How do morsels differ from a fixed hash split?",detail:"Idle threads pull the next morsel.",why:"A hot key cannot park the other cores.",example:"One huge customer id.",cardSlide:6},
     {question:"What can DuckDB scan without a load step?",detail:"CSV, Parquet, Pandas, and Arrow.",why:"The scanner reads the source.",example:"SELECT from a Parquet path.",cardSlide:7},
-    {question:"When may a second process open the file?",detail:"Only read-only. A second writer is blocked.",why:"One writer process caches the catalog.",example:"Three report jobs, read-only.",cardSlide:8},
+    {question:"When may a second process open a native .duckdb file?",detail:"Only READ_ONLY. A second native writer is blocked.",why:"Native format caches catalog state in one RW process. Quack or DuckLake for multi-writer.",example:"Three report jobs, read-only.",cardSlide:8},
     {question:"Why are httpfs and Iceberg extensions?",detail:"The core stays free of those libraries.",why:"A closed room can refuse the download.",example:"Local Parquet does not need httpfs.",cardSlide:9},
     {question:"When is Spark the wrong tool?",detail:"When the data fits one machine.",why:"DuckDB is the single-node row.",example:"40 GB of Parquet on a laptop.",cardSlide:10},
-    {question:"What does Database locked usually mean?",detail:"Two writers, or a row conflict.",why:"The file allows one writer process.",example:"A notebook and a script both INSERT.",cardSlide:11},
+    {question:"What does Database locked usually mean?",detail:"Two native writers, or a row conflict.",why:"A native .duckdb file allows one RW process.",example:"A notebook and a script both INSERT the same file.",cardSlide:11},
     {question:"What should a team stop doing?",detail:"Spark for data that fits one box, and a loader just to see a CSV.",why:"The question can run against the file.",example:"Query Parquet directly.",cardSlide:12}
   ],
   open: "Welcome to the technical deep dive on DuckDB. This cut walks the NotebookLM slides: the in-process engine, how a query runs, and where DuckDB should refuse the job.",
-  recap: "We covered the missing quadrant, columnar storage, vectors of 2048, morsel-driven parallelism, zero-copy scans, one writer, extensions, and the traps that show up on day one."
+  recap: "We covered the missing quadrant, columnar storage, vectors of 2048, morsel-driven parallelism, zero-copy scans, native one-writer plus Quack/DuckLake tiers, extensions, and the traps that show up on day one."
 };
 
 DATA.nblmDecks = {
@@ -484,7 +488,7 @@ DATA.nblmDecks = {
       },
       {
         "front": "How many external writer processes can simultaneously write to a native DuckDB file in read-write mode?",
-        "back": "Exactly one process."
+        "back": "Exactly one process. Multi-process writes need Quack (beta) or DuckLake v1.0 + Postgres catalog."
       },
       {
         "front": "What concurrency control mechanisms manage multiple writer threads within a single DuckDB process?",
@@ -592,7 +596,7 @@ DATA.nblmDecks = {
       },
       {
         "front": "What architectural failure mode occurs if DuckDB is selected as the database engine for a concurrent web app OLTP server?",
-        "back": "Write concurrency bottlenecks and transaction conflicts occur because DuckDB permits only a single writer process."
+        "back": "A native .duckdb file permits only one writer process. Prefer Postgres for server-of-record OLTP, or Quack/DuckLake when multi-process DuckDB writes are required."
       },
       {
         "front": "What is the result of executing `FROM 'events.parquet'` in DuckDB's friendly SQL dialect?",
@@ -640,11 +644,11 @@ DATA.nblmDecks = {
       },
       {
         "front": "What protocol facilitates multi-process network client-server communication to native DuckDB database formats?",
-        "back": "The NotebookLM briefing names Quack as a client-server protocol. It is not the concurrency contract. A local file still has one writer process."
+        "back": "Quack remote protocol: multi-process/remote writes via a DuckDB server (beta as of ~v1.5.x; maturity targeted with DuckDB v2.0 fall 2026). Native files still follow one RW or many READ_ONLY. [S15][S16][S3]"
       },
       {
         "front": "How does the DuckLake format coordinate concurrent database writes across independent processes?",
-        "back": "The briefing describes DuckLake as metadata in a catalog database. That is a notebook claim. It does not change one writer on a local DuckDB file."
+        "back": "DuckLake v1.0 (April 2026) coordinates multi-writer access through a catalog database—PostgreSQL for the stable multi-writer path. It does not lift the one-writer rule on a lone native .duckdb file. [S14][S3]"
       },
       {
         "front": "How is a pure in-memory DuckDB instance instantiated?",
@@ -719,7 +723,7 @@ DATA.looks = {
   "4:0": "<p>The Justin Bieber problem: one join key owns most of the rows. A fixed hash split pins that stream to one thread. Everyone else sits idle. Morsels are pulled from a queue, so idle threads keep working.</p>",
   "5:0": "<pre>SELECT dt, COUNT(*)\nFROM 'events.parquet'\nWHERE dt = DATE '2026-10-01'\nGROUP BY ALL;</pre><p>No CREATE TABLE. The binder swaps the path for a Parquet scan. CSV type detection samples early rows and can guess wrong.</p>",
   "6:0": "<p>Build the hash table on the small side. Probe with the large side. A sort or a global hash aggregate is a pipeline breaker: it must see all input before it emits. If that table will not fit, the plan has to spill. A plan that cannot spill can kill the process.</p>",
-  "7:0": "<table class='tbl'><thead><tr><th>Tell</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Database locked</td><td>Second OS process writing</td><td>One writer. Others READ_ONLY</td></tr><tr><td>Transaction conflict</td><td>Two threads, same row</td><td>Retry. Appends do not conflict</td></tr><tr><td>Stall on a share</td><td>File on NFS / NAS</td><td>Keep the writer on a local disk</td></tr></tbody></table><p class='flagnote'>Quack and DuckLake are named in the reports as later multi-writer ideas. They are not the concurrency contract for a local file.</p>",
+  "7:0": "<table class='tbl'><thead><tr><th>Tell</th><th>Cause</th><th>Fix</th></tr></thead><tbody><tr><td>Database locked</td><td>Second OS process writing a native file</td><td>One RW process; others READ_ONLY — or Quack / DuckLake</td></tr><tr><td>Transaction conflict</td><td>Two threads, same row</td><td>Retry. Appends do not conflict</td></tr><tr><td>Stall on a share</td><td>File on NFS / NAS</td><td>Keep the writer on a local disk</td></tr></tbody></table><p class='flagnote'>Three tiers: (1) native .duckdb — one RW or many READ_ONLY [S3]; (2) Quack — multi-process/remote writes, beta [S15][S16]; (3) DuckLake v1.0 + Postgres catalog — stable multi-writer [S14].</p>",
   "8:0": "<p>Core: SQL engine, C++11, no extra libraries. Extensions: httpfs (OpenSSL inside it), spatial, ICU, Iceberg. INSTALL fetches. LOAD activates. Auto-install does both and talks to extensions.duckdb.org.</p>",
   "9:0": "<p>Local DuckDB never leaves the process. DuckDB plus object storage you control stays in your network. MotherDuck is a cloud warehouse. ATTACH 'md:' is the line that leaves a closed lab. Dual execution can run part of the query in their cloud (CIDR 2024).</p>",
   "10:0": "<p>Elicit did not return a paper that evaluates DuckDB in a classified lab. Smaug (2023) and BiTDB (2024) study SQLite or embedded databases in a TEE. A local binary with no network is not an authorization.</p>",
@@ -734,7 +738,7 @@ DATA.watch = [
   {who:"Hannes Mühleisen",title:"Why single-node beats distributed, 2025",url:"https://www.youtube.com/watch?v=o53onmgnQDU",why:"When a cluster is the wrong tool.",min:"34 min"},
   {who:"Hannes Mühleisen",title:"Changing data with confidence, PyData Global 2024",url:"https://www.youtube.com/watch?v=7UqLMHloTsQ",why:"Transactions around changes to analysis data.",min:"30 min"},
   {who:"Hannes Mühleisen",title:"DuckDB and the future of databases, Posit 2025",url:"https://www.youtube.com/watch?v=GvgbcWtHgVY",why:"Plain account of the architecture and the cloud line.",min:"59 min"},
-  {who:"Hannes Mühleisen",title:"What happens when a database gets popular, Developer Voices 2026",url:"https://www.youtube.com/watch?v=C3l4CsP1Ak0",why:"Extensions, Quack, and DuckLake. Later than this pack. Not the concurrency contract.",min:"106 min"}
+  {who:"Hannes Mühleisen",title:"What happens when a database gets popular, Developer Voices 2026",url:"https://www.youtube.com/watch?v=C3l4CsP1Ak0",why:"Extensions, Quack, and DuckLake. Primary Quack/DuckLake pages are now on the ledger [S14][S15][S16].",min:"106 min"}
 ];
 
 DATA.books = [
@@ -774,12 +778,12 @@ DATA.fromReports = [
   {slug:"nblm-working-brief",title:"Working briefing",point:"The comparison table is the placement card: DuckDB, Postgres, SQLite, Polars, Spark. Use it when the quiz asks which tool you would refuse."},
   {slug:"nblm-decision-packet",title:"Decision packet",point:"Standardize local scans and aggregates. Do not start a cluster for a file that fits the machine. Do not load a CSV just to look at it."},
   {slug:"nblm-playbook",title:"Practice playbook",point:"The falsifier still holds: a SQL tour that never explains columns, vectors, or the tool you would not pick."},
-  {slug:"nblm-briefing",title:"Briefing",point:"Quack and DuckLake show up here as multi-writer ideas. The contract you can grade yourself on is still the concurrency doc: one writer process, other processes read-only."},
+  {slug:"nblm-briefing",title:"Briefing",point:"Quack and DuckLake are verified multi-writer paths on the ledger. Grade yourself on three tiers: native one RW / READ_ONLY [S3], Quack beta [S15][S16], DuckLake v1.0 + Postgres [S14]."},
   {slug:"nblm-study-guide",title:"Study guide",point:"DuckDB refuses JIT. Vectorized batches keep the binary small. LLVM would drag a compiler toolchain into the process."},
   {slug:"nblm-mental-models",title:"Mental models",point:"Host fate-sharing: a fatal engine error ends Python, R, or the JVM with it. A server would isolate that crash in a worker."},
   {slug:"nblm-failure-modes",title:"Failure catalog",point:"CSV replacement scans sample early rows to guess types. Unrepresentative first rows give the wrong schema. Declare types or use TRY_CAST."},
   {slug:"nblm-failure-modes",title:"Failure catalog",point:"One core at 100% and the rest idle near the end of a join is the Justin Bieber stall. Morsels are the answer, not a bigger machine."},
-  {slug:"nblm-key-claims",title:"Claims table",point:"Strong claims: in-process OLAP, vectors of 2048, morsels, replacement scans, one writer with OCC inside that process. Thin: Quack as a production multi-writer."},
+  {slug:"nblm-key-claims",title:"Claims table",point:"Strong claims: in-process OLAP, vectors of 2048, morsels, replacement scans, native one writer with OCC inside that process. Quack is beta multi-writer; DuckLake v1.0 + Postgres is the stable multi-writer path."},
   {slug:"competitors",title:"Competitors note",point:"Elicit found no paper that evaluates DuckDB in a classified lab. Smaug and BiTDB are SQLite or embedded TEE work."},
   {slug:"competitors",title:"Competitors note",point:"Three deployments: local process, object storage you control, MotherDuck. ATTACH md: is the line that leaves a closed lab."},
   {slug:"elicit",title:"Elicit light",point:"The 2026 Information Systems review is a when-one-node-is-enough pointer. It is not a DuckDB product review."},
@@ -840,15 +844,15 @@ DATA.debates = [
    testBoth:"The same query with a pipeline breaker that spills."},
   {title:"Later names end the one-writer rule",src:"S3",
    idA:"E5A",idB:"E5B",idBoth:"E5W",kindA:"lab-local",kindB:"desk",kindBoth:"lab-local",
-   statusA:"unrun",statusB:"unrun",statusBoth:"unrun",
-   claimA:"One process writes. Other processes are READ_ONLY. OCC lives inside the writer.",
-   claimB:"Quack and DuckLake are named as multi-writer paths in briefings and a later talk. They are catalog claims until a release note is on the ledger.",
-   warrant:"The operations manual is the contract this pack grades. A generated briefing warrants discussion, not design.",
-   assume:"Readers equate every NotebookLM name with the Foundation engine.",
-   qualify:"One-writer is the refusal. Promote Quack or DuckLake only after a primary URL is checked.",
-   testA:"Two OS processes INSERT into one file; record the lock error.",
-   testB:"Read current DuckDB and DuckLake docs; add a ledger row if a primary page describes multi-writer.",
-   testBoth:"One writer plus READ_ONLY readers; readers succeed, a second writer fails."},
+   statusA:"unrun",statusB:"run 2026-10-11",statusBoth:"unrun",
+   claimA:"Native .duckdb: one process writes; other processes are READ_ONLY. OCC lives inside that writer.",
+   claimB:"Quack (beta) enables multi-process/remote writes; DuckLake v1.0 + Postgres catalog is the stable multi-writer path. Primary pages are on the ledger [S14][S15][S16].",
+   warrant:"Official concurrency, Quack, and DuckLake pages define three tiers. Native-file locking is not erased by Quack or DuckLake.",
+   assume:"Readers may treat Quack beta as production-ready, or think DuckLake changes a lone .duckdb file.",
+   qualify:"Native one-writer remains the refusal for a local file. Quack is beta (maturity targeted with DuckDB v2.0 fall 2026). DuckLake v1.0 + Postgres is the stable multi-writer design.",
+   testA:"Two OS processes INSERT into one native file; record the lock error.",
+   testB:"Done 2026-10-11: DuckLake v1.0 [S14], Quack announcement [S15], Quack overview [S16] added to the ledger.",
+   testBoth:"One native writer plus READ_ONLY readers; readers succeed, a second native writer fails."},
   {title:"Auto-install is harmless convenience",src:"S10",
    idA:"E6A",idB:"E6B",idBoth:"E6W",kindA:"desk",kindB:"lab-net",kindBoth:"lab-local",
    statusA:"unrun",statusB:"unrun",statusBoth:"unrun",
@@ -867,16 +871,17 @@ DATA.drills = {
     options:["Inside your process","A database server","MotherDuck cloud","A Spark cluster"],
     items:[
       {p:"A local SUM over a Parquet file",a:0,why:"DuckDB runs in the process.",src:"S1"},
-      {p:"The live application rows, many writers",a:1,why:"That is Postgres or SQLite, not DuckDB.",src:"S3"},
+      {p:"The live application rows, many writers",a:1,why:"Prefer Postgres as the server of record. SQLite is also single-writer on its file—not the multi-writer answer.",src:"S3"},
       {p:"A query after ATTACH md:",a:2,why:"Hybrid execution can run in MotherDuck's cloud.",src:"S8"},
       {p:"A join that will not fit one machine",a:3,why:"That is the Spark case.",src:"S4"}
     ]},
   auth:{title:"What may open the file?",ask:"Which access is allowed?",
-    options:["One writer process","Many writers","Read-only processes","An extension download"],
+    options:["One writer process (native file)","Many writers (via Quack or DuckLake)","Read-only processes","An extension download"],
     items:[
-      {p:"INSERT from the application",a:0,why:"One process writes.",src:"S3"},
-      {p:"A second script that also INSERTS",a:0,why:"The second writer is blocked. The answer you want is still one writer. The second attempt fails.",src:"S3"},
-      {p:"Three report jobs",a:2,why:"They may read if the file is opened read-only.",src:"S3"},
+      {p:"INSERT from the application into a local .duckdb file",a:0,why:"Native file: one process writes.",src:"S3"},
+      {p:"A second script that also INSERTS the same local .duckdb file",a:0,why:"Native file: the second writer is blocked. Teach Quack or DuckLake when you need multi-process writes.",src:"S3"},
+      {p:"Several DuckDB clients writing through Quack or DuckLake + Postgres catalog",a:1,why:"Multi-process writers are teachable via Quack (beta) or DuckLake v1.0—not via two processes on one native file.",src:"S15"},
+      {p:"Three report jobs on a native file",a:2,why:"They may read if the file is opened READ_ONLY.",src:"S3"},
       {p:"First use of httpfs with auto-install on",a:3,why:"DuckDB will try to fetch the extension.",src:"S10"}
     ]},
   altitude:{title:"Which idea is this?",ask:"Which layer does this belong to?",

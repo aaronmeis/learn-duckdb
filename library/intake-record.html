@@ -5,24 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Intake record | Learn DuckDB</title>
 <meta name="description" content="Intake for one-day mastery of DuckDB.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="library.css">
-<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+<script>try{var m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme","house-"+m);}catch(e){document.documentElement.setAttribute("data-theme","house-dark");}</script>
 </head>
 <body>
-<header class="topbar">
-  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
-  <span class="crumb">Library ┬╖ Plan</span>
-  <a href="index.html" class="home">All pages</a>
+<header class="topbar"> <a href="../index.html" class="home">&larr; Learn DuckDB console</a> <span class="crumb">Library · Plan</span> <a href="index.html" class="home">All pages</a>
 </header>
-<main class="doc">
-  <div class="kicker">Plan</div>
-  <h1 class="doctitle">Intake record</h1>
-  <p class="lead">Intake for one-day mastery of DuckDB.</p>
-  
-  <article><h1>Intake — DuckDB</h1>
+<main class="doc"> <div class="kicker">Plan</div> <h1 class="doctitle">Intake record</h1> <p class="lead">Intake for one-day mastery of DuckDB.</p> <article><h1>Intake — DuckDB</h1>
 <p><strong>Date:</strong> 2026-10-10<br />
 <strong>Mode:</strong> B (interview → draft mind map)</p>
 <h2>Mission snapshot</h2>
@@ -87,9 +76,7 @@
 </tr>
 </tbody>
 </table>
-<div class="callout question" markdown="0"><div class="callout-title">Falsification check</div><p>The day is a waste if it is a feature tour of SQL syntax that never says how columnar storage and vectorized execution change a query, and never names when Postgres, SQLite, Polars, or Spark is the better tool.</p></div>
-
-<h2>Interview answers</h2>
+<div class="callout question" markdown="0"><div class="callout-title">Falsification check</div><p>The day is a waste if it is a feature tour of SQL syntax that never says how columnar storage and vectorized execution change a query, and never names when Postgres, SQLite, Polars, or Spark is the better tool.</p></div> <h2>Interview answers</h2>
 <h3>outcome</h3>
 <p>By the end of the day, explain DuckDB from zero and sketch one local analytics query you could defend. The sketch names the storage layout, the execution model, and when DuckDB beats Postgres, SQLite, Polars, or Spark. Success is a short written explanation plus that sketch, with one named failure mode.</p>
 <h3>audience</h3>
@@ -111,16 +98,7 @@
 <li>Fill <a href="source-ledger.html">source-ledger</a> (≥3 URLs)</li>
 <li><code>python -m one_day_mastery blocks --slug duckdb</code></li>
 <li>Human gate on <a href="day-plan.html">day-plan</a> before W8</li>
-</ol></article>
-  <footer class="docfoot">
-    Rendered from <code>Learning\one-day-mastery\duckdb\intake\2026-10-10 - Intake.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
-    <div class="prevnext"><a href="mission.html">&larr; Previous</a><a href="day-plan.html">Next &rarr;</a></div>
-  </footer>
+</ol></article> <footer class="docfoot"> Rendered from <code>Learning\one-day-mastery\duckdb\intake\2026-10-10 - Intake.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger. <div class="prevnext"><a href="mission.html">&larr; Previous</a><a href="day-plan.html">Next &rarr;</a></div> </footer>
 </main>
-<script type="module">
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
-mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
-</script>
 </body>
 </html>

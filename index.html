@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https://i.ytimg.com; media-src 'self' blob:; frame-src https://www.youtube-nocookie.com; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; font-src 'self'; worker-src 'self'; manifest-src 'self'">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0d1117">
+<meta name="theme-color" content="#000000">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="assets/icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
@@ -11,9 +12,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Learn DuckDB</title>
 <meta name="description" content="Study console for DuckDB: in-process OLAP, vectorized execution, one writer, and the MotherDuck line. Grounded in the DuckDB source ledger.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/enhance.css">
 </head>
@@ -72,14 +70,9 @@
   </div>
   <div class="sidebar-foot">
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:.85rem">
-      <button id="themeToggleBtn" style="flex:1;background:var(--card-bg);border:1px solid var(--border-color);color:var(--text-primary);padding:.35rem .5rem;border-radius:6px;font-size:.74rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px">
+      <button id="themeToggleBtn" aria-label="Toggle light or dark theme" style="flex:1;background:var(--card-bg);border:1px solid var(--border-color);color:var(--text-primary);padding:.35rem .5rem;border-radius:6px;font-size:.74rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px">
         <span id="themeToggleIcon">🌙</span> <span id="themeToggleText">Dark</span>
       </button>
-      <select id="themeSelect" style="background:var(--card-bg);border:1px solid var(--border-color);color:var(--text-primary);padding:.35rem .4rem;border-radius:6px;font-size:.74rem;cursor:pointer">
-        <option value="github">GitHub Primer</option>
-        <option value="geist">Vercel Geist</option>
-        <option value="catppuccin">Catppuccin</option>
-      </select>
     </div>
     Grounded in the DuckDB source ledger. No tenant data, passwords, or API keys on this site.<br><br>
     Canonical path: Obsidian <code>Learning/one-day-mastery/duckdb/</code>.
