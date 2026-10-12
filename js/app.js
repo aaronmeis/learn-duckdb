@@ -53,11 +53,11 @@ function renderDashboard(){
       <div><div style="font-weight:700;font-size:.88rem;color:var(--text-primary)">${title}</div><div style="font-size:.74rem;color:var(--text-dim)">${sub}</div></div></div>`;
   let h=`<span class="badge">STUDY CONSOLE</span>
   <h1 style="margin-top:.9rem">DuckDB: in-process analytical engine</h1>
-  <p class="lead">A working-fluency day on DuckDB: the missing quadrant, columnar scans, vectors of 2048, morsels, one writer, and the MotherDuck line. Claims trace to the 13-row source ledger. Slide speed numbers are not an SLA.</p>
+  <p class="lead">A working-fluency day on DuckDB: the missing quadrant, columnar scans, vectors of 2048, morsels, concurrency tiers, and the MotherDuck line. Claims trace to the ${SOURCES.length}-row source ledger. Slide speed numbers are not an SLA. ${esc(DATA.checked||"")}</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.5rem">
     ${pillar("100","Placement","In-process OLAP, not a server","var(--r100)")}
     ${pillar("200","Engine","Columns, chunks, morsels","var(--r200)")}
-    ${pillar("300","Operations","One writer, read-only readers","var(--r300)")}
+    ${pillar("300","Operations","Native one RW / READ_ONLY; Quack; DuckLake","var(--r300)")}
     ${pillar("hero","Trust","Extensions and MotherDuck","var(--warn)")}
   </div>
   <div class="grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
@@ -507,16 +507,18 @@ function renderReferences(){
 
 /* ---- Theme engine (keys shared with library pages) ---- */
 function applyTheme(palette,mode){
-  document.documentElement.setAttribute("data-theme",palette+"-"+mode);
-  LS.set("appPalette",palette); LS.set("appMode",mode);
-  $("#themeToggleIcon").textContent=mode==="dark"?"🌙":"☀️";
-  $("#themeToggleText").textContent=mode==="dark"?"Dark":"Light";
-  $("#themeSelect").value=palette;
+  // House palette only; ignore legacy palette names from localStorage
+  document.documentElement.setAttribute("data-theme","house-"+mode);
+  LS.set("appPalette","house"); LS.set("appMode",mode);
+  const btn=$("#themeToggleBtn");
+  if($("#themeToggleIcon")) $("#themeToggleIcon").textContent=mode==="dark"?"🌙":"☀️";
+  if($("#themeToggleText")) $("#themeToggleText").textContent=mode==="dark"?"Dark":"Light";
+  if(btn) btn.setAttribute("aria-label", mode==="dark"?"Switch to light theme":"Switch to dark theme");
 }
 function initTheme(){
-  applyTheme(LS.get("appPalette","github"),LS.get("appMode",defaultMode()));
-  $("#themeToggleBtn").onclick=()=>applyTheme(LS.get("appPalette","github"),LS.get("appMode","dark")==="dark"?"light":"dark");
-  $("#themeSelect").onchange=()=>applyTheme($("#themeSelect").value,LS.get("appMode","dark"));
+  applyTheme("house", LS.get("appMode",defaultMode()));
+  const btn=$("#themeToggleBtn");
+  if(btn) btn.onclick=()=>applyTheme("house", LS.get("appMode","dark")==="dark"?"light":"dark");
 }
 
 function defaultMode(){try{return window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";}catch(e){return "dark";}}

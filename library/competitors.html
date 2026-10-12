@@ -5,24 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Competitors and closed lab | Learn DuckDB</title>
 <meta name="description" content="Light research for the DuckDB deep dive: competitors, and closed-lab versus cloud.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="library.css">
-<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+<script>try{var m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme","house-"+m);}catch(e){document.documentElement.setAttribute("data-theme","house-dark");}</script>
 </head>
 <body>
-<header class="topbar">
-  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
-  <span class="crumb">Library ┬╖ Plan</span>
-  <a href="index.html" class="home">All pages</a>
+<header class="topbar"> <a href="../index.html" class="home">&larr; Learn DuckDB console</a> <span class="crumb">Library · Plan</span> <a href="index.html" class="home">All pages</a>
 </header>
-<main class="doc">
-  <div class="kicker">Plan</div>
-  <h1 class="doctitle">Competitors and closed lab</h1>
-  <p class="lead">Light research for the DuckDB deep dive: competitors, and closed-lab versus cloud.</p>
-  
-  <article><h1>DuckDB — competitors, closed lab, and cloud</h1>
+<main class="doc"> <div class="kicker">Plan</div> <h1 class="doctitle">Competitors and closed lab</h1> <p class="lead">Light research for the DuckDB deep dive: competitors, and closed-lab versus cloud.</p> <article><h1>DuckDB — competitors, closed lab, and cloud</h1>
 <p><strong>Date:</strong> 2026-10-10
 <strong>Purpose:</strong> Add evidence to the DuckDB deep dive. Search only. No Elicit deep report was started.</p>
 <h2>Key takeaways</h2>
@@ -125,27 +114,11 @@
 <td>3</td>
 <td>Best DuckDB setups for production AI pipelines</td>
 <td>https://markaicode.com/best/best-duckdb-setup-for-production-ai/</td>
-<td>Secondary. Residency ranking: MotherDuck, S3 plus Parquet, MinIO plus dbt.</td>
+<td>Down-ranked (D-S9). Tertiary blog; do not cite for residency or MotherDuck topology. Prefer MotherDuck's own docs and CIDR 2024.</td>
 </tr>
 </tbody>
 </table>
-<h2>Commands</h2>
-<pre><code class="language-powershell">cd C:\projects\hermes
-python hermes\scripts\elicit_hermes.py search &quot;embedded analytical database DuckDB versus SQLite PostgreSQL Spark single-node OLAP&quot; --max-results 6 --min-year 2018
-python hermes\scripts\elicit_hermes.py search &quot;secure deployment of embedded databases air-gapped analytical query engine extension trust&quot; --max-results 5 --min-year 2016
-$env:PYTHONPATH = &quot;C:\projects\nanobot-research\nanobot-research&quot;
-python hermes\scripts\exa_hermes.py search &quot;DuckDB offline air-gapped deployment versus MotherDuck cloud data residency&quot; --limit 5 --type fast
-</code></pre>
-<p>Firecrawl was not on PATH, so this pass used Exa. The Exa CLI only imports when <code>PYTHONPATH</code> points at <code>nanobot-research\nanobot-research</code>. Deep report: not started.</p></article>
-  <footer class="docfoot">
-    Rendered from <code>Learning\one-day-mastery\duckdb\reference\2026-10-10 - Competitors and closed lab.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
-    <div class="prevnext"><a href="deep-dive.html">&larr; Previous</a><a href="elicit.html">Next &rarr;</a></div>
-  </footer>
+</article> <footer class="docfoot"> Rendered from <code>Learning\one-day-mastery\duckdb\reference\2026-10-10 - Competitors and closed lab.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger. <div class="prevnext"><a href="deep-dive.html">&larr; Previous</a><a href="elicit.html">Next &rarr;</a></div> </footer>
 </main>
-<script type="module">
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
-mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
-</script>
 </body>
 </html>

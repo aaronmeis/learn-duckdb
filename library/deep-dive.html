@@ -5,24 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Technical deep dive | Learn DuckDB</title>
 <meta name="description" content="Technical deep dive on DuckDB. In-process OLAP, competitors, and closed-lab versus cloud. Drawn from the one-day pack and the NotebookLM suite.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="library.css">
-<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+<script>try{var m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme","house-"+m);}catch(e){document.documentElement.setAttribute("data-theme","house-dark");}</script>
 </head>
 <body>
-<header class="topbar">
-  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
-  <span class="crumb">Library ┬╖ Plan</span>
-  <a href="index.html" class="home">All pages</a>
+<header class="topbar"> <a href="../index.html" class="home">&larr; Learn DuckDB console</a> <span class="crumb">Library · Plan</span> <a href="index.html" class="home">All pages</a>
 </header>
-<main class="doc">
-  <div class="kicker">Plan</div>
-  <h1 class="doctitle">Technical deep dive</h1>
-  <p class="lead">Technical deep dive on DuckDB. In-process OLAP, competitors, and closed-lab versus cloud. Drawn from the one-day pack and the NotebookLM suite.</p>
-  
-  <article><h1>Mastery deep dive — DuckDB</h1>
+<main class="doc"> <div class="kicker">Plan</div> <h1 class="doctitle">Technical deep dive</h1> <p class="lead">Technical deep dive on DuckDB. In-process OLAP, competitors, and closed-lab versus cloud. Drawn from the one-day pack and the NotebookLM suite.</p> <article><h1>Mastery deep dive — DuckDB</h1>
 <p><strong>Naming first.</strong> This note is about <strong>DuckDB</strong>, the in-process analytical database at <a href="https://duckdb.org/">duckdb.org</a>. It is not DuckTV, not a television product, and not a client-server warehouse you connect to by default. The engine is an MIT-licensed C++ library. The intellectual property sits with the DuckDB Foundation. MotherDuck is a separate cloud product that can attach to a local engine. Docs: <a href="https://duckdb.org/docs/current/index">duckdb.org/docs</a>.</p>
 <p><strong>Pack.</strong> This report sits on the one-day mastery hub <a href="hub.html">00 - DuckDB Hub</a>. The study blocks, the source ledger, and the NotebookLM exports are the inputs. The day itself has not been sat.</p>
 <hr />
@@ -214,23 +203,14 @@
 </ul>
 <hr />
 <h2>What to produce on the study day</h2>
-<p>The one-day outcome is still a written explanation plus one defended sketch: storage layout, execution model, the tool you would not pick, and one failure mode. This note is the reference for that sketch. The one-minute cuts in <a href="video-pair.html">Video pair</a> are the same five beats, without this concurrency and trust detail. The narrated YouTube cut is <code>C:\output\obsidian\duckdb\duckdb-youtube-deep-dive.mp4</code> (about 7 minutes 25 seconds, 1920×1080, voice sarah). It is a local file. It has not been uploaded.</p>
+<p>The one-day outcome is still a written explanation plus one defended sketch: storage layout, execution model, the tool you would not pick, and one failure mode. This note is the reference for that sketch. The one-minute cuts in <a href="video-pair.html">Video pair</a> are the same five beats, without this concurrency and trust detail. The narrated YouTube cut is (about 7 minutes 25 seconds, 1920×1080, voice sarah). It is a local file. It has not been uploaded.</p>
 <h2>Sources</h2>
 <ul>
 <li>Pack ledger: <a href="source-ledger.html">source-ledger</a></li>
 <li>Light papers and the Exa pass: <a href="elicit.html">elicit-light-research</a>, <a href="competitors.html">2026-10-10 - Competitors and closed lab</a></li>
 <li>NotebookLM, used as generated briefing not as primary evidence: <code>notebooklm/exports/</code> (technical working briefing, edge catalog, executive decision packet)</li>
 <li>Primary: <a href="https://duckdb.org/docs/current/index">docs</a>, <a href="https://duckdb.org/docs/current/internals/vector.html">vectors</a>, <a href="https://duckdb.org/docs/stable/connect/concurrency.html">concurrency</a>, <a href="https://doi.org/10.1145/3299869.3320212">SIGMOD 2019</a>, <a href="https://www.vldb.org/cidrdb/papers/2024/p46-atwal.pdf">CIDR 2024 MotherDuck</a></li>
-</ul></article>
-  <footer class="docfoot">
-    Rendered from <code>Learning\one-day-mastery\duckdb\Mastery Deep Dive — DuckDB.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
-    <div class="prevnext"><a href="mindmap.html">&larr; Previous</a><a href="competitors.html">Next &rarr;</a></div>
-  </footer>
+</ul></article> <footer class="docfoot"> Rendered from <code>Learning\one-day-mastery\duckdb\Mastery Deep Dive — DuckDB.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger. <div class="prevnext"><a href="mindmap.html">&larr; Previous</a><a href="competitors.html">Next &rarr;</a></div> </footer>
 </main>
-<script type="module">
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
-mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
-</script>
 </body>
 </html>

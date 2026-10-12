@@ -5,29 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>60-second video pair | Learn DuckDB</title>
 <meta name="description" content="Overview of the DuckDB HyperFrames and Remotion explainer pair, with paths to the rendered MP4s.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="library.css">
-<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+<script>try{var m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme","house-"+m);}catch(e){document.documentElement.setAttribute("data-theme","house-dark");}</script>
 </head>
 <body>
-<header class="topbar">
-  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
-  <span class="crumb">Library ┬╖ Media</span>
-  <a href="index.html" class="home">All pages</a>
+<header class="topbar"> <a href="../index.html" class="home">&larr; Learn DuckDB console</a> <span class="crumb">Library · Media</span> <a href="index.html" class="home">All pages</a>
 </header>
-<main class="doc">
-  <div class="kicker">Media</div>
-  <h1 class="doctitle">60-second video pair</h1>
-  <p class="lead">Overview of the DuckDB HyperFrames and Remotion explainer pair, with paths to the rendered MP4s.</p>
-  
-  <article><h1>DuckDB video pair</h1>
+<main class="doc"> <div class="kicker">Media</div> <h1 class="doctitle">60-second video pair</h1> <p class="lead">Overview of the DuckDB HyperFrames and Remotion explainer pair, with paths to the rendered MP4s.</p> <article><h1>DuckDB video pair</h1>
 <p>Two 60-second, 1920×1080 cuts of the same argument. Codex wrote both projects on this machine. Neither file has a voice track.</p>
 <h2>Business Explanation</h2>
-<div class="callout info" markdown="0"><div class="callout-title">Business Explanation</div><p>DuckDB sits inside the application process and answers analytical SQL against files on that machine. These two videos exist so a reviewer can see that claim in one minute, including the job DuckDB should refuse: many people writing at the same time. The MP4s are the artifacts. This note is the map.</p></div>
-
-<h2>The claim</h2>
+<div class="callout info" markdown="0"><div class="callout-title">Business Explanation</div><p>DuckDB sits inside the application process and answers analytical SQL against files on that machine. These two videos exist so a reviewer can see that claim in one minute, including the job DuckDB should refuse: many people writing at the same time. The MP4s are the artifacts. This note is the map.</p></div> <h2>The claim</h2>
 <p>DuckDB is an in-process column store. A query reads the columns it names, and each operator works a batch. The default batch is 2048 values. One process may write. Many processes may read only when the file is opened read-only. Multi-user writes belong on Postgres or SQLite. Local analytics on files is the DuckDB job.</p>
 <h2>Beats</h2>
 <table>
@@ -73,20 +60,20 @@
 <tbody>
 <tr>
 <td>HyperFrames</td>
-<td><code>C:\output\obsidian\duckdb\duckdb-hyperframes.mp4</code></td>
-<td><code>C:\projects\grok\videos\duckdb-explainer</code></td>
-<td><code>npx hyperframes@0.8.145 render --output C:\output\obsidian\duckdb\duckdb-hyperframes.mp4 --quality standard --skill faceless-explainer .</code></td>
+<td></td>
+<td></td>
+<td><code>npx hyperframes@0.8.145 render --output --quality standard --skill faceless-explainer .</code></td>
 </tr>
 <tr>
 <td>Remotion</td>
-<td><code>C:\output\obsidian\duckdb\duckdb-remotion.mp4</code></td>
-<td><code>C:\projects\grok\videos\duckdb-remotion</code></td>
-<td><code>npx remotion render src/index.ts DuckDBExplainer C:\output\obsidian\duckdb\duckdb-remotion.mp4</code></td>
+<td></td>
+<td></td>
+<td><code>npx remotion render src/index.ts DuckDBExplainer </code></td>
 </tr>
 <tr>
 <td>YouTube deep dive</td>
-<td><code>C:\output\obsidian\duckdb\duckdb-youtube-deep-dive.mp4</code></td>
-<td><code>C:\projects\grok\videos\duckdb-youtube</code></td>
+<td></td>
+<td></td>
 <td>Narrated Remotion cut of the written deep dive. Not uploaded.</td>
 </tr>
 </tbody>
@@ -98,21 +85,10 @@
 <h2>What this page does not cover</h2>
 <p>The study day, the source ledger, and the NotebookLM notebook stay on <a href="hub.html">00 - DuckDB Hub</a>. These videos are the one-minute version of block 7, not a substitute for the paper sketch.</p>
 <p>Preview without re-rendering:</p>
-<pre><code class="language-powershell">cd C:\projects\grok\videos\duckdb-explainer
-npm run dev
+<pre><code class="language-powershell">cd npm run dev
 </code></pre>
-<pre><code class="language-powershell">cd C:\projects\grok\videos\duckdb-remotion
-npm run studio
-</code></pre></article>
-  <footer class="docfoot">
-    Rendered from <code>Learning\one-day-mastery\duckdb\Video pair.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
-    
-  </footer>
+<pre><code class="language-powershell">cd npm run studio
+</code></pre></article> <footer class="docfoot"> Rendered from <code>Learning\one-day-mastery\duckdb\Video pair.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger. </footer>
 </main>
-<script type="module">
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
-mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
-</script>
 </body>
 </html>

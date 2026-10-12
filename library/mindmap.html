@@ -5,27 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mind map | Learn DuckDB</title>
 <meta name="description" content="">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="library.css">
-<script>try{var p=JSON.parse(localStorage.getItem("appPalette"))||"github",m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme",p+"-"+m);}catch(e){document.documentElement.setAttribute("data-theme","github-dark");}</script>
+<script>try{var m=JSON.parse(localStorage.getItem("appMode"))||"dark";document.documentElement.setAttribute("data-theme","house-"+m);}catch(e){document.documentElement.setAttribute("data-theme","house-dark");}</script>
 </head>
 <body>
-<header class="topbar">
-  <a href="../index.html" class="home">&larr; Learn DuckDB console</a>
-  <span class="crumb">Library ┬╖ Plan</span>
-  <a href="index.html" class="home">All pages</a>
+<header class="topbar"> <a href="../index.html" class="home">&larr; Learn DuckDB console</a> <span class="crumb">Library · Plan</span> <a href="index.html" class="home">All pages</a>
 </header>
-<main class="doc">
-  <div class="kicker">Plan</div>
-  <h1 class="doctitle">Mind map</h1>
-  
-  
-  <article><h1>Mind map — DuckDB</h1>
-<div class="callout warning" markdown="0"><div class="callout-title">Agent draft — review before GO</div><p>This mind map was drafted from the Mode B interview. Edit freely, then check Progress Log.</p></div>
-
-<h2>DuckDB</h2>
+<main class="doc"> <div class="kicker">Plan</div> <h1 class="doctitle">Mind map</h1> <article><h1>Mind map — DuckDB</h1>
+<div class="callout warning" markdown="0"><div class="callout-title">Agent draft — review before GO</div><p>This mind map was drafted from the Mode B interview. Edit freely, then check Progress Log.</p></div> <h2>DuckDB</h2>
 <ul>
 <li><strong>Day outcome:</strong> By the end of the day, explain DuckDB from zero and sketch one local analytics query you could defend. The sketch names the storage layout, the execution model, and when DuckDB beats Postgres, SQLite, Polars, or Spark. Success is a short written explanation plus that sketch, with one named failure mode.</li>
 <li><strong>Depth:</strong> Working fluency across the engine, not a survey of every SQL function and not a single-subsystem deep dive. Enough to sketch a scan-join-aggregate and say why the engine runs it that way. A later day can go deep on one slice (vectorized execution, or the storage format).</li>
@@ -33,54 +20,13 @@
 <li><strong>Boundaries:</strong> Must include: what DuckDB is (in-process SQL database), row versus column storage, vectorized execution, morsel-driven parallelism, the single-file database, reading Parquet and CSV, EXPLAIN at a sketch level, extensions in outline, and when not to use DuckDB.</li>
 </ul>
 <p>Out of scope: a production deploy, building a DuckDB extension in C++, distributed DuckDB clusters, and multi-week academy depth. No local lab is required today.
-- Core concepts
-  - A table, a query, and a join, defined without DuckDB
-  - OLTP (many small row updates) versus OLAP (few large scans and aggregates)
-  - Row storage versus column storage
-  - DuckDB as an in-process SQL database, not a server you connect to
-  - A single database file, or memory only
-  - Reading CSV and Parquet without loading them into a server first
-  - What EXPLAIN is for, at sketch level
-- Mental models
-  - Columnar layout: one query touches a few columns, so it reads those columns only
-  - Vectorized execution: the engine processes a batch of values per operator, not one row at a time
-  - Morsel-driven parallelism: threads take chunks of the same pipeline
-  - Out of core: the working set can exceed RAM and spill
-  - Replacement scan: a data frame or file can stand in for a table name
-  - Comparison set: Postgres, SQLite, Polars, Spark. Each wins a different job.
-- Active practice targets
-  - On paper, define the five words above in your own sentences
-  - Sketch a scan, join, and aggregate over a Parquet file of events and a small dimension table
-  - Annotate the sketch with which steps are columnar and which step needs a join
-  - Read one EXPLAIN tree from the docs and label scan, join, and aggregate
-- Teach-back angle
-  - Five minutes to someone who knows Excel and has heard of SQLite
-  - Must include one sentence on why a column store helps a SUM over one column
-  - Must include one sentence on a job DuckDB should refuse
-- Edge cases / traps
-  - DuckDB is one writer. It is not a multi-user OLTP server.
-  - Types and timestamps surprise people coming from Pandas or Postgres
-  - Extensions are powerful and also a trust boundary
-  - A query that looks cheap in SQL can explode memory on a bad join
-  - "It is fast on my laptop" is not a warehouse design
-- Application task
-  - Written explanation from zero, plus one defended sketch
-  - The sketch names storage layout, execution model, and the tool you would not pick
-  - Name one failure mode (single writer, memory blow-up, or wrong engine for OLTP)
-- Video pair (required)
-  - HyperFrames: the HTML composition for the day (explainer of the sketch)
-  - Remotion: a React companion that plays the same beats, built by Codex CLI on this machine (<code>codex exec</code>)
-  - Same story, two runtimes. Remotion does not replace the HyperFrames cut. It sits beside it.
-  - Out of scope for the pair: porting Remotion back into HyperFrames (<code>/remotion-to-hyperframes</code>) unless asked later</p></article>
-  <footer class="docfoot">
-    Rendered from <code>Learning\one-day-mastery\duckdb\intake\mindmap.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger.
-    <div class="prevnext"><a href="day-plan.html">&larr; Previous</a><a href="deep-dive.html">Next &rarr;</a></div>
-  </footer>
+- Core concepts - A table, a query, and a join, defined without DuckDB - OLTP (many small row updates) versus OLAP (few large scans and aggregates) - Row storage versus column storage - DuckDB as an in-process SQL database, not a server you connect to - A single database file, or memory only - Reading CSV and Parquet without loading them into a server first - What EXPLAIN is for, at sketch level
+- Mental models - Columnar layout: one query touches a few columns, so it reads those columns only - Vectorized execution: the engine processes a batch of values per operator, not one row at a time - Morsel-driven parallelism: threads take chunks of the same pipeline - Out of core: the working set can exceed RAM and spill - Replacement scan: a data frame or file can stand in for a table name - Comparison set: Postgres, SQLite, Polars, Spark. Each wins a different job.
+- Active practice targets - On paper, define the five words above in your own sentences - Sketch a scan, join, and aggregate over a Parquet file of events and a small dimension table - Annotate the sketch with which steps are columnar and which step needs a join - Read one EXPLAIN tree from the docs and label scan, join, and aggregate
+- Teach-back angle - Five minutes to someone who knows Excel and has heard of SQLite - Must include one sentence on why a column store helps a SUM over one column - Must include one sentence on a job DuckDB should refuse
+- Edge cases / traps - DuckDB is one writer. It is not a multi-user OLTP server. - Types and timestamps surprise people coming from Pandas or Postgres - Extensions are powerful and also a trust boundary - A query that looks cheap in SQL can explode memory on a bad join - "It is fast on my laptop" is not a warehouse design
+- Application task - Written explanation from zero, plus one defended sketch - The sketch names storage layout, execution model, and the tool you would not pick - Name one failure mode (single writer, memory blow-up, or wrong engine for OLTP)
+- Video pair (required) - HyperFrames: the HTML composition for the day (explainer of the sketch) - Remotion: a React companion that plays the same beats, built by Codex CLI on this machine (<code>codex exec</code>) - Same story, two runtimes. Remotion does not replace the HyperFrames cut. It sits beside it. - Out of scope for the pair: porting Remotion back into HyperFrames (<code>/remotion-to-hyperframes</code>) unless asked later</p></article> <footer class="docfoot"> Rendered from <code>Learning\one-day-mastery\duckdb\intake\mindmap.md</code>. The Obsidian vault is the source of truth. Study material only. Citations <span class="cite">S#</span> link to the DuckDB source ledger. <div class="prevnext"><a href="day-plan.html">&larr; Previous</a><a href="deep-dive.html">Next &rarr;</a></div> </footer>
 </main>
-<script type="module">
-import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
-const dark=(document.documentElement.getAttribute("data-theme")||"").endsWith("dark");
-mermaid.initialize({startOnLoad:true,theme:dark?"dark":"default",securityLevel:"strict"});
-</script>
 </body>
 </html>
